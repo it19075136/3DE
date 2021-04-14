@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">3DE</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="birth_date">Date of Birth (MM/DD/YYYY)</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="select_gender">Select Gender</string>
+    <string name="user_details">User Details</string>
+    <string name="submit">Submit</string>
+    <string name="next">Next</string>
+    <string name="guardian_details">Guardian Details</string>
+    <string name="guardian_name">Guardian Name</string>
+    <string name="guardian_mobile">Guardian Mobile</string>
+    <string name="guardian_mail">Guardian Mail</string>
+    <string name="english" translatable="false">English</string>
+    <string name="sinhala">සිංහල</string>
+    <string name="hello">Hello</string>
+</resources>
