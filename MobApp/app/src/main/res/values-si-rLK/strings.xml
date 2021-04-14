@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">3DE</string>
+    <string name="first_name">මුල් නම</string>
+    <string name="last_name">අවසන් නම</string>
+    <string name="birth_date">උපන්දිනය (MM/DD/YYYY)</string>
+    <string name="male">පිරිමි</string>
+    <string name="female">ගැහැණු</string>
+    <string name="select_gender">ස්ත්‍රී පුරුෂ භාවය</string>
+    <string name="user_details">පරිශීලක විස්තර</string>
+    <string name="submit">ඉදිරිපත් කරන්න</string>
+    <string name="next">ඊළඟ</string>
+    <string name="guardian_details">භාරකරු විස්තර</string>
+    <string name="guardian_name">භාරකරුගේ නම</string>
+    <string name="guardian_mobile">භාරකරුගේ දුරකථනය</string>
+    <string name="guardian_mail">භාරකරුගේ ඊ-තැපෑල</string>
+    <string name="sinhala">සිංහල</string>
+    <string name="english" translatable="false">English</string>
+</resources>

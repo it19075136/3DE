@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "967906533329",
+    "project_id": "project-3de-eb7dd",
+    "storage_bucket": "project-3de-eb7dd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:967906533329:android:62bba729806b658c148af0",
+        "android_client_info": {
+          "package_name": "mobile.application3DE"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "967906533329-o9hngp2mb442tmg5mbt87j3bbn1o8est.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeRncvwG6sfbM1XVBM_nLBCCTYsK0ulIw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "967906533329-o9hngp2mb442tmg5mbt87j3bbn1o8est.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
