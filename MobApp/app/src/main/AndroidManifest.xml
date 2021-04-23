@@ -10,7 +10,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MobApp">
-        <activity android:name=".activity_choice_landing"></activity>
+        <activity android:name=".orientation.TccImageLayout"></activity>
+        <activity android:name=".activity_choice_landing" />
         <activity android:name=".Landing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

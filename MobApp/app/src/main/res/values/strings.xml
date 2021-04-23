@@ -16,4 +16,13 @@
     <string name="english" translatable="false">English</string>
     <string name="sinhala">සිංහල</string>
     <string name="hello">Hello</string>
+    <string name="orientation">Orientation</string>
+    <string name="memory">Memory</string>
+    <string name="decision_making">Decision Making</string>
+    <string name="tcc">TCC</string>
+    <string name="instructions">Instructions</string>
+    <string name="start">Start</string>
+    <string name="have_you_seen_this_picture_before">Have you Seen this Picture before?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>
