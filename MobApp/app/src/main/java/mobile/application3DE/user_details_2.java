@@ -2,12 +2,10 @@ package mobile.application3DE;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
@@ -16,9 +14,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.UUID;
 
-import mobile.application3DE.R;
 import mobile.application3DE.models.User;
-import mobile.application3DE.orientation.tccCalculation;
 
 public class user_details_2 extends AppCompatActivity {
 
