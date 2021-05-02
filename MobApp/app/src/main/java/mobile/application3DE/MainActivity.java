@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
                 datePickerDialog = new DatePickerDialog(MainActivity.this,
                         new DatePickerDialog.OnDateSetListener() {
 
+
                             @Override
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
@@ -56,7 +57,10 @@ public class MainActivity extends AppCompatActivity {
 
                             }
                         }, mYear, mMonth, mDay);
+
                 datePickerDialog.show();
+
+
             }
         });
     }
