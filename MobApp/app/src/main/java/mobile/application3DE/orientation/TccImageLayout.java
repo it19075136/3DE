@@ -2,13 +2,11 @@ package mobile.application3DE.orientation;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
@@ -25,12 +23,13 @@ public class TccImageLayout extends AppCompatActivity {
     Button btnYes,btnNo;
     TextView quest;
     Random random = new Random();
-    ArrayList<Integer> usedInRound = new ArrayList<>();
+    ArrayList<String> usedInRound = new ArrayList<>();
     ArrayList<String> imageSet,targets,distractors,distractors2,mergedArr;
     HashMap<String,ArrayList<String>> sortedImgs = new HashMap<>();
     int counter = 0,counter2 = 0;
     int run1_hits = 0,run2_hits = 0;
-    int round_counter = 1,i,selectedImg;
+    int round_counter = 0,i,n=0;
+    String selectedImg;
 
     //  2 runs.. 6 rounds for each run. 12 distracter items and  8 target/repeating items.- 80 images.. Put 8 target items from run1 into distracter of the
     // 2 nd run ,amd take the remaining 8 distracters from run 1 among distractors
@@ -41,7 +40,6 @@ public class TccImageLayout extends AppCompatActivity {
         setContentView(R.layout.activity_tcc_image_layout);
 
         imageView = findViewById(R.id.imgView);
-//        progressIndicator = findViewById(R.id.progress_circular);
         btnYes = findViewById(R.id.yesBtn);
         btnYes.setText(R.string.next);
         btnNo = findViewById(R.id.noBtn);
@@ -50,13 +48,12 @@ public class TccImageLayout extends AppCompatActivity {
         quest.setVisibility(View.INVISIBLE);
 
         imageSet = getIntent().getStringArrayListExtra("imageSet");  // getting 80 images to the array
+
         targets = new ArrayList<>(); // targets arraylist
         distractors = new ArrayList<>(); // distractors arraylist
         distractors2 = new ArrayList<>();
-
         mergedArr = new ArrayList<>(); // arraylist per round. To merge distractors and targets
 
-        Toast.makeText(getApplicationContext(),"Images count: "+imageSet.size(),Toast.LENGTH_SHORT).show();
         // RUN1
         for (int i = 0; i < imageSet.size(); i++) {
             if(i < 8)
@@ -68,6 +65,7 @@ public class TccImageLayout extends AppCompatActivity {
         sortedImgs.put("targets",targets); // adding first 8 images as targets
         sortedImgs.put("distractors",distractors); // adding remaining 72 as distratcors for 1st run
 
+        Snackbar.make(findViewById(android.R.id.content).getRootView(),"Distractors count:"+distractors.size(),Snackbar.LENGTH_SHORT).show();
         targets.clear(); // clearing 1st run targets
 
         // RUN2
@@ -79,12 +77,14 @@ public class TccImageLayout extends AppCompatActivity {
         }
 
         sortedImgs.put("targets2",targets); // adding last 8 images as targets
-        sortedImgs.put("distractors2",distractors); // adding first 72 images as distractors which include target items of 1st run
+        sortedImgs.put("distractors2",distractors2); // adding first 72 images as distractors which include target items of 1st run
 
-        Picasso.get().load(sortedImgs.get("targets").get(0)).into(imageView); //setting 1st run's 1st image from targets
-        Snackbar.make(findViewById(android.R.id.content).getRootView(),"Starting round "+ round_counter,Snackbar.LENGTH_SHORT).show();
-        usedInRound.add(0);
-        selectedImg = 0;
+        selectedImg = sortedImgs.get("targets").get(0); //getting 1st run's 1st image from targets
+        Picasso.get().load(selectedImg).into(imageView); //setting 1st run's 1st image from targets
+//        Snackbar.make(findViewById(android.R.id.content).getRootView(),"Starting round 1",Snackbar.LENGTH_SHORT).show();
+        usedInRound.add(selectedImg);
+        round_counter++;
+        counter++;
 
         btnYes.setOnClickListener(v -> setNextImage(selectedImg,"yes"));
 
@@ -92,72 +92,102 @@ public class TccImageLayout extends AppCompatActivity {
 
     }
 
-    public void setNextImage(int sImg,String res){
+    public void setNextImage(String sImg,String res){
 
-            if(round_counter <= 6){ //1
+            if(round_counter <= 6){
             // run 1
                 // check target hits
-                if(res.equals("yes") && sImg < 8 && round_counter > 1)
+                if(res.equals("yes") && sortedImgs.get("targets").contains(sImg) && round_counter > 1)
                     run1_hits++; // increment
 
-                if(counter == 19 || counter == 0) {
-                    mergedArr.clear();
-                if(round_counter > 1) {
-                    Snackbar.make(findViewById(android.R.id.content).getRootView(), "Starting round " + round_counter, Snackbar.LENGTH_SHORT).show(); // handle error
-                    usedInRound.clear();
-                    counter = 0;
-                    if(round_counter == 2){
-                        quest.setVisibility(View.VISIBLE);
-                        btnNo.setVisibility(View.VISIBLE);
-                        btnYes.setText(R.string.yes);
+                if(counter == 20 || (counter == 1 && round_counter == 1)) { // checking start of rounds or end of rounds
+
+                    mergedArr.clear(); //clearing previous image set
+
+                    if(round_counter >= 1 && counter == 20) { // Checking for rounds after 1st round
+                        usedInRound.clear(); // clearing the used images array for the new round
+                        round_counter++; // incrementing the round count
+                        Snackbar.make(findViewById(android.R.id.content).getRootView(), "Starting round " + round_counter, Snackbar.LENGTH_SHORT).show();
+                        counter = 0; //setting counter to 0
+                        if (round_counter == 2) { // setting the buttons and question appropriately after 1st round
+                            quest.setVisibility(View.VISIBLE);
+                            btnNo.setVisibility(View.VISIBLE);
+                            btnYes.setText(R.string.yes);
+                        }
                     }
 
-                }
-                else
-                    counter++; //1
-                targets = sortedImgs.get("targets");
+                targets = sortedImgs.get("targets"); //1st run targets
                 mergedArr.addAll(targets); //adding target items
-                for (int j = 0; j < 12; j++)
-                    mergedArr.add(distractors.remove(j)); // removing and adding the first 12 distractors to each round
-//                    Toast.makeText(getApplicationContext(),"Size"+mergedArr.size(),Toast.LENGTH_SHORT).show();
-                    Toast.makeText(getApplicationContext(),"distractors Size "+distractors.size()+"merged size "+mergedArr.size(),Toast.LENGTH_SHORT).show();
-                    round_counter++;
+                    switch (round_counter){
+                        case 1:
+                            n = 0;
+                            break;
+                        case 2:
+                            n = 12;
+                            break;
+                        case 3:
+                            n = 24;
+                            break;
+                        case 4:
+                            n = 36;
+                            break;
+                        case 5:
+                            n = 48;
+                            break;
+                        case 6:
+                            n = 60;
+                            break;
+                        default:
+                            break;
+                    }
+                for (int j = n; j < (12*round_counter); j++) {
+                        mergedArr.add(distractors.get(j));
+                }// removing and adding the first 12 distractors to each round.
+                    Snackbar.make(findViewById(android.R.id.content).getRootView(), "round: " + round_counter+", merged size:"+mergedArr.size(), Snackbar.LENGTH_SHORT).show();
                 }
-//                Toast.makeText(getApplicationContext(),"before loop",Toast.LENGTH_SHORT).show();
-                do {
+
+            do { // select a unique random image from the selected 20 images of the round
                 i = random.nextInt(mergedArr.size());
-            }while (usedInRound.contains(i));
-//                Toast.makeText(getApplicationContext(),"SET"+i,Toast.LENGTH_SHORT).show();
-                Picasso.get().load(mergedArr.get(i)).into(imageView);
-            selectedImg = i;
-            usedInRound.add(i);
+            }while (usedInRound.contains(mergedArr.get(i)));
+
+            selectedImg = mergedArr.get(i);
+
+            Picasso.get().load(selectedImg).placeholder(R.drawable.progress_circular).into(imageView);
+            usedInRound.add(selectedImg);
             counter++;
+//            Snackbar.make(findViewById(android.R.id.content).getRootView(), "round: " + round_counter+", count: "+counter, Snackbar.LENGTH_SHORT).show();
+
+            if(counter == 20 && round_counter == 6)
+                round_counter++;
+
             }
         else if(round_counter <= 12){
-            Snackbar.make(findViewById(android.R.id.content).getRootView(),"Starting 2nd run",Snackbar.LENGTH_SHORT).show();
+            if(round_counter == 7)
+                Snackbar.make(findViewById(android.R.id.content).getRootView(),"Starting 2nd run",Snackbar.LENGTH_SHORT).show();
             //run 2
                 //check target hits
-                if(res.equals("yes") && sImg < 8)
+                if(res.equals("yes") && sortedImgs.get("targets2").contains(sImg))
                     run2_hits++; // increment
 
-            if(counter2 == 19 || counter2 == 0) {
+            if(counter2 == 20 || counter2 == 0) {
                 mergedArr.clear();
+                if(round_counter >= 7 && counter2 == 20)
+                    round_counter++;
                 Snackbar.make(findViewById(android.R.id.content).getRootView(),"Starting round "+ (round_counter-6),Snackbar.LENGTH_SHORT).show();
                 targets = sortedImgs.get("targets2");
                 mergedArr.addAll(targets); //adding target items
                 for (int j = 0; j < 12; j++)
                     mergedArr.add(distractors2.remove(j)); // removing and adding the first 12 distractors to each round
-                Toast.makeText(getApplicationContext(),"Array Size "+mergedArr.size(),Toast.LENGTH_SHORT).show();
                 counter2 = 0;
                 usedInRound.clear();
-                round_counter++;
             }
             do {
                 i = random.nextInt(mergedArr.size());
-            }while (usedInRound.contains(i));
-            Picasso.get().load(mergedArr.get(i)).into(imageView);
-            selectedImg = i;
-            usedInRound.add(i);
+            }while (usedInRound.contains(mergedArr.get(i)));
+
+            selectedImg = mergedArr.get(i);
+            Picasso.get().load(selectedImg).into(imageView);
+            usedInRound.add(selectedImg);
             counter2++;
         }
         else{
