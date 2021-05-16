@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="mobile.application3DE">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".utilities.MultiLanguageApp"
         android:allowBackup="true"
@@ -9,10 +11,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MobApp">
-        <activity android:name=".orientation.TccImageLayout"></activity>
-        <activity android:name=".activity_choice_landing" />
-        <activity android:name=".Landing">
+        android:largeHeap="true"
+        android:theme="@style/Theme.MobApp"> <!-- check if largeHeap is ok to use -->
+        <activity android:name=".orientation.TccImageLayout"/>
+        <activity android:name=".Landing" />
+        <activity android:name=".activity_choice_landing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
