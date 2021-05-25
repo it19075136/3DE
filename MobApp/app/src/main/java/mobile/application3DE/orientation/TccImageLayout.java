@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -17,7 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Callback;
-import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -30,7 +31,7 @@ import mobile.application3DE.R;
 public class TccImageLayout extends AppCompatActivity {
 
     ImageView imageView;
-    Button btnYes;
+    Button btnYes,btnNo;
     TextView quest;
     Random random = new Random();
     ArrayList<String> usedInRound = new ArrayList<>();
@@ -38,7 +39,7 @@ public class TccImageLayout extends AppCompatActivity {
     int counter = 0,runIdentifier = 1;
     int hits = 0,fps = 0;
     int round_counter = 0,i,n=0,m=0;
-    String selectedImg, currentUser = "0d67e2b3-5a42-4663-b421-156cc9c32b83";
+    String selectedImg, currentUser = "0e8f4183-cb31-4584-b870-e7869d93a46e";
     SimpleDateFormat formatDate;
 
     DatabaseReference tccRef,userRef;
@@ -56,10 +57,14 @@ public class TccImageLayout extends AppCompatActivity {
         imageView = findViewById(R.id.imgView);
         btnYes = findViewById(R.id.yesBtn);
         btnYes.setVisibility(View.INVISIBLE);
+        btnNo = findViewById(R.id.noBtn);
+        btnNo.setVisibility(View.INVISIBLE);
         quest = findViewById(R.id.question);
         quest.setVisibility(View.INVISIBLE);
 
-        btnYes.setOnClickListener(v -> setResponse(selectedImg));
+        btnYes.setOnClickListener(v -> setResponse(selectedImg, "yes"));
+
+        btnNo.setOnClickListener(v -> setResponse(selectedImg, "no"));
 
         fb = FirebaseDatabase.getInstance();
         tccRef = fb.getReference("ComponentBasedResults/"+currentUser+"/Orientation/TCC/");
@@ -106,14 +111,9 @@ public class TccImageLayout extends AppCompatActivity {
 //        }
 
         imageView.setVisibility(View.INVISIBLE);
-        // validate for each run
-        for(int i = 0;i < imageSet.size(); i++) {
-            Picasso.get().load(imageSet.get(i)).into(imageView);
-        }
-
         selectedImg = targets.get(0); //getting 1st image from targets
         // setting 1st image
-        Picasso.get().load(selectedImg).networkPolicy(NetworkPolicy.OFFLINE).into(imageView, new Callback() {
+        Picasso.get().load(selectedImg).memoryPolicy(MemoryPolicy.NO_CACHE,MemoryPolicy.NO_STORE).into(imageView, new Callback() {
             @Override
             public void onSuccess() {
                     imageView.setVisibility(View.VISIBLE);
@@ -125,50 +125,37 @@ public class TccImageLayout extends AppCompatActivity {
                         @Override
                         public void run() {
                             imageView.setVisibility(View.INVISIBLE);
-                            setNextImage();
+                            if(round_counter == 1)
+                                setNextImage();
                         }
                     },2000);
             }
 
             @Override
             public void onError(Exception e) {
-                Picasso.get().load(selectedImg).into(imageView, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        imageView.setVisibility(View.VISIBLE);
-                        Snackbar.make(findViewById(android.R.id.content).getRootView(),"Starting round 1",Snackbar.LENGTH_SHORT).show();
-                        usedInRound.add(selectedImg);
-                        round_counter++;
-                        counter++;
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                imageView.setVisibility(View.INVISIBLE);
-                                setNextImage();
-                            }
-                        },2000);
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-
-                    }
-                });
+                Log.d("ERROR","No image");
             }
         });
 
     }
 
-    private void setResponse(String sImg) {
+    private void setResponse(String sImg,String res) {
 
         btnYes.setEnabled(false);
+        btnNo.setEnabled(false);
+        btnYes.setVisibility(View.INVISIBLE);
+        btnNo.setVisibility(View.INVISIBLE);
+        quest.setVisibility(View.INVISIBLE);
 
-            if (round_counter < 7 && round_counter > 1){
+
+        if (round_counter < 7 && round_counter > 1 && res.equals("yes")){
                 if(targets.contains(sImg))
                     hits++; // increment hits
                 else
                     fps++; // else increment false positives
             }
+
+            setNextImage();
 
     }
 
@@ -205,6 +192,8 @@ public class TccImageLayout extends AppCompatActivity {
 
                     Snackbar.make(findViewById(android.R.id.content).getRootView(), "Run " + runIdentifier + " completed with tcc hits: " + hits + " fps: " + fps, Snackbar.LENGTH_LONG).show();
                     btnYes.setVisibility(View.INVISIBLE);
+                    btnNo.setVisibility(View.INVISIBLE);
+                    quest.setVisibility(View.VISIBLE);
                     if(runIdentifier == 1)
                         quest.setText("Run completed, please come back in 1 hour for the 2nd run");
                     else
@@ -212,7 +201,8 @@ public class TccImageLayout extends AppCompatActivity {
                     round_counter++;
                     mergedArr.clear();
                 }
-                setNextImage();
+                if(round_counter == 1)
+                    setNextImage();
             }
         }, 2000);
     }
@@ -229,10 +219,6 @@ public class TccImageLayout extends AppCompatActivity {
                     round_counter++; // incrementing the round count
                     Snackbar.make(findViewById(android.R.id.content).getRootView(), "Starting round " + round_counter, Snackbar.LENGTH_SHORT).show();
                     counter = 0; //setting counter to 0
-                    if (round_counter == 2) { // setting the buttons and question appropriately after 1st round
-                        quest.setVisibility(View.VISIBLE);
-                        btnYes.setVisibility(View.VISIBLE);
-                    }
                 }
 
                 mergedArr.addAll(targets); //adding targets to each array
@@ -275,10 +261,16 @@ public class TccImageLayout extends AppCompatActivity {
 
             selectedImg = mergedArr.get(i);
 
-            Picasso.get().load(selectedImg).networkPolicy(NetworkPolicy.OFFLINE).into(imageView, new Callback() {
+            Picasso.get().load(selectedImg).memoryPolicy(MemoryPolicy.NO_CACHE,MemoryPolicy.NO_STORE).into(imageView, new Callback() {
                 @Override
                 public void onSuccess() {
-                    btnYes.setEnabled(true);
+                    if(round_counter != 1) {
+                        quest.setVisibility(View.VISIBLE);
+                        btnYes.setEnabled(true);
+                        btnNo.setEnabled(true);
+                        btnYes.setVisibility(View.VISIBLE);
+                        btnNo.setVisibility(View.VISIBLE);
+                    }
                     imageView.setVisibility(View.VISIBLE);
                     usedInRound.add(selectedImg);
                     counter++;
@@ -287,21 +279,8 @@ public class TccImageLayout extends AppCompatActivity {
 
                 @Override
                 public void onError(Exception e) {
-                    Picasso.get().load(selectedImg).into(imageView, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            btnYes.setEnabled(true);
-                            imageView.setVisibility(View.VISIBLE);
-                            usedInRound.add(selectedImg);
-                            counter++;
-                            handleResults();
-                        }
+                        Log.d("ERROR","No image");
 
-                        @Override
-                        public void onError(Exception e) {
-
-                        }
-                    });
                 }
             });
 

@@ -9,13 +9,15 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:largeHeap="true"
-        android:theme="@style/Theme.MobApp"> <!-- check if largeHeap is ok to use -->
-        <activity android:name=".orientation.TccImageLayout"/>
-        <activity android:name=".Landing" />
-        <activity android:name=".activity_choice_landing">
+        android:theme="@style/Theme.MobApp">
+        <!-- check if largeHeap is ok to use -->
+        <activity android:name=".orientation.TccImageLayout" />
+        <activity android:name=".activity_choice_landing" />
+        <activity android:name=".SignInPage"/>
+        <activity android:name=".Landing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
