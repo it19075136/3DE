@@ -41,7 +41,7 @@ public class tccCalculation extends AppCompatActivity {
     DatabaseReference getImages = databaseReference.child("TCCtestCases/test1/images");
 
     DatabaseReference userRef;
-    String currentUser = "0d67e2b3-5a42-4663-b421-156cc9c32b83";
+    String currentUser = "0e8f4183-cb31-4584-b870-e7869d93a46e";
     Date run1Date = null;
     int runIdentifier = 1;
     boolean execute = true;

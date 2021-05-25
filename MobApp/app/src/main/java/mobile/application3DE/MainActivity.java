@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
     RadioButton gBtn;
     DatePickerDialog datePickerDialog;
     User user;
+    String email,id;
+    Intent intent = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,10 @@ public class MainActivity extends AppCompatActivity {
         fName = findViewById(R.id.fName);
         lName = findViewById(R.id.lName);
         gender = findViewById(R.id.genderGroup);
+
+        intent = getIntent();
+        email = intent.getStringExtra("email");
+        id = intent.getStringExtra("id");
 
         dateInput.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(Validate_Inputs()) {
             Intent i = new Intent(this, user_details_2.class);
-            user = new User(fName.getText().toString(), lName.getText().toString(), dateInput.getText().toString(), gBtn.getText().toString());
+            user = new User(id,fName.getText().toString(), lName.getText().toString(),email, dateInput.getText().toString(), gBtn.getText().toString());
             i.putExtra("user", user);
             startActivity(i);
         }
