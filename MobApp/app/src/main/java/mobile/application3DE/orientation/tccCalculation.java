@@ -30,7 +30,12 @@ public class tccCalculation extends AppCompatActivity {
     DatabaseReference databaseReference = firebaseDatabase.getReference();
 
     DatabaseReference getImages = databaseReference.child("TCCtestCases/test1/images");
-    DatabaseReference getImage;
+
+    DatabaseReference userRef;
+    String currentUser = "0e8f4183-cb31-4584-b870-e7869d93a46e";
+    Date run1Date = null;
+    int runIdentifier = 1;
+    boolean execute = true;
 
     //  2 runs.. 6 rounds for each run. 12 distracter items and  8 target/repeating items.- 80 images.. Put 8 target items from run1 into distracter of the
     // 2 nd run , add 4 more from the distracter of run 1 and take the remaining 8 distracters from run 1 as targeted items

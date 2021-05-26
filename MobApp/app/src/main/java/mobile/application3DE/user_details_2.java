@@ -12,7 +12,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.UUID;
 
 import mobile.application3DE.models.User;
 
@@ -22,6 +21,7 @@ public class user_details_2 extends AppCompatActivity {
     User u;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference dbRef;
+    String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +51,7 @@ public class user_details_2 extends AppCompatActivity {
             u.setGuardianMail(g_mail_.getText().toString());
 
             firebaseDatabase = FirebaseDatabase.getInstance("https://project-3de-eb7dd-default-rtdb.firebaseio.com/");
-            dbRef = firebaseDatabase.getReference("users/".concat(UUID.randomUUID().toString()));
+            dbRef = firebaseDatabase.getReference("users/".concat(u.getId()));
 
             dbRef.setValue(u);
 

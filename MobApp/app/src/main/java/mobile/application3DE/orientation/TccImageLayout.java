@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -11,6 +13,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -25,12 +34,13 @@ public class TccImageLayout extends AppCompatActivity {
     Button btnYes,btnNo;
     TextView quest;
     Random random = new Random();
-    ArrayList<Integer> usedInRound = new ArrayList<>();
-    ArrayList<String> imageSet,targets,distractors,distractors2,mergedArr;
-    HashMap<String,ArrayList<String>> sortedImgs = new HashMap<>();
-    int counter = 0,counter2 = 0;
-    int run1_hits = 0,run2_hits = 0;
-    int round_counter = 1,i,selectedImg;
+    ArrayList<String> usedInRound = new ArrayList<>();
+    ArrayList<String> imageSet,targets,distractors,mergedArr;
+    int counter = 0,runIdentifier = 1;
+    int hits = 0,fps = 0;
+    int round_counter = 0,i,n=0,m=0;
+    String selectedImg, currentUser = "0e8f4183-cb31-4584-b870-e7869d93a46e";
+    SimpleDateFormat formatDate;
 
     //  2 runs.. 6 rounds for each run. 12 distracter items and  8 target/repeating items.- 80 images.. Put 8 target items from run1 into distracter of the
     // 2 nd run ,amd take the remaining 8 distracters from run 1 among distractors
@@ -43,11 +53,19 @@ public class TccImageLayout extends AppCompatActivity {
         imageView = findViewById(R.id.imgView);
 //        progressIndicator = findViewById(R.id.progress_circular);
         btnYes = findViewById(R.id.yesBtn);
-        btnYes.setText(R.string.next);
+        btnYes.setVisibility(View.INVISIBLE);
         btnNo = findViewById(R.id.noBtn);
         btnNo.setVisibility(View.INVISIBLE);
         quest = findViewById(R.id.question);
         quest.setVisibility(View.INVISIBLE);
+
+        btnYes.setOnClickListener(v -> setResponse(selectedImg, "yes"));
+
+        btnNo.setOnClickListener(v -> setResponse(selectedImg, "no"));
+
+        fb = FirebaseDatabase.getInstance();
+        tccRef = fb.getReference("ComponentBasedResults/"+currentUser+"/Orientation/TCC/");
+        userRef = fb.getReference("users/"+currentUser);
 
         imageSet = getIntent().getStringArrayListExtra("imageSet");  // getting 80 images to the array
         targets = new ArrayList<>(); // targets arraylist
@@ -65,30 +83,52 @@ public class TccImageLayout extends AppCompatActivity {
                 distractors.add(imageSet.get(i));
         }
 
-        sortedImgs.put("targets",targets); // adding first 8 images as targets
-        sortedImgs.put("distractors",distractors); // adding remaining 72 as distratcors for 1st run
+        imageView.setVisibility(View.INVISIBLE);
+        selectedImg = targets.get(0); //getting 1st image from targets
+        // setting 1st image
+        Picasso.get().load(selectedImg).memoryPolicy(MemoryPolicy.NO_CACHE,MemoryPolicy.NO_STORE).into(imageView, new Callback() {
+            @Override
+            public void onSuccess() {
+                    imageView.setVisibility(View.VISIBLE);
+                    Snackbar.make(findViewById(android.R.id.content).getRootView(),"Starting round 1",Snackbar.LENGTH_SHORT).show();
+                    usedInRound.add(selectedImg);
+                    round_counter++;
+                    counter++;
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            imageView.setVisibility(View.INVISIBLE);
+                            if(round_counter == 1)
+                                setNextImage();
+                        }
+                    },2000);
+            }
 
-        targets.clear(); // clearing 1st run targets
+            @Override
+            public void onError(Exception e) {
+                Log.d("ERROR","No image");
+            }
+        });
 
-        // RUN2
-        for (int i = 0; i < imageSet.size(); i++) {
-            if(i < 72)
-                distractors2.add(imageSet.get(i));
-            else
-                targets.add(imageSet.get(i));
-        }
+    }
 
-        sortedImgs.put("targets2",targets); // adding last 8 images as targets
-        sortedImgs.put("distractors2",distractors); // adding first 72 images as distractors which include target items of 1st run
+    private void setResponse(String sImg,String res) {
 
-        Picasso.get().load(sortedImgs.get("targets").get(0)).into(imageView); //setting 1st run's 1st image from targets
-        Snackbar.make(findViewById(android.R.id.content).getRootView(),"Starting round "+ round_counter,Snackbar.LENGTH_SHORT).show();
-        usedInRound.add(0);
-        selectedImg = 0;
+        btnYes.setEnabled(false);
+        btnNo.setEnabled(false);
+        btnYes.setVisibility(View.INVISIBLE);
+        btnNo.setVisibility(View.INVISIBLE);
+        quest.setVisibility(View.INVISIBLE);
 
-        btnYes.setOnClickListener(v -> setNextImage(selectedImg,"yes"));
 
-        btnNo.setOnClickListener(v -> setNextImage(selectedImg,"no"));
+        if (round_counter < 7 && round_counter > 1 && res.equals("yes")){
+                if(targets.contains(sImg))
+                    hits++; // increment hits
+                else
+                    fps++; // else increment false positives
+            }
+
+            setNextImage();
 
     }
 
@@ -100,17 +140,36 @@ public class TccImageLayout extends AppCompatActivity {
                 if(res.equals("yes") && sImg < 8 && round_counter > 1)
                     run1_hits++; // increment
 
-                if(counter == 19 || counter == 0) {
+                    Snackbar.make(findViewById(android.R.id.content).getRootView(), "Run " + runIdentifier + " completed with tcc hits: " + hits + " fps: " + fps, Snackbar.LENGTH_LONG).show();
+                    btnYes.setVisibility(View.INVISIBLE);
+                    btnNo.setVisibility(View.INVISIBLE);
+                    quest.setVisibility(View.VISIBLE);
+                    if(runIdentifier == 1)
+                        quest.setText("Run completed, please come back in 1 hour for the 2nd run");
+                    else
+                        quest.setText("You've completed the TCC test case");
+                    round_counter++;
                     mergedArr.clear();
-                if(round_counter > 1) {
-                    Snackbar.make(findViewById(android.R.id.content).getRootView(), "Starting round " + round_counter, Snackbar.LENGTH_SHORT).show(); // handle error
-                    usedInRound.clear();
-                    counter = 0;
-                    if(round_counter == 2){
-                        quest.setVisibility(View.VISIBLE);
-                        btnNo.setVisibility(View.VISIBLE);
-                        btnYes.setText(R.string.yes);
-                    }
+                }
+                if(round_counter == 1)
+                    setNextImage();
+            }
+        }, 2000);
+    }
+
+    public void setNextImage() {
+
+        if (round_counter <= 6) {
+
+            if (counter == 20 || (counter == 1 && round_counter == 1)) { // checking start of rounds or end of rounds
+
+                if (round_counter >= 1 && counter == 20) { // Checking for rounds after 1st round
+                    mergedArr.clear(); //clearing previous image set
+                    usedInRound.clear(); // clearing the used images array for the new round
+                    round_counter++; // incrementing the round count
+                    Snackbar.make(findViewById(android.R.id.content).getRootView(), "Starting round " + round_counter, Snackbar.LENGTH_SHORT).show();
+                    counter = 0; //setting counter to 0
+                }
 
                 }
                 else
@@ -154,11 +213,33 @@ public class TccImageLayout extends AppCompatActivity {
             }
             do {
                 i = random.nextInt(mergedArr.size());
-            }while (usedInRound.contains(i));
-            Picasso.get().load(mergedArr.get(i)).into(imageView);
-            selectedImg = i;
-            usedInRound.add(i);
-            counter2++;
+            } while (usedInRound.contains(mergedArr.get(i)));
+
+            selectedImg = mergedArr.get(i);
+
+            Picasso.get().load(selectedImg).memoryPolicy(MemoryPolicy.NO_CACHE,MemoryPolicy.NO_STORE).into(imageView, new Callback() {
+                @Override
+                public void onSuccess() {
+                    if(round_counter != 1) {
+                        quest.setVisibility(View.VISIBLE);
+                        btnYes.setEnabled(true);
+                        btnNo.setEnabled(true);
+                        btnYes.setVisibility(View.VISIBLE);
+                        btnNo.setVisibility(View.VISIBLE);
+                    }
+                    imageView.setVisibility(View.VISIBLE);
+                    usedInRound.add(selectedImg);
+                    counter++;
+                    handleResults();
+                }
+
+                @Override
+                public void onError(Exception e) {
+                        Log.d("ERROR","No image");
+
+                }
+            });
+
         }
         else{
             Snackbar.make(findViewById(android.R.id.content).getRootView(),"Test completed with results run 1 hits: "+run1_hits+", run 2 hits: "+run2_hits+", Come back in one hour to continue with 2nd test",Snackbar.LENGTH_LONG).show();

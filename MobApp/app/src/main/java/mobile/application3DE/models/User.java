@@ -4,13 +4,27 @@ import java.io.Serializable;
 
 public class User implements Serializable {
 
-    String fName,lName,dob,gender,guardianName,guardianMob,guardianMail;
+    String id,fName,lName,dob,gender,email,guardianName,guardianMob,guardianMail;
 
-    public User(String fName,String lName,String dob,String gender){
+    public User(String id,String fName,String lName,String email,String dob,String gender){
+        this.id = id;
         this.fName = fName;
         this.lName = lName;
+        this.email = email;
         this.dob = dob;
         this.gender = gender;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String get_dob() {
