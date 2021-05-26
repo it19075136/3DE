@@ -1,8 +1,8 @@
 package mobile.application3DE.orientation;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
@@ -22,8 +21,9 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.Random;
 
 import mobile.application3DE.R;
@@ -42,6 +42,8 @@ public class TccImageLayout extends AppCompatActivity {
     String selectedImg, currentUser = "0e8f4183-cb31-4584-b870-e7869d93a46e";
     SimpleDateFormat formatDate;
 
+    DatabaseReference tccRef,userRef;
+    FirebaseDatabase fb;
     //  2 runs.. 6 rounds for each run. 12 distracter items and  8 target/repeating items.- 80 images.. Put 8 target items from run1 into distracter of the
     // 2 nd run ,amd take the remaining 8 distracters from run 1 among distractors
 
@@ -50,8 +52,9 @@ public class TccImageLayout extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tcc_image_layout);
 
+        formatDate = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+
         imageView = findViewById(R.id.imgView);
-//        progressIndicator = findViewById(R.id.progress_circular);
         btnYes = findViewById(R.id.yesBtn);
         btnYes.setVisibility(View.INVISIBLE);
         btnNo = findViewById(R.id.noBtn);
@@ -68,20 +71,44 @@ public class TccImageLayout extends AppCompatActivity {
         userRef = fb.getReference("users/"+currentUser);
 
         imageSet = getIntent().getStringArrayListExtra("imageSet");  // getting 80 images to the array
+        runIdentifier = getIntent().getIntExtra("runIdentifier",1);
+
         targets = new ArrayList<>(); // targets arraylist
         distractors = new ArrayList<>(); // distractors arraylist
-        distractors2 = new ArrayList<>();
-
+//        distractors2 = new ArrayList<>();
+//        targets2 = new ArrayList<>();
         mergedArr = new ArrayList<>(); // arraylist per round. To merge distractors and targets
 
-        Toast.makeText(getApplicationContext(),"Images count: "+imageSet.size(),Toast.LENGTH_SHORT).show();
-        // RUN1
-        for (int i = 0; i < imageSet.size(); i++) {
-            if(i < 8)
-                targets.add(imageSet.get(i));
-            else
-                distractors.add(imageSet.get(i));
+        // Setting images according to the run identidier
+        switch (runIdentifier) {
+            case 1:
+            for (int i = 0; i < imageSet.size(); i++) {
+                if (i < 8) {
+                    targets.add(imageSet.get(i));
+                } else {
+                    distractors.add(imageSet.get(i));
+                }
+            }
+            break;
+            case 2:
+                for (int i = 0; i < imageSet.size(); i++) {
+                    if (i < 72) {
+                        distractors.add(imageSet.get(i));
+                    } else {
+                        targets.add(imageSet.get(i));
+                    }
+                }
+                break;
+            default:
+                break;
         }
+        // RUN2
+//        for (int i = 0; i < imageSet.size(); i++) {
+//            if(i < 72)
+//                distractors2.add(imageSet.get(i));
+//            else
+//                targets2.add(imageSet.get(i));
+//        }
 
         imageView.setVisibility(View.INVISIBLE);
         selectedImg = targets.get(0); //getting 1st image from targets
@@ -132,13 +159,36 @@ public class TccImageLayout extends AppCompatActivity {
 
     }
 
-    public void setNextImage(int sImg,String res){
+    public void handleResults(){
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                imageView.setVisibility(View.INVISIBLE);
+                if (counter == 20 && round_counter == 6) { //handling last image
+                    if (hits != 0)
+                        tccRef.child("run".concat(String.valueOf(runIdentifier))).setValue((float) fps / hits);
+                    else
+                        tccRef.child("run".concat(String.valueOf(runIdentifier))).setValue("Infinite"); // check this 1st
 
-            if(round_counter <= 6){ //1
-            // run 1
-                // check target hits
-                if(res.equals("yes") && sImg < 8 && round_counter > 1)
-                    run1_hits++; // increment
+                    userRef.child("CompletedTCC1Run" + String.valueOf(runIdentifier)).setValue(formatDate.format(new Date()));
+
+                    if (runIdentifier == 2) {
+                        userRef.child("TCC1completed").setValue(formatDate.format(new Date()));
+                        tccRef.child("run1").addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.getValue().toString().equals("Infinite") || hits == 0)
+                                    tccRef.child("TCC1Result").setValue("Infinite");
+                                else
+                                    tccRef.child("TCC1Result").setValue((float) (fps / hits) - (float) snapshot.getValue());
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
 
                     Snackbar.make(findViewById(android.R.id.content).getRootView(), "Run " + runIdentifier + " completed with tcc hits: " + hits + " fps: " + fps, Snackbar.LENGTH_LONG).show();
                     btnYes.setVisibility(View.INVISIBLE);
@@ -171,47 +221,41 @@ public class TccImageLayout extends AppCompatActivity {
                     counter = 0; //setting counter to 0
                 }
 
+                mergedArr.addAll(targets); //adding targets to each array
+                switch (round_counter) {
+                    case 1:
+                        n = 60;
+                        m = 6;
+                        break;
+                    case 2:
+                        n = 48;
+                        m = 5;
+                        break;
+                    case 3:
+                        n = 36;
+                        m = 4;
+                        break;
+                    case 4:
+                        n = 24;
+                        m = 3;
+                        break;
+                    case 5:
+                        n = 12;
+                        m = 2;
+                        break;
+                    case 6:
+                        n = 0;
+                        m = 1;
+                        break;
+                    default:
+                        break;
                 }
-                else
-                    counter++; //1
-                targets = sortedImgs.get("targets");
-                mergedArr.addAll(targets); //adding target items
-                for (int j = 0; j < 12; j++)
-                    mergedArr.add(distractors.remove(j)); // removing and adding the first 12 distractors to each round
-//                    Toast.makeText(getApplicationContext(),"Size"+mergedArr.size(),Toast.LENGTH_SHORT).show();
-                    Toast.makeText(getApplicationContext(),"distractors Size "+distractors.size()+"merged size "+mergedArr.size(),Toast.LENGTH_SHORT).show();
-                    round_counter++;
-                }
-//                Toast.makeText(getApplicationContext(),"before loop",Toast.LENGTH_SHORT).show();
-                do {
-                i = random.nextInt(mergedArr.size());
-            }while (usedInRound.contains(i));
-//                Toast.makeText(getApplicationContext(),"SET"+i,Toast.LENGTH_SHORT).show();
-                Picasso.get().load(mergedArr.get(i)).into(imageView);
-            selectedImg = i;
-            usedInRound.add(i);
-            counter++;
+                for (int j = n; j < (12 * m); j++) {
+                    mergedArr.add(distractors.get(j));
+                }// removing and adding the first 12 distractors to each round.
             }
-        else if(round_counter <= 12){
-            Snackbar.make(findViewById(android.R.id.content).getRootView(),"Starting 2nd run",Snackbar.LENGTH_SHORT).show();
-            //run 2
-                //check target hits
-                if(res.equals("yes") && sImg < 8)
-                    run2_hits++; // increment
 
-            if(counter2 == 19 || counter2 == 0) {
-                mergedArr.clear();
-                Snackbar.make(findViewById(android.R.id.content).getRootView(),"Starting round "+ (round_counter-6),Snackbar.LENGTH_SHORT).show();
-                targets = sortedImgs.get("targets2");
-                mergedArr.addAll(targets); //adding target items
-                for (int j = 0; j < 12; j++)
-                    mergedArr.add(distractors2.remove(j)); // removing and adding the first 12 distractors to each round
-                Toast.makeText(getApplicationContext(),"Array Size "+mergedArr.size(),Toast.LENGTH_SHORT).show();
-                counter2 = 0;
-                usedInRound.clear();
-                round_counter++;
-            }
-            do {
+            do { // select a unique random image from the selected 20 images of the round
                 i = random.nextInt(mergedArr.size());
             } while (usedInRound.contains(mergedArr.get(i)));
 
@@ -241,10 +285,128 @@ public class TccImageLayout extends AppCompatActivity {
             });
 
         }
-        else{
-            Snackbar.make(findViewById(android.R.id.content).getRootView(),"Test completed with results run 1 hits: "+run1_hits+", run 2 hits: "+run2_hits+", Come back in one hour to continue with 2nd test",Snackbar.LENGTH_LONG).show();
-        }
-
+//        else if(round_counter <= 12){
+//
+//                //run 2
+//                if(round_counter == 7 && counter2 == 0) {
+//                btnYes.setVisibility(View.INVISIBLE);
+//                quest.setVisibility(View.INVISIBLE);
+////                Snackbar.make(findViewById(android.R.id.content).getRootView(), "Starting 2nd run round 1", Snackbar.LENGTH_SHORT).show();
+//                Snackbar.make(findViewById(android.R.id.content).getRootView(),"Run 1 completed with hits : "+run1_hits+" fps:"+fp1,Snackbar.LENGTH_LONG).show();
+//
+//                if(run1_hits != 0)
+//                        dbRef.child("run1Value").setValue((float)fp1/run1_hits);
+//                    else
+//                        dbRef.child("run1Value").setValue("infinite");
+//                }
+//
+//            if(counter2 == 20 || counter2 == 0) {
+//                if(round_counter >= 7 && counter2 == 20) {
+//                    mergedArr.clear();
+//                    round_counter++;
+//                    Snackbar.make(findViewById(android.R.id.content).getRootView(), "Starting round " + (round_counter - 6), Snackbar.LENGTH_SHORT).show();
+//                    if(round_counter == 8){
+//                        quest.setVisibility(View.VISIBLE);
+//                        btnYes.setVisibility(View.VISIBLE);
+//                    }
+//                }
+//                mergedArr.addAll(targets2); //adding targets to each array
+//                switch (round_counter){
+//                    case 1:
+//                        n = 60;
+//                        m=6;
+//                        break;
+//                    case 2:
+//                        n = 48;
+//                        m=5;
+//                        break;
+//                    case 3:
+//                        n = 36;
+//                        m = 4;
+//                        break;
+//                    case 4:
+//                        n = 24;
+//                        m = 3;
+//                        break;
+//                    case 5:
+//                        n = 12;
+//                        m = 2;
+//                        break;
+//                    case 6:
+//                        n = 0;
+//                        m = 1;
+//                        break;
+//                    default:
+//                        break;
+//                }
+//                for (int j = n; j < (12*m); j++) {
+//                    mergedArr.add(distractors2.get(j));
+//                }
+//                counter2 = 0;
+//                usedInRound.clear();
+//            }
+//            do {
+//                i = random.nextInt(mergedArr.size());
+//            }while (usedInRound.contains(mergedArr.get(i)));
+//
+//            selectedImg = mergedArr.get(i);
+//            Picasso.get().load(selectedImg).networkPolicy(NetworkPolicy.OFFLINE).into(imageView, new Callback() {
+//                    @Override
+//                    public void onSuccess() {
+//                        btnYes.setEnabled(true);
+//                        imageView.setVisibility(View.VISIBLE);
+//                        usedInRound.add(selectedImg);
+//                        counter2++;
+//
+//                        if(counter2 == 20 && round_counter == 12)
+//                            round_counter++;
+//
+//                        new Handler().postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                imageView.setVisibility(View.INVISIBLE);
+//                                setNextImage();
+//                            }
+//                        },2000);;
+//                    }
+//
+//                    @Override
+//                    public void onError(Exception e) {
+//                        Picasso.get().load(selectedImg).into(imageView, new Callback() {
+//                            @Override
+//                            public void onSuccess() {
+//                                btnYes.setEnabled(true);
+//                                imageView.setVisibility(View.VISIBLE);
+//                                usedInRound.add(selectedImg);
+//                                counter2++;
+//
+//                                if(counter2 == 20 && round_counter == 12)
+//                                    round_counter++;
+//
+//                                new Handler().postDelayed(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        imageView.setVisibility(View.INVISIBLE);
+//                                        setNextImage();
+//                                    }
+//                                },2000);
+//                            }
+//
+//                            @Override
+//                            public void onError(Exception e) {
+//
+//                            }
+//                        });
+//                    }
+//                });
+//        }
+//                dbRef = fb.getReference("ComponentBasedResults/Orientation/TCC/");
+//                if(run2_hits != 0)
+//                    dbRef.child("run2Value").setValue((float)fp2/run2_hits);
+//                else
+//                    dbRef.child("run2Value").setValue("infinite");
+//
+//                Snackbar.make(findViewById(android.R.id.content).getRootView(),"Run 2 completed with tcc hits: "+run2_hits+" fps: "+fp2,Snackbar.LENGTH_LONG).show();
+//        }
     }
-
 }
