@@ -10,4 +10,15 @@
     <color name="success">#33cc5a</color>
     <color name="error">#ff0006</color>
     <color name="info">#e0af1f</color>
+    <color name="greentem">#2dce89</color>
+    <color name="backgrondcolor">#f4f5f7</color>
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="light_blue_900">#FF01579B</color>
+    <color name="light_blue_A200">#FF40C4FF</color>
+    <color name="black_green_A400">#144221</color>
+    <color name="reddark">#ab0000</color>
+    <color name="notification">#695d02</color>
+    <color name="black_overlay">#66000000</color>
+    <color name="liteGreenj">#92DD8B</color>
+    <color name="darkGreen">#2C6A1B</color>
 </resources>

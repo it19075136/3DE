@@ -2,8 +2,6 @@ package mobile.application3DE.orientation;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -11,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,7 +41,7 @@ public class tccCalculation extends AppCompatActivity {
     DatabaseReference getImages = databaseReference.child("TCCtestCases/test1/images");
 
     DatabaseReference userRef;
-    String currentUser = "0d67e2b3-5a42-4663-b421-156cc9c32b83";
+    String currentUser = "";
     Date run1Date = null;
     int runIdentifier = 1;
     boolean execute = true;
@@ -58,8 +58,12 @@ public class tccCalculation extends AppCompatActivity {
         startBtn.setText("Please wait..");
         startBtn.setEnabled(false);
 
-        // check if the test1 is complete **to-do
-//        getImages = databaseReference.child("TCCtestCases/test2/images");
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+// Adding signed in user.
+
+        if(acct != null)
+            currentUser = acct.getId();
+
         userRef = databaseReference.child("users/"+currentUser);
 
         userRef.child("TCC1completed").addValueEventListener(new ValueEventListener() {
