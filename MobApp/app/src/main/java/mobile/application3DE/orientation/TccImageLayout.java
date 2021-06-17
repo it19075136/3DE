@@ -78,7 +78,7 @@ public class TccImageLayout extends AppCompatActivity {
         btnNo.setOnClickListener(v -> setResponse(selectedImg, "no"));
 
         fb = FirebaseDatabase.getInstance();
-        tccRef = fb.getReference("ComponentBasedResults/"+currentUser+"/Orientation/TCC/");
+        tccRef = fb.getReference("ComponentBasedResults/"+currentUser+"/Orientation/TCC");
         userRef = fb.getReference("users/"+currentUser);
 
         imageSet = getIntent().getStringArrayListExtra("imageSet");  // getting 80 images to the array
@@ -187,11 +187,63 @@ public class TccImageLayout extends AppCompatActivity {
                     fps++; // else increment false positives
             }
 
-        setNextImage();
+        if (counter == 20 && round_counter == 6) { //handling last image
+            if (hits != 0)
+                tccRef.child("run".concat(String.valueOf(runIdentifier))).setValue((double) fps / hits);
+            else
+                tccRef.child("run".concat(String.valueOf(runIdentifier))).setValue("Infinite"); // check this 1st
+
+            userRef.child("CompletedTCC1Run" + String.valueOf(runIdentifier)).setValue(formatDate.format(new Date()));
+
+            final String[] tccValue = new String[1];
+
+            if (runIdentifier == 2) {
+                userRef.child("TCC1completed").setValue(formatDate.format(new Date()));
+                tccRef.child("run1").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Log.d("IN IN", snapshot.getValue().toString());
+                        if (snapshot.getValue().toString().equals("Infinite") || hits == 0) {
+                            Log.d("IN IF", snapshot.getValue().toString());
+                            tccValue[0] = "Infinite";
+                            tccRef.child("TCC1Result").setValue(tccValue[0]);
+                        }
+                        else {
+                            Log.d("IN else", snapshot.getValue().toString());
+                            tccValue[0] = String.valueOf(((double) fps / hits) - (double) snapshot.getValue());
+                            tccRef.child("TCC1Result").setValue(((double) fps / hits) - (double) snapshot.getValue());
+                        }
+                        btnYes.setVisibility(View.INVISIBLE);
+                        btnNo.setVisibility(View.INVISIBLE);
+                        quest.setVisibility(View.VISIBLE);
+                        Toast.makeText(getApplicationContext(), "Run " + runIdentifier + " completed with tcc hits: " + hits + " ,false positives: " + fps + "Your tcc value is "+ tccValue[0], Toast.LENGTH_LONG).show();
+                        quest.setText("You've completed the TCC test case, your tcc value is "+tccValue[0]);
+                        round_counter++;
+                        mergedArr.clear();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+            else{
+                btnYes.setVisibility(View.INVISIBLE);
+                btnNo.setVisibility(View.INVISIBLE);
+                quest.setVisibility(View.VISIBLE);
+                Toast.makeText(getApplicationContext(), "Run " + runIdentifier + " completed with tcc hits: " + hits + " ,false positives: " + fps, Toast.LENGTH_LONG).show();
+                quest.setText("Run completed, please come back in 1 hour for the 2nd run.");
+                round_counter++;
+                mergedArr.clear();
+            }
+        }
+        else
+            setNextImage();
 
     }
 
-    public void handleResults(){
+    public void handleLoadedImage(){
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -199,51 +251,6 @@ public class TccImageLayout extends AppCompatActivity {
                     imageView.setVisibility(View.INVISIBLE);
                     btnYes.setEnabled(true);
                     btnNo.setEnabled(true);
-                }
-                if (counter == 20 && round_counter == 6) { //handling last image
-                    if (hits != 0)
-                        tccRef.child("run".concat(String.valueOf(runIdentifier))).setValue((float) fps / hits);
-                    else
-                        tccRef.child("run".concat(String.valueOf(runIdentifier))).setValue("Infinite"); // check this 1st
-
-                    userRef.child("CompletedTCC1Run" + String.valueOf(runIdentifier)).setValue(formatDate.format(new Date()));
-
-                    final String[] tccValue = new String[1];
-
-                    if (runIdentifier == 2) {
-                        userRef.child("TCC1completed").setValue(formatDate.format(new Date()));
-                        tccRef.child("run1").addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.getValue().toString().equals("Infinite") || hits == 0) {
-                                    tccValue[0] = "Infinite";
-                                    tccRef.child("TCC1Result").setValue(tccValue[0]);
-                                }
-                                else {
-                                    tccValue[0] = String.valueOf((float) (fps / hits));
-                                    tccRef.child("TCC1Result").setValue((float) (fps / hits) - (float) snapshot.getValue());
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-                    }
-                    btnYes.setVisibility(View.INVISIBLE);
-                    btnNo.setVisibility(View.INVISIBLE);
-                    quest.setVisibility(View.VISIBLE);
-                    if(runIdentifier == 1) {
-                        Snackbar.make(findViewById(android.R.id.content).getRootView(), "Run " + runIdentifier + " completed with tcc hits: " + hits + " ,false positives: " + fps, Snackbar.LENGTH_LONG).show();
-                        quest.setText("Run completed, please come back in 1 hour for the 2nd run.");
-                    }
-                    else {
-                        Snackbar.make(findViewById(android.R.id.content).getRootView(), "Run " + runIdentifier + " completed with tcc hits: " + hits + " ,false positives: " + fps + "Your tcc value is "+ tccValue[0], Snackbar.LENGTH_LONG).show();
-                        quest.setText("You've completed the TCC test case, your tcc value is "+tccValue[0]);
-                    }
-                    round_counter++;
-                    mergedArr.clear();
                 }
                 if(round_counter == 1)
                     setNextImage();
@@ -316,7 +323,7 @@ public class TccImageLayout extends AppCompatActivity {
                     imageView.setVisibility(View.VISIBLE);
                     usedInRound.add(selectedImg);
                     counter++;
-                    handleResults();
+                    handleLoadedImage();
                 }
 
                 @Override
@@ -333,7 +340,7 @@ public class TccImageLayout extends AppCompatActivity {
                             imageView.setVisibility(View.VISIBLE);
                             usedInRound.add(selectedImg);
                             counter++;
-                            handleResults();
+                            handleLoadedImage();
                         }
 
                         @Override
@@ -356,7 +363,7 @@ public class TccImageLayout extends AppCompatActivity {
 //                Snackbar.make(findViewById(android.R.id.content).getRootView(),"Run 1 completed with hits : "+run1_hits+" fps:"+fp1,Snackbar.LENGTH_LONG).show();
 //
 //                if(run1_hits != 0)
-//                        dbRef.child("run1Value").setValue((float)fp1/run1_hits);
+//                        dbRef.child("run1Value").setValue((double)fp1/run1_hits);
 //                    else
 //                        dbRef.child("run1Value").setValue("infinite");
 //                }
@@ -463,7 +470,7 @@ public class TccImageLayout extends AppCompatActivity {
 //        }
 //                dbRef = fb.getReference("ComponentBasedResults/Orientation/TCC/");
 //                if(run2_hits != 0)
-//                    dbRef.child("run2Value").setValue((float)fp2/run2_hits);
+//                    dbRef.child("run2Value").setValue((double)fp2/run2_hits);
 //                else
 //                    dbRef.child("run2Value").setValue("infinite");
 //

@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 
+import mobile.application3DE.decisionMaking.Dec_making_task;
 import mobile.application3DE.orientation.tccCalculation;
 
 public class activity_choice_landing extends AppCompatActivity {
@@ -46,6 +47,13 @@ public class activity_choice_landing extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 i = new Intent(getApplicationContext(), mobile.application3DE.LevelMusicPlayActivity.class);
+                startActivity(i);
+            }
+        });
+        decisionBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                i = new Intent(getApplicationContext(), Dec_making_task.class);
                 startActivity(i);
             }
         });

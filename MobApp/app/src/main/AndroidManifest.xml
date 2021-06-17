@@ -11,21 +11,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MobApp">
-
+        <activity android:name=".decisionMaking.Dec_making_task"></activity>
         <activity
             android:name=".ResultActivity"
             android:label="@string/title_activity_result"
-            android:theme="@style/Theme.MobApp.NoActionBar"></activity>
+            android:theme="@style/Theme.MobApp.NoActionBar" />
         <activity android:name=".ProgressActivity" />
         <activity
             android:name=".LevelMusicPlayActivity"
             android:label="@string/title_activity_level_music_play"
             android:theme="@style/Theme.MobApp.NoActionBar" />
-        <activity android:name=".SpeechTestActivity" />
-        <!-- check if largeHeap is ok to use -->
+        <activity android:name=".SpeechTestActivity" /> <!-- check if largeHeap is ok to use -->
         <activity android:name=".orientation.TccImageLayout" />
         <activity android:name=".activity_choice_landing" />
-        <activity android:name=".SignInPage"/>
+        <activity android:name=".SignInPage" />
         <activity android:name=".Landing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
