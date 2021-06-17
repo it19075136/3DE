@@ -76,57 +76,59 @@ public class tccCalculation extends AppCompatActivity {
                     execute = false;
                 }
 
+                if(execute) {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                    userRef.child("CompletedTCC1Run1").get().addOnCompleteListener(task -> {
+                        try {
+                            if (task.getResult().getValue() != null) {
+                                run1Date = dateFormat.parse(task.getResult().getValue().toString());
+                                runIdentifier = 2;
+                            }
+
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        if (run1Date != null) {
+                            try {
+                                if (((dateFormat.parse(dateFormat.format(new Date())).getTime() - (run1Date.getTime())) / (1000 * 60 * 60)) % 24 < 1) {
+                                    Snackbar.make(findViewById(android.R.id.content).getRootView(), "Make sure you start this run after 1 hour from the completion of 1st run", Snackbar.LENGTH_LONG).show();
+                                    startBtn.setText("Not allowed");
+                                    startBtn.setEnabled(false);
+                                    execute = false;
+                                }
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (execute) {
+                            getImages.runTransaction(new Transaction.Handler() {
+                                @NonNull
+                                @Override
+                                public Transaction.Result doTransaction(@NonNull MutableData currentData) {
+                                    for (int i = 0; i < currentData.getChildrenCount(); i++) {
+                                        if (!imageSet.contains(currentData.child(String.valueOf(i)).getValue().toString()))
+                                            imageSet.add(currentData.child(String.valueOf(i)).getValue().toString());
+                                    }
+
+                                    return Transaction.success(currentData);
+                                }
+
+                                @Override
+                                public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
+                                    startBtn.setText(R.string.start);
+                                    startBtn.setEnabled(true);
+                                    Snackbar.make(findViewById(android.R.id.content).getRootView(), "Selected imageset size: " + imageSet.size(), Snackbar.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    });
+                }
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
-
-        SimpleDateFormat dateFormat=new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        userRef.child("CompletedTCC1Run1").get().addOnCompleteListener(task -> {
-            try {
-                if(task.getResult().getValue() != null) {
-                    run1Date = dateFormat.parse(task.getResult().getValue().toString());
-                    runIdentifier = 2;
-                }
-
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            if (run1Date != null){
-                try {
-                    if (((dateFormat.parse(dateFormat.format(new Date())).getTime() - (run1Date.getTime()))/(1000*60*60))%24 < 1){
-                        Snackbar.make(findViewById(android.R.id.content).getRootView(), "Make sure you start this run after 1 hour from the completion of 1st run", Snackbar.LENGTH_LONG).show();
-                        startBtn.setText("Not allowed");
-                        startBtn.setEnabled(false);
-                        execute = false;
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-            if(execute) {
-                getImages.runTransaction(new Transaction.Handler() {
-                    @NonNull
-                    @Override
-                    public Transaction.Result doTransaction(@NonNull MutableData currentData) {
-                        for (int i = 0; i < currentData.getChildrenCount(); i++) {
-                            if (!imageSet.contains(currentData.child(String.valueOf(i)).getValue().toString()))
-                                imageSet.add(currentData.child(String.valueOf(i)).getValue().toString());
-                        }
-
-                        return Transaction.success(currentData);
-                    }
-
-                    @Override
-                    public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
-                        startBtn.setText(R.string.start);
-                        startBtn.setEnabled(true);
-                        Snackbar.make(findViewById(android.R.id.content).getRootView(), "Selected imageset size: " + imageSet.size(), Snackbar.LENGTH_SHORT).show();
-                    }
-                });
             }
         });
 
