@@ -14,8 +14,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 
 import mobile.application3DE.decisionMaking.Dec_making_task;
+import mobile.application3DE.orientation.OrientationChoice;
 import mobile.application3DE.orientation.tccCalculation;
 
 public class activity_choice_landing extends AppCompatActivity {
@@ -85,9 +87,9 @@ public class activity_choice_landing extends AppCompatActivity {
 
     }
 
-    public void directToTCC(View view) {
+    public void directToOrientation(View view) {
 
-        i = new Intent(this, tccCalculation.class);
+        i = new Intent(this, OrientationChoice.class);
         startActivity(i);
 
     }
