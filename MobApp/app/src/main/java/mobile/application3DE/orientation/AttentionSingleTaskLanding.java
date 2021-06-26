@@ -7,8 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 
 import mobile.application3DE.R;
+import mobile.application3DE.utilities.BaseActivity;
 
-public class AttentionSingleTaskLanding extends AppCompatActivity {
+public class AttentionSingleTaskLanding extends BaseActivity {
 
     Intent intent;
     String choiceIdentifier;
@@ -26,7 +27,7 @@ public class AttentionSingleTaskLanding extends AppCompatActivity {
     public void directToSingleTask(View view) {
 
         if(choiceIdentifier.equals("speech"))
-            intent = new Intent(this,AttentionSpeechTestStart.class);
+            intent = new Intent(this, AttentionSpeechLanding.class);
         // else for walking activity
         startActivity(intent);
     }

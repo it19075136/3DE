@@ -9,18 +9,19 @@ import android.view.View;
 import mobile.application3DE.R;
 import mobile.application3DE.utilities.BaseActivity;
 
-public class AttentionInstructions extends BaseActivity {
+public class AttentionSpeechLanding extends BaseActivity {
 
     Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_attention_instructions);
+        setContentView(R.layout.activity_attention_speech_landing);
     }
 
-    public void startAttention(View view) {
-        intent = new Intent(this,AttentionChoiceLanding.class);
+    public void directToSpeechTest(View view) {
+
+        intent = new Intent(this, AttentionSpeechTest.class);
         startActivity(intent);
     }
 }

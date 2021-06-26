@@ -13,6 +13,7 @@
     <string name="guardian_name">Guardian Name</string>
     <string name="guardian_mobile">Guardian Mobile</string>
     <string name="guardian_mail">Guardian Mail</string>
+    <string name="language">English</string>
     <string name="english" translatable="false">English</string>
     <string name="sinhala">සිංහල</string>
     <string name="hello">Hello</string>
@@ -40,6 +41,9 @@
     <string name="walking">walking</string>
     <string name="talking">talking</string>
     <string name="go">Go</string>
+    <string name="start_test">Start Test</string>
+    <string name="ok">OK</string>
+    <string name="retry">Retry</string>
 
 
 </resources>

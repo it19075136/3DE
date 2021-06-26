@@ -14,6 +14,6 @@
     <string name="guardian_name">භාරකරුගේ නම</string>
     <string name="guardian_mobile">භාරකරුගේ දුරකථනය</string>
     <string name="guardian_mail">භාරකරුගේ ඊ-තැපෑල</string>
-    <string name="sinhala">සිංහල</string>
-    <string name="english" translatable="false">English</string>
+    <string name="language">සිංහල</string>
+    <string name="g_sign_in">ගූගල් සමඟ පුරනය වන්න</string>
 </resources>

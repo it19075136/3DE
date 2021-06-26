@@ -26,8 +26,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import mobile.application3DE.R;
+import mobile.application3DE.utilities.BaseActivity;
 
-public class tccCalculation extends AppCompatActivity {
+public class tccCalculation extends BaseActivity {
 
     Intent intent = null;
     Button startBtn;

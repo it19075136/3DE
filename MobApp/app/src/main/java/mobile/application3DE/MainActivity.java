@@ -16,8 +16,9 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.Calendar;
 
 import mobile.application3DE.models.User;
+import mobile.application3DE.utilities.BaseActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     TextInputEditText dateInput, fName, lName;
     RadioGroup gender;

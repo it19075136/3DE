@@ -9,8 +9,9 @@ import android.view.View;
 import com.google.android.material.button.MaterialButton;
 
 import mobile.application3DE.R;
+import mobile.application3DE.utilities.BaseActivity;
 
-public class AttentionChoiceLanding extends AppCompatActivity {
+public class AttentionChoiceLanding extends BaseActivity {
 
     MaterialButton talkingBtn,walkingBtn;
     Intent intent;

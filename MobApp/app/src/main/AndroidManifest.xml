@@ -2,6 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="mobile.application3DE">
 
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+    </queries>
+
     <application
         android:name=".utilities.MultiLanguageApp"
         android:allowBackup="true"
@@ -26,10 +35,10 @@
         <activity android:name=".orientation.TccImageLayout" />
         <activity android:name=".orientation.OrientationChoice" />
         <activity android:name=".orientation.AttentionSingleTaskLanding"/>
-        <activity android:name=".orientation.AttentionSpeechTestStart" />
+        <activity android:name=".orientation.AttentionSpeechTest" />
         <activity android:name=".orientation.AttentionChoiceLanding" />
         <activity android:name=".orientation.AttentionInstructions" />
-        <activity android:name=".orientation.attentionCalculation" />
+        <activity android:name=".orientation.AttentionSpeechLanding" />
         <activity android:name=".orientation.tccCalculation" />
         <activity android:name=".SignInPage" />
         <activity android:name=".Landing">

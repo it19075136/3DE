@@ -30,8 +30,9 @@ import java.util.Date;
 import java.util.Random;
 
 import mobile.application3DE.R;
+import mobile.application3DE.utilities.BaseActivity;
 
-public class TccImageLayout extends AppCompatActivity {
+public class TccImageLayout extends BaseActivity {
 
     ImageView imageView;
     Button btnYes,btnNo;
