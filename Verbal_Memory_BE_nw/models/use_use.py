@@ -1,13 +1,17 @@
 import logging
 import pyrebase
-from sentence_transformers import SentenceTransformer
-
+import tensorflow as tf
+import tensorflow_hub as hub
+import nltk
+nltk.download('wordnet')
+from nltk.corpus import wordnet
 from utils.basic import *
 from utils.ts_ss import triangle_sector_similarity
-from utils.pairwise import bert_pairwise_cos_sim
+
+module_url = "https://tfhub.dev/google/universal-sentence-encoder/4"
 
 
-class BERTCalculator:
+class USECalculator:
     def __init__(self, config, sentences):
         self.sentences = sentences
         self.method = config.method
@@ -21,30 +25,17 @@ class BERTCalculator:
             "angular": angular_distance,
             "inner": inner_product,
             "ts-ss": triangle_sector_similarity,
-            "pairwise": bert_pairwise_cos_sim,
-            "pairwise-idf": bert_pairwise_cos_sim,
         }
 
         if self.method not in methods:
             logging.error(f"The method you chosen is not supported yet.")
             return False
 
-        if "pairwise" in self.method:
-            # Use-case of Pairwise cosine similarity with IDF
-            if "idf" in self.method:
-                similarity = bert_pairwise_cos_sim(self.sentences, idf=True)
-                plot_similarity(self.sentences, similarity, self.method)
-                return
-
-            # Use-case of Pairwise cosine similarity
-            similarity = bert_pairwise_cos_sim(self.sentences)
-            plot_similarity(self.sentences, similarity, self.method)
-            return
-
-        model = SentenceTransformer("bert-base-nli-mean-tokens")
-
+        model = hub.load(module_url)
         if self.verbose:
             logging.info(f"Now embedding sentence...")
+        
+        
 
         config = {
             "apiKey": "AIzaSyBdXTCnelDAEe7lSl8UwguuDD0efU8ezxY",
@@ -63,16 +54,39 @@ class BERTCalculator:
             result = db.child("Test").child("Result").child("result").get()
             test = db.child("Test").child("Result").child("test").get()
             if(level.val()!="y" and test.val()!="z"):
-                embed_sentences = np.asarray(model.encode([self.sentences[int(level.val())-1]]))
-                embeddingsRecvied =np.asarray(model.encode([test.val()]))
+                inputStringMain = self.sentences[int(level.val())-1]
+                inputStringSecond = test.val()
+
+                inputStringMain = inputStringMain.replace('.', '')
+                inputStringSecond = inputStringSecond.replace('.', '')
+
+                listStringMain = inputStringMain.split()
+                listStringSecond = inputStringSecond.split()
+                for x in listStringMain:
+                    synonyms = []
+                    for syn in wordnet.synsets(x):
+                        for l in syn.lemmas():
+                            synonyms.append(l.name())
+                    
+                    for y in synonyms:
+                        for z in range(len(listStringSecond)):
+                            if(y==listStringSecond[z]):
+                                listStringSecond[z]=x
+
+                inputStringSecond = ' '.join(map(str, listStringSecond))            
+                print(inputStringSecond)   
+                embeddings = model([self.sentences[int(level.val())-1]])
+                embeddingsRecvied = model([inputStringSecond])
                 method = methods[self.method]
                 if self.verbose:
                     logging.info(f"Calculating similarity between sentences...")
-                similarity = method(embeddingsRecvied, embed_sentences)
+                similarity = method(embeddingsRecvied, embeddings)
                 value = plot_similarity(self.sentences, similarity, self.method)
                 db.child("Test").child("Result").child("test").set("z")
                 db.child("Test").child("Result").child("result").set(str(value))
                 db.child("Test").child("Result").child("level").set("y")
             else:
                 continue
+        
 
+        #
