@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MobApp">
-        <activity android:name=".decisionMaking.Dec_making_task" />
+        <activity android:name=".decisionMaking.Dec_making_task"></activity>
         <activity
             android:name=".ResultActivity"
             android:label="@string/title_activity_result"
@@ -22,15 +22,8 @@
             android:label="@string/title_activity_level_music_play"
             android:theme="@style/Theme.MobApp.NoActionBar" />
         <activity android:name=".SpeechTestActivity" /> <!-- check if largeHeap is ok to use -->
-        <activity android:name=".activity_choice_landing" />
         <activity android:name=".orientation.TccImageLayout" />
-        <activity android:name=".orientation.OrientationChoice" />
-        <activity android:name=".orientation.AttentionSingleTaskLanding"/>
-        <activity android:name=".orientation.AttentionSpeechTestStart" />
-        <activity android:name=".orientation.AttentionChoiceLanding" />
-        <activity android:name=".orientation.AttentionInstructions" />
-        <activity android:name=".orientation.attentionCalculation" />
-        <activity android:name=".orientation.tccCalculation" />
+        <activity android:name=".activity_choice_landing" />
         <activity android:name=".SignInPage" />
         <activity android:name=".Landing">
             <intent-filter>
@@ -40,6 +33,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".user_details_2" />
+        <activity android:name=".orientation.attentionCalculation" />
+        <activity android:name=".orientation.tccCalculation" />
         <activity android:name=".MainActivity" />
     </application>
 
