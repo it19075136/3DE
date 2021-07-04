@@ -19,9 +19,10 @@ public class AttentionSpeechLanding extends BaseActivity {
         setContentView(R.layout.activity_attention_speech_landing);
     }
 
-    public void directToSpeechTest(View view) {
+    public void directToInstructions(View view) {
 
-        intent = new Intent(this, AttentionSpeechTest.class);
+        intent = new Intent(this, AttentionSingleTaskLanding.class);
+        intent.putExtra("choice","speech");
         startActivity(intent);
     }
 }

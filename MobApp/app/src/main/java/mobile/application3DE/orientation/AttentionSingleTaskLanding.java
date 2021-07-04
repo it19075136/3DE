@@ -24,10 +24,10 @@ public class AttentionSingleTaskLanding extends BaseActivity {
 
     }
 
-    public void directToSingleTask(View view) {
+    public void directToTest(View view) {
 
         if(choiceIdentifier.equals("speech"))
-            intent = new Intent(this, AttentionSpeechLanding.class);
+            intent = new Intent(this, AttentionSpeechTest.class);
         // else for walking activity
         startActivity(intent);
     }

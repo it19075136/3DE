@@ -27,8 +27,7 @@ public class AttentionChoiceLanding extends BaseActivity {
         talkingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                intent = new Intent(getApplicationContext(), AttentionSingleTaskLanding.class);
-                intent.putExtra("choice","speech");
+                intent = new Intent(getApplicationContext(), AttentionSpeechLanding.class);
                 startActivity(intent);
             }
         });

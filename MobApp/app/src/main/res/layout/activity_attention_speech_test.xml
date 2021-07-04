@@ -4,18 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".orientation.AttentionSpeechTest">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Your words will appear here"
-        android:textAlignment="center"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="80dp"
-        android:textSize="26sp"
-        />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Your words will appear here"
+            android:textAlignment="center"
+            style="@style/TextAppearance.MaterialComponents.Body1"
+            android:textSize="26sp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="600dp"
+            android:scrollbars="vertical"
+            />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,34 +29,54 @@
         android:orientation="vertical"
         >
 
-        <ImageView
-            android:id="@+id/recordBtn"
+        <TextView
+            android:id="@+id/counter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/recordbutton"
-            android:onClick="onTap"
-            />
+            android:layout_alignParentTop="true"
+            style="@style/TextAppearance.MaterialComponents.Headline4"
+            android:text="3"
+            android:textAlignment="center"
+            android:textSize="72sp" />
+
+        <ImageView
+            android:id="@+id/recordBtn"
+            android:layout_width="339dp"
+            android:layout_height="158dp"
+            android:src="@drawable/recorder_icon" />
+
+        <ProgressBar
+            android:id="@+id/progressBar1"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="28dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/instruct"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="Tap to Start Recording"
-            android:textSize="22dp"
+            style="@style/TextAppearance.MaterialComponents.Body1"
+            android:textSize="22sp"
             />
 
     </LinearLayout>
 
     <TextView
-        android:id="@+id/counter"
-        android:layout_width="match_parent"
+        android:id="@+id/advise"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30sp"
+        style="@style/TextAppearance.MaterialComponents.Headline6"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="80dp"
-        android:textSize="72dp"
-        android:text="3"
+        android:gravity="center"
+        android:text="Substract 2 values starting from 50-0"
         android:textAlignment="center"
-        android:textColor="@color/error"
-        />
+        android:textSize="30sp" />
 
 </RelativeLayout>

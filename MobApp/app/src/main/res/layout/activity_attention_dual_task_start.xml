@@ -4,7 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".orientation.AttentionSpeechLanding">
+    tools:context=".orientation.AttentionDualTaskStart">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:text="Walking and Talking"
+        android:textSize="30sp"
+        style="@style/TextAppearance.MaterialComponents.Headline6"
+        android:layout_marginTop="30dp"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,7 +28,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/speaker" />
+            android:src="@drawable/dualtask" />
 
     </LinearLayout>
 
@@ -27,7 +39,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         app:cornerRadius="10dp"
-        android:onClick="directToInstructions"
+        android:onClick="directToDualTaskTest"
         android:layout_gravity="center"
         android:background="@drawable/btn"
         android:layout_marginBottom="150dp"

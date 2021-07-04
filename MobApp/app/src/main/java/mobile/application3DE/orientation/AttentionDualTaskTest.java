@@ -1,5 +1,8 @@
 package mobile.application3DE.orientation;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -7,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -21,14 +25,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-import androidx.annotation.NonNull;
-
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -39,22 +39,21 @@ import java.util.Date;
 import java.util.Locale;
 
 import mobile.application3DE.R;
-import mobile.application3DE.utilities.BaseActivity;
 
-public class AttentionSpeechTest extends BaseActivity implements  RecognitionListener{
+public class AttentionDualTaskTest extends AppCompatActivity implements RecognitionListener {
 
-    ImageView speechBtn;
     MaterialTextView spokenWords;
-    private ProgressBar progressBar;
-    TextView counter,instruct;
+    TextView counter,walking,listening,instruct;
     int count = 3,recordingTimer = 0,speechTime = 0;
     SpeechRecognizer speechRecognizer;
     CountDownTimer countDownTimer;
-    AlertDialog dialog;
-    Intent speechIntent,dualTask;
+    private ProgressBar progressBar;
+    AlertDialog dialog,dialogDualTask;
+    Intent speechIntent,resultIntent;
     String str,currentUser;
-    DatabaseReference userRef,singleTaskRef;
+    DatabaseReference userRef,dualTaskRef,resultRef;
     SimpleDateFormat formatDate;
+    Float diff,Finalresult;
 
     // we will get the default FirebaseDatabase instance
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -65,15 +64,18 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_attention_speech_test);
+        setContentView(R.layout.activity_attention_dual_task_test);
 
-        speechBtn = findViewById(R.id.recordBtn);
         spokenWords = (MaterialTextView)findViewById(R.id.header);
         spokenWords.setMovementMethod(new ScrollingMovementMethod());
         counter = findViewById(R.id.counter);
         counter.setVisibility(View.INVISIBLE);
-        instruct = findViewById(R.id.instruct);
-        instruct.setVisibility(View.INVISIBLE);
+        instruct = findViewById(R.id.testInstruct);
+        walking = findViewById(R.id.walking);
+        listening = findViewById(R.id.listening);
+
+        walking.setVisibility(View.INVISIBLE);
+        listening.setVisibility(View.INVISIBLE);
         progressBar =  findViewById(R.id.progressBar1);
         progressBar.setVisibility(View.INVISIBLE);
 
@@ -89,7 +91,8 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
             currentUser = acct.getId();
 
         userRef = databaseReference.child("users/"+currentUser);
-        singleTaskRef = databaseReference.child("ComponentBasedResults/"+currentUser+"/Orientation/Attention/1/Talking");
+        dualTaskRef = databaseReference.child("ComponentBasedResults/"+currentUser+"/Orientation/Attention/1/Talking");
+        resultRef = databaseReference.child("ComponentBasedResults/"+currentUser+"/Orientation/Attention/1");
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Do you confirm your recording?")
@@ -98,69 +101,50 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
-                Toast.makeText(getApplicationContext(),"Your speech rate is : "+getResult()+" wps",Toast.LENGTH_LONG).show(); //shows result
+                Toast.makeText(getApplicationContext(),"Your speech rate is : "+getResult()+" wps, Previous speech rate:"+getIntent().getStringExtra("singleTaskSpeechResult")+" wps",Toast.LENGTH_LONG).show(); //shows result
                 speechRecognizer.destroy();
                 str = "";
-                 //validate when you have more
-                singleTaskRef.child("SingleTask").setValue(getResult()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                // add diff and result to firebase,add timestamps to user
+                //validate when you have more
+                dualTaskRef.child("dualTask").setValue(getResult()).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        userRef.child("SingleTaskSpeech1Completed").setValue(formatDate.format(new Date())).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        userRef.child("DualTask1Completed").setValue(formatDate.format(new Date())).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                dualTask = new Intent(getApplicationContext(), AttentionDualTaskStart.class);
-                                dualTask.putExtra("singleTaskSpeechResult",getResult());
-                                startActivity(dualTask);
+                                resultRef.child("difference").setValue(String.format("%.2f",Float.parseFloat(getIntent().getStringExtra("singleTaskSpeechResult")) - Float.parseFloat(getResult()))).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        resultRef.child("impairment").setValue(getFinalResult());
+                                    }
+                                });
                             }
                         });
                     }
                 });
+                resultIntent = new Intent(getApplicationContext(),AttentionResultsPage.class);
+                resultIntent.putExtra("result",getFinalResult());
+                resultIntent.putExtra("diff",String.format("%.2f",Float.parseFloat(getIntent().getStringExtra("singleTaskSpeechResult")) - Float.parseFloat(getResult())));
+                startActivity(resultIntent);
             }
         });
         builder.setNegativeButton(R.string.retry, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 spokenWords.setText("Your words will appear here");
                 speechRecognizer.destroy();
-                startSpeechRecoginition();
+                startDualTask();
             }
         });
 
         dialog = builder.create();
-        startSpeechRecoginition();
+
+        startDualTask();
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
-//        if(SpeechRecognizer.isRecognitionAvailable(this))
-//            speechRecognizer.setRecognitionListener(this);
-//        else {
-//            Snackbar.make(findViewById(android.R.id.content).getRootView(),"Speech recognition is unavaliable on your device",Snackbar.LENGTH_SHORT).show();
-//            finish();
-//        }
-//        startSpeechRecoginition();
-//    }
-//
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        speechRecognizer.stopListening();
-//    }
-//
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        if (speechRecognizer != null) {
-//            speechRecognizer.destroy();
-//        }
-//    }
-
-
-
-    public void startSpeechRecoginition() {
+    public void startDualTask() {
 
         counter.setVisibility(View.VISIBLE);
+        instruct.setVisibility(View.VISIBLE);
         new CountDownTimer(3000, 1000) {
 
             public void onTick(long l) {
@@ -172,10 +156,10 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
                 progressBar.setIndeterminate(true);
                 speechTime = 0;
                 spokenWords.setText("Your words will appear here");
+                instruct.setVisibility(View.INVISIBLE);
                 str = "";
-                instruct.setVisibility(View.VISIBLE);
-                instruct.setText("Listening...");
-                speechBtn.setEnabled(false);
+                walking.setVisibility(View.VISIBLE);
+                listening.setVisibility(View.VISIBLE);
                 counter.setVisibility(View.INVISIBLE);
                 count = 3;
                 counter.setText(String.valueOf(count));
@@ -189,10 +173,10 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
                 speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 5000);
                 speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 5000);
                 speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 50000);
-                speechRecognizer = SpeechRecognizer.createSpeechRecognizer(AttentionSpeechTest.this);
-                speechRecognizer.setRecognitionListener(AttentionSpeechTest.this);
+                speechRecognizer = SpeechRecognizer.createSpeechRecognizer(AttentionDualTaskTest.this);
+                speechRecognizer.setRecognitionListener(AttentionDualTaskTest.this);
                 speechRecognizer.startListening(speechIntent);
-//                AudioManager audioManager = (AudioManager)AttentionSpeechTest.this.getSystemService(Context.AUDIO_SERVICE);
+//                AudioManager audioManager = (AudioManager)AttentionDualTaskTest.this.getSystemService(Context.AUDIO_SERVICE);
 //                audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
                 countDownTimer = new CountDownTimer(12000,1000){
 
@@ -204,20 +188,22 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
                     @Override
                     public void onFinish() {
 
-//                        AudioManager audioManager = (AudioManager)AttentionSpeechTest.this.getSystemService(Context.AUDIO_SERVICE);
+//                        AudioManager audioManager = (AudioManager)AttentionDualTaskTest.this.getSystemService(Context.AUDIO_SERVICE);
 //                        audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-
-                        // To set full volume
+//
+//                        // To set full volume
 //                        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_RING);
 //                        audioManager.setStreamVolume(AudioManager.STREAM_RING, maxVolume, AudioManager.FLAG_SHOW_UI + AudioManager.FLAG_PLAY_SOUND);
+
+                        ToneGenerator toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+                        toneGen.startTone(ToneGenerator.TONE_CDMA_PIP,2000);
+                        walking.setVisibility(View.INVISIBLE);
+                        listening.setVisibility(View.INVISIBLE);
                         speechTime = 12;
                         speechRecognizer.stopListening(); //COMMENT this and check
                         Toast.makeText(getApplicationContext(),String.valueOf(speechTime) + " seconds",Toast.LENGTH_SHORT).show();
                         recordingTimer = 0;
                         dialog.show();
-//                        instruct.setText("Tap to Start Recording");
-                        instruct.setVisibility(View.INVISIBLE);
-                        speechBtn.setEnabled(true);
                     }
                 }.start();
             }
@@ -233,6 +219,7 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
 
     @Override
     public void onBeginningOfSpeech() {
+
         Log.d("TAG", "onBeginningOfSpeech");
         progressBar.setIndeterminate(false);
         progressBar.setMax(10);
@@ -240,9 +227,9 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
 
     @Override
     public void onRmsChanged(float v) {
+
         Log.d("TAG", "onRmsChanged "+v);
         progressBar.setProgress((int) v);
-
     }
 
     @Override
@@ -260,9 +247,9 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
     @Override
     public void onError(int i) {
         Log.d("TAG",  "error " +  i);
-        if(i == SpeechRecognizer.ERROR_NO_MATCH) {
-            speechRecognizer = SpeechRecognizer.createSpeechRecognizer(AttentionSpeechTest.this);
-            speechRecognizer.setRecognitionListener(AttentionSpeechTest.this);
+        if(i == 7) {
+            speechRecognizer = SpeechRecognizer.createSpeechRecognizer(AttentionDualTaskTest.this);
+            speechRecognizer.setRecognitionListener(AttentionDualTaskTest.this);
             speechRecognizer.startListening(speechIntent);
         }
         else {
@@ -270,9 +257,6 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
             countDownTimer.cancel();
             recordingTimer = 0;
             spokenWords.setText("Your words will appear here");
-//            instruct.setText("Tap to Start Recording");
-            instruct.setVisibility(View.INVISIBLE);
-            speechBtn.setEnabled(true);
         }
     }
 
@@ -292,7 +276,7 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
 //            speechRecognizer.destroy();
 //        }
 //        else
-            speechRecognizer.startListening(speechIntent);
+        speechRecognizer.startListening(speechIntent);
 
     }
 
@@ -333,5 +317,12 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
         Log.d("WORD_COUNT",String.valueOf(words.length));
         float result = (float)(words.length)/speechTime;
         return String.format("%.4f",result);
+    }
+
+    private String getFinalResult() {
+
+        diff = Float.parseFloat(getIntent().getStringExtra("singleTaskSpeechResult")) - Float.parseFloat(getResult());
+        Finalresult = (float)(diff/Float.parseFloat(getIntent().getStringExtra("singleTaskSpeechResult"))) * 100;
+        return String.format("%.2f",Finalresult);
     }
 }
