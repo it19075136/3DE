@@ -8,6 +8,7 @@ import android.view.View;
 
 import mobile.application3DE.utilities.BaseActivity;
 import mobile.application3DE.utilities.LocaleManager;
+import mobile.application3DE.verbalMemory.LevelMusicPlayActivity;
 
 public class Landing extends BaseActivity {
 
@@ -32,7 +33,7 @@ public class Landing extends BaseActivity {
 
     private void setNewLocale(AppCompatActivity mContext, @LocaleManager.LocaleDef String language) {
         LocaleManager.setNewLocale(this, language);
-        Intent intent = new Intent(this,SignInPage.class);
+        Intent intent = new Intent(this, SignInPage.class);
         startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
 
     }

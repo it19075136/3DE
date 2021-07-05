@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 
@@ -31,7 +32,8 @@ public class SignInPage extends AppCompatActivity {
     // we will get a DatabaseReference for the database root node
     DatabaseReference databaseReference = firebaseDatabase.getReference();
     DatabaseReference userRef;
-
+    SharedPreferences pref ;
+    SharedPreferences.Editor editor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +68,10 @@ public class SignInPage extends AppCompatActivity {
                         intent[0] = new Intent(getApplicationContext(), activity_choice_landing.class);
                     else if(intent[0] == null)
                         intent[0] = new Intent(getApplicationContext(), MainActivity.class);
+                    pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+                    editor = pref.edit();
+                    editor.putString("id",account.getId());
+                    editor.commit();
                     intent[0].putExtra("email",account.getEmail());
                     intent[0].putExtra("id",account.getId());
                     startActivity(intent[0]);
