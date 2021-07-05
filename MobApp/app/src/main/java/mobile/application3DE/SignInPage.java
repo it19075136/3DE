@@ -21,7 +21,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class SignInPage extends AppCompatActivity {
+import mobile.application3DE.utilities.BaseActivity;
+
+public class SignInPage extends BaseActivity {
 
     GoogleSignInClient mGoogleSignInClient;
     SignInButton gSignIn;

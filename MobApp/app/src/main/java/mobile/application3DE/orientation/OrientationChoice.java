@@ -10,8 +10,9 @@ import android.widget.Toast;
 import com.google.android.material.button.MaterialButton;
 
 import mobile.application3DE.R;
+import mobile.application3DE.utilities.BaseActivity;
 
-public class OrientationChoice extends AppCompatActivity {
+public class OrientationChoice extends BaseActivity {
 
     Intent intent;
     MaterialButton attentionBtn,tccBtn;

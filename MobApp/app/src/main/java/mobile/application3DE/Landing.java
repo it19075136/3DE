@@ -5,11 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import mobile.application3DE.utilities.BaseActivity;
 import mobile.application3DE.utilities.LocaleManager;
 
 public class Landing extends BaseActivity {
+
+    TextView selected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +34,7 @@ public class Landing extends BaseActivity {
     }
 
     private void setNewLocale(AppCompatActivity mContext, @LocaleManager.LocaleDef String language) {
-        LocaleManager.setNewLocale(this, language);
+        LocaleManager.setNewLocale(getApplicationContext(), language);
         Intent intent = new Intent(this,SignInPage.class);
         startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
 

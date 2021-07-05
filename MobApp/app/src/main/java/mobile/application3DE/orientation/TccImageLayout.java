@@ -3,6 +3,7 @@ package mobile.application3DE.orientation;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -30,12 +31,13 @@ import java.util.Date;
 import java.util.Random;
 
 import mobile.application3DE.R;
+import mobile.application3DE.utilities.BaseActivity;
 
-public class TccImageLayout extends AppCompatActivity {
+public class TccImageLayout extends BaseActivity {
 
     ImageView imageView;
     Button btnYes,btnNo;
-    TextView quest;
+    TextView quest,RoundHeader,fistRdHd;
     Random random = new Random();
     ArrayList<String> usedInRound = new ArrayList<>();
     ArrayList<String> imageSet,targets,distractors,mergedArr;
@@ -44,6 +46,7 @@ public class TccImageLayout extends AppCompatActivity {
     int round_counter = 0,i,n=0,m=0;
     String selectedImg, currentUser = "";
     SimpleDateFormat formatDate;
+    Intent intent;
 
     DatabaseReference tccRef,userRef;
     FirebaseDatabase fb;
@@ -63,6 +66,9 @@ public class TccImageLayout extends AppCompatActivity {
         btnYes.setEnabled(false);
         btnNo = findViewById(R.id.noBtn);
         btnNo.setVisibility(View.INVISIBLE);
+        RoundHeader = findViewById(R.id.roundHeader);
+        RoundHeader.setVisibility(View.INVISIBLE);
+        fistRdHd = findViewById(R.id.firstRdHd);
         btnNo.setEnabled(false);
         quest = findViewById(R.id.question);
         quest.setVisibility(View.INVISIBLE);
@@ -216,6 +222,7 @@ public class TccImageLayout extends AppCompatActivity {
                         btnYes.setVisibility(View.INVISIBLE);
                         btnNo.setVisibility(View.INVISIBLE);
                         quest.setVisibility(View.VISIBLE);
+                        RoundHeader.setVisibility(View.INVISIBLE);
                         Toast.makeText(getApplicationContext(), "Run " + runIdentifier + " completed with tcc hits: " + hits + " ,false positives: " + fps + "Your tcc value is "+ tccValue[0], Toast.LENGTH_LONG).show();
                         quest.setText("You've completed the TCC test case, your tcc value is "+tccValue[0]);
                         round_counter++;
@@ -269,6 +276,8 @@ public class TccImageLayout extends AppCompatActivity {
                     usedInRound.clear(); // clearing the used images array for the new round
                     round_counter++; // incrementing the round count
                     Snackbar.make(findViewById(android.R.id.content).getRootView(), "Starting round " + round_counter, Snackbar.LENGTH_SHORT).show();
+                    RoundHeader.setVisibility(View.VISIBLE);
+                    RoundHeader.setText("Round " + round_counter);
                     counter = 0; //setting counter to 0
                 }
 
@@ -279,6 +288,7 @@ public class TccImageLayout extends AppCompatActivity {
                         m = 6;
                         break;
                     case 2:
+                        fistRdHd.setVisibility(View.INVISIBLE);
                         n = 48;
                         m = 5;
                         break;
@@ -312,10 +322,10 @@ public class TccImageLayout extends AppCompatActivity {
 
             selectedImg = mergedArr.get(i);
 
-            Picasso.get().load(selectedImg).memoryPolicy(MemoryPolicy.NO_CACHE,MemoryPolicy.NO_STORE).into(imageView, new Callback() {
+            Picasso.get().load(selectedImg).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(imageView, new Callback() {
                 @Override
                 public void onSuccess() {
-                    if(round_counter != 1) {
+                    if (round_counter != 1) {
                         quest.setVisibility(View.VISIBLE);
                         btnYes.setVisibility(View.VISIBLE);
                         btnNo.setVisibility(View.VISIBLE);
@@ -329,7 +339,7 @@ public class TccImageLayout extends AppCompatActivity {
                 @Override
                 public void onError(Exception e) {
                     Snackbar.make(findViewById(android.R.id.content).getRootView(), "Couldn't fetch the image, trying again", Snackbar.LENGTH_LONG).show();
-                    Picasso.get().load(selectedImg).memoryPolicy(MemoryPolicy.NO_CACHE,MemoryPolicy.NO_STORE).into(imageView, new Callback() {
+                    Picasso.get().load(selectedImg).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(imageView, new Callback() {
                         @Override
                         public void onSuccess() {
                             if (round_counter != 1) {
@@ -345,7 +355,7 @@ public class TccImageLayout extends AppCompatActivity {
 
                         @Override
                         public void onError(Exception e) {
-                            Log.d("ERROR","No image: " + selectedImg);
+                            Log.d("ERROR", "No image: " + selectedImg);
                             Snackbar.make(findViewById(android.R.id.content).getRootView(), "Couldn't fetch the image, please check your network connection and restart", Snackbar.LENGTH_LONG).show();
                         }
                     });
@@ -353,128 +363,10 @@ public class TccImageLayout extends AppCompatActivity {
             });
 
         }
-//        else if(round_counter <= 12){
-//
-//                //run 2
-//                if(round_counter == 7 && counter2 == 0) {
-//                btnYes.setVisibility(View.INVISIBLE);
-//                quest.setVisibility(View.INVISIBLE);
-////                Snackbar.make(findViewById(android.R.id.content).getRootView(), "Starting 2nd run round 1", Snackbar.LENGTH_SHORT).show();
-//                Snackbar.make(findViewById(android.R.id.content).getRootView(),"Run 1 completed with hits : "+run1_hits+" fps:"+fp1,Snackbar.LENGTH_LONG).show();
-//
-//                if(run1_hits != 0)
-//                        dbRef.child("run1Value").setValue((double)fp1/run1_hits);
-//                    else
-//                        dbRef.child("run1Value").setValue("infinite");
-//                }
-//
-//            if(counter2 == 20 || counter2 == 0) {
-//                if(round_counter >= 7 && counter2 == 20) {
-//                    mergedArr.clear();
-//                    round_counter++;
-//                    Snackbar.make(findViewById(android.R.id.content).getRootView(), "Starting round " + (round_counter - 6), Snackbar.LENGTH_SHORT).show();
-//                    if(round_counter == 8){
-//                        quest.setVisibility(View.VISIBLE);
-//                        btnYes.setVisibility(View.VISIBLE);
-//                    }
-//                }
-//                mergedArr.addAll(targets2); //adding targets to each array
-//                switch (round_counter){
-//                    case 1:
-//                        n = 60;
-//                        m=6;
-//                        break;
-//                    case 2:
-//                        n = 48;
-//                        m=5;
-//                        break;
-//                    case 3:
-//                        n = 36;
-//                        m = 4;
-//                        break;
-//                    case 4:
-//                        n = 24;
-//                        m = 3;
-//                        break;
-//                    case 5:
-//                        n = 12;
-//                        m = 2;
-//                        break;
-//                    case 6:
-//                        n = 0;
-//                        m = 1;
-//                        break;
-//                    default:
-//                        break;
-//                }
-//                for (int j = n; j < (12*m); j++) {
-//                    mergedArr.add(distractors2.get(j));
-//                }
-//                counter2 = 0;
-//                usedInRound.clear();
-//            }
-//            do {
-//                i = random.nextInt(mergedArr.size());
-//            }while (usedInRound.contains(mergedArr.get(i)));
-//
-//            selectedImg = mergedArr.get(i);
-//            Picasso.get().load(selectedImg).networkPolicy(NetworkPolicy.OFFLINE).into(imageView, new Callback() {
-//                    @Override
-//                    public void onSuccess() {
-//                        btnYes.setEnabled(true);
-//                        imageView.setVisibility(View.VISIBLE);
-//                        usedInRound.add(selectedImg);
-//                        counter2++;
-//
-//                        if(counter2 == 20 && round_counter == 12)
-//                            round_counter++;
-//
-//                        new Handler().postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                imageView.setVisibility(View.INVISIBLE);
-//                                setNextImage();
-//                            }
-//                        },2000);;
-//                    }
-//
-//                    @Override
-//                    public void onError(Exception e) {
-//                        Picasso.get().load(selectedImg).into(imageView, new Callback() {
-//                            @Override
-//                            public void onSuccess() {
-//                                btnYes.setEnabled(true);
-//                                imageView.setVisibility(View.VISIBLE);
-//                                usedInRound.add(selectedImg);
-//                                counter2++;
-//
-//                                if(counter2 == 20 && round_counter == 12)
-//                                    round_counter++;
-//
-//                                new Handler().postDelayed(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        imageView.setVisibility(View.INVISIBLE);
-//                                        setNextImage();
-//                                    }
-//                                },2000);
-//                            }
-//
-//                            @Override
-//                            public void onError(Exception e) {
-//
-//                            }
-//                        });
-//                    }
-//                });
-//        }
-//                dbRef = fb.getReference("ComponentBasedResults/Orientation/TCC/");
-//                if(run2_hits != 0)
-//                    dbRef.child("run2Value").setValue((double)fp2/run2_hits);
-//                else
-//                    dbRef.child("run2Value").setValue("infinite");
-//
-//                Snackbar.make(findViewById(android.R.id.content).getRootView(),"Run 2 completed with tcc hits: "+run2_hits+" fps: "+fp2,Snackbar.LENGTH_LONG).show();
-//        }
+    }
+
+    public void navigateBack(View view) {
+        intent = new Intent(this,OrientationChoice.class);
+        startActivity(intent);
     }
 }

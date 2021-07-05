@@ -19,8 +19,9 @@ import com.google.android.material.snackbar.Snackbar;
 import mobile.application3DE.decisionMaking.Dec_making_task;
 import mobile.application3DE.orientation.OrientationChoice;
 import mobile.application3DE.orientation.tccCalculation;
+import mobile.application3DE.utilities.BaseActivity;
 
-public class activity_choice_landing extends AppCompatActivity {
+public class activity_choice_landing extends BaseActivity {
 
     Button memoryBtn,orientationBtn,decisionBtn,logout;
     Intent i;
