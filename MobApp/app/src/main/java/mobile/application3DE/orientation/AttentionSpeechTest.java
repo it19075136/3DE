@@ -67,7 +67,7 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attention_speech_test);
 
-        speechBtn = findViewById(R.id.recordBtn);
+//        speechBtn = findViewById(R.id.recordBtn);
         spokenWords = (MaterialTextView)findViewById(R.id.header);
         spokenWords.setMovementMethod(new ScrollingMovementMethod());
         spokenWords.setVisibility(View.INVISIBLE);
@@ -176,7 +176,7 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
                 str = "";
                 instruct.setVisibility(View.VISIBLE);
                 instruct.setText("Listening...");
-                speechBtn.setEnabled(false);
+//                speechBtn.setEnabled(false);
                 counter.setVisibility(View.INVISIBLE);
                 count = 3;
                 counter.setText(String.valueOf(count));
@@ -190,9 +190,9 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
                 speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 5000);
                 speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 5000);
                 speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 50000);
-                speechRecognizer = SpeechRecognizer.createSpeechRecognizer(AttentionSpeechTest.this);
-                speechRecognizer.setRecognitionListener(AttentionSpeechTest.this);
-                speechRecognizer.startListening(speechIntent);
+                speechRecognizer = SpeechRecognizer.createSpeechRecognizer(AttentionSpeechTest.this); // creating a speech recognizer object
+                speechRecognizer.setRecognitionListener(AttentionSpeechTest.this); //setting the recognition listener
+                speechRecognizer.startListening(speechIntent); // start listening using the configured recognizer intent
                 AudioManager audioManager = (AudioManager)AttentionSpeechTest.this.getSystemService(Context.AUDIO_SERVICE);
                 audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
                 countDownTimer = new CountDownTimer(12000,1000){
@@ -218,7 +218,7 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
                         dialog.show();
 //                        instruct.setText("Tap to Start Recording");
                         instruct.setVisibility(View.INVISIBLE);
-                        speechBtn.setEnabled(true);
+//                        speechBtn.setEnabled(true);
                     }
                 }.start();
             }
@@ -273,7 +273,7 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
 //            spokenWords.setText("Your words will appear here");
 //            instruct.setText("Tap to Start Recording");
             instruct.setVisibility(View.INVISIBLE);
-            speechBtn.setEnabled(true);
+//            speechBtn.setEnabled(true);
         }
     }
 

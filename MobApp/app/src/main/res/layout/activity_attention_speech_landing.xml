@@ -26,11 +26,11 @@
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        app:cornerRadius="10dp"
-        android:onClick="directToInstructions"
         android:layout_gravity="center"
-        android:background="@drawable/btn"
         android:layout_marginBottom="150dp"
-        android:text="@string/start_test" />
+        android:background="@drawable/btn"
+        android:onClick="directToInstructions"
+        android:text="@string/start_test"
+        app:cornerRadius="10dp" />
 
 </RelativeLayout>
