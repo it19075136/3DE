@@ -30,17 +30,6 @@
         >
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/text1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="26dp"
-            style="@style/TextAppearance.MaterialComponents.Headline5"
-            android:text="Progress"
-            android:gravity="center"
-            android:textColor="@color/white"
-            />
-
-        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/diff"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

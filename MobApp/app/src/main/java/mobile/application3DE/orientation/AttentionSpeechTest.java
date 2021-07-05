@@ -70,6 +70,7 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
         speechBtn = findViewById(R.id.recordBtn);
         spokenWords = (MaterialTextView)findViewById(R.id.header);
         spokenWords.setMovementMethod(new ScrollingMovementMethod());
+        spokenWords.setVisibility(View.INVISIBLE);
         counter = findViewById(R.id.counter);
         counter.setVisibility(View.INVISIBLE);
         instruct = findViewById(R.id.instruct);
@@ -119,7 +120,7 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
         });
         builder.setNegativeButton(R.string.retry, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                spokenWords.setText("Your words will appear here");
+//                spokenWords.setText("Your words will appear here");
                 speechRecognizer.destroy();
                 startSpeechRecoginition();
             }
@@ -171,7 +172,7 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
                 progressBar.setVisibility(View.VISIBLE);
                 progressBar.setIndeterminate(true);
                 speechTime = 0;
-                spokenWords.setText("Your words will appear here");
+//                spokenWords.setText("Your words will appear here");
                 str = "";
                 instruct.setVisibility(View.VISIBLE);
                 instruct.setText("Listening...");
@@ -192,8 +193,8 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
                 speechRecognizer = SpeechRecognizer.createSpeechRecognizer(AttentionSpeechTest.this);
                 speechRecognizer.setRecognitionListener(AttentionSpeechTest.this);
                 speechRecognizer.startListening(speechIntent);
-//                AudioManager audioManager = (AudioManager)AttentionSpeechTest.this.getSystemService(Context.AUDIO_SERVICE);
-//                audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                AudioManager audioManager = (AudioManager)AttentionSpeechTest.this.getSystemService(Context.AUDIO_SERVICE);
+                audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
                 countDownTimer = new CountDownTimer(12000,1000){
 
                     @Override
@@ -204,12 +205,12 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
                     @Override
                     public void onFinish() {
 
-//                        AudioManager audioManager = (AudioManager)AttentionSpeechTest.this.getSystemService(Context.AUDIO_SERVICE);
-//                        audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                        AudioManager audioManager = (AudioManager)AttentionSpeechTest.this.getSystemService(Context.AUDIO_SERVICE);
+                        audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 
-                        // To set full volume
-//                        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_RING);
-//                        audioManager.setStreamVolume(AudioManager.STREAM_RING, maxVolume, AudioManager.FLAG_SHOW_UI + AudioManager.FLAG_PLAY_SOUND);
+//                         To set full volume
+                        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_RING);
+                        audioManager.setStreamVolume(AudioManager.STREAM_RING, maxVolume, AudioManager.FLAG_SHOW_UI + AudioManager.FLAG_PLAY_SOUND);
                         speechTime = 12;
                         speechRecognizer.stopListening(); //COMMENT this and check
                         Toast.makeText(getApplicationContext(),String.valueOf(speechTime) + " seconds",Toast.LENGTH_SHORT).show();
@@ -269,7 +270,7 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
 //            Toast.makeText(this, "Recording failed,please try again", Toast.LENGTH_SHORT).show();
             countDownTimer.cancel();
             recordingTimer = 0;
-            spokenWords.setText("Your words will appear here");
+//            spokenWords.setText("Your words will appear here");
 //            instruct.setText("Tap to Start Recording");
             instruct.setVisibility(View.INVISIBLE);
             speechBtn.setEnabled(true);

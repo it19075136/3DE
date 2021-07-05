@@ -68,6 +68,7 @@ public class AttentionDualTaskTest extends AppCompatActivity implements Recognit
 
         spokenWords = (MaterialTextView)findViewById(R.id.header);
         spokenWords.setMovementMethod(new ScrollingMovementMethod());
+        spokenWords.setVisibility(View.INVISIBLE);
         counter = findViewById(R.id.counter);
         counter.setVisibility(View.INVISIBLE);
         instruct = findViewById(R.id.testInstruct);
@@ -116,21 +117,22 @@ public class AttentionDualTaskTest extends AppCompatActivity implements Recognit
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         resultRef.child("impairment").setValue(getFinalResult());
+                                        resultIntent = new Intent(getApplicationContext(),AttentionResultsPage.class);
+                                        resultIntent.putExtra("result",getFinalResult());
+                                        resultIntent.putExtra("diff",String.format("%.2f",Float.parseFloat(getIntent().getStringExtra("singleTaskSpeechResult")) - Float.parseFloat(getResult())));
+                                        startActivity(resultIntent);
                                     }
                                 });
                             }
                         });
                     }
                 });
-                resultIntent = new Intent(getApplicationContext(),AttentionResultsPage.class);
-                resultIntent.putExtra("result",getFinalResult());
-                resultIntent.putExtra("diff",String.format("%.2f",Float.parseFloat(getIntent().getStringExtra("singleTaskSpeechResult")) - Float.parseFloat(getResult())));
-                startActivity(resultIntent);
+
             }
         });
         builder.setNegativeButton(R.string.retry, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                spokenWords.setText("Your words will appear here");
+//                spokenWords.setText("Your words will appear here");
                 speechRecognizer.destroy();
                 startDualTask();
             }
@@ -155,7 +157,7 @@ public class AttentionDualTaskTest extends AppCompatActivity implements Recognit
                 progressBar.setVisibility(View.VISIBLE);
                 progressBar.setIndeterminate(true);
                 speechTime = 0;
-                spokenWords.setText("Your words will appear here");
+//                spokenWords.setText("Your words will appear here");
                 instruct.setVisibility(View.INVISIBLE);
                 str = "";
                 walking.setVisibility(View.VISIBLE);
@@ -176,8 +178,8 @@ public class AttentionDualTaskTest extends AppCompatActivity implements Recognit
                 speechRecognizer = SpeechRecognizer.createSpeechRecognizer(AttentionDualTaskTest.this);
                 speechRecognizer.setRecognitionListener(AttentionDualTaskTest.this);
                 speechRecognizer.startListening(speechIntent);
-//                AudioManager audioManager = (AudioManager)AttentionDualTaskTest.this.getSystemService(Context.AUDIO_SERVICE);
-//                audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                AudioManager audioManager = (AudioManager)AttentionDualTaskTest.this.getSystemService(Context.AUDIO_SERVICE);
+                audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
                 countDownTimer = new CountDownTimer(12000,1000){
 
                     @Override
@@ -188,15 +190,15 @@ public class AttentionDualTaskTest extends AppCompatActivity implements Recognit
                     @Override
                     public void onFinish() {
 
-//                        AudioManager audioManager = (AudioManager)AttentionDualTaskTest.this.getSystemService(Context.AUDIO_SERVICE);
-//                        audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-//
-//                        // To set full volume
-//                        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_RING);
-//                        audioManager.setStreamVolume(AudioManager.STREAM_RING, maxVolume, AudioManager.FLAG_SHOW_UI + AudioManager.FLAG_PLAY_SOUND);
+                        AudioManager audioManager = (AudioManager)AttentionDualTaskTest.this.getSystemService(Context.AUDIO_SERVICE);
+                        audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 
-                        ToneGenerator toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
-                        toneGen.startTone(ToneGenerator.TONE_CDMA_PIP,2000);
+                        // To set full volume
+                        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_RING);
+                        audioManager.setStreamVolume(AudioManager.STREAM_RING, maxVolume, AudioManager.FLAG_SHOW_UI + AudioManager.FLAG_PLAY_SOUND);
+
+                        ToneGenerator toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
+                        toneGen.startTone(ToneGenerator.TONE_PROP_BEEP,3000);
                         walking.setVisibility(View.INVISIBLE);
                         listening.setVisibility(View.INVISIBLE);
                         speechTime = 12;
@@ -256,7 +258,7 @@ public class AttentionDualTaskTest extends AppCompatActivity implements Recognit
 //            Toast.makeText(this, "Recording failed,please try again", Toast.LENGTH_SHORT).show();
             countDownTimer.cancel();
             recordingTimer = 0;
-            spokenWords.setText("Your words will appear here");
+//            spokenWords.setText("Your words will appear here");
         }
     }
 
