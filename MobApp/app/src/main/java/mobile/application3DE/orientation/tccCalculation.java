@@ -67,7 +67,7 @@ public class tccCalculation extends BaseActivity {
 
         userRef = databaseReference.child("users/"+currentUser);
 
-        userRef.child("TCC1completed").addValueEventListener(new ValueEventListener() {
+        userRef.child("TCC1completed").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()){
