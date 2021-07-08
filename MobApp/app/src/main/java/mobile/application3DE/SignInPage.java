@@ -61,7 +61,7 @@ public class SignInPage extends BaseActivity {
         final Intent[] intent = {null};
         if(account != null) {
             userRef = databaseReference.child("users/"+account.getId());
-            userRef.addValueEventListener(new ValueEventListener() {
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.exists())

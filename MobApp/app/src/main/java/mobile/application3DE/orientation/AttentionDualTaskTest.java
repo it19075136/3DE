@@ -105,6 +105,9 @@ public class AttentionDualTaskTest extends AppCompatActivity implements Recognit
                 Toast.makeText(getApplicationContext(),"Your speech rate is : "+getResult()+" wps, Previous speech rate:"+getIntent().getStringExtra("singleTaskSpeechResult")+" wps",Toast.LENGTH_LONG).show(); //shows result
                 speechRecognizer.destroy();
                 str = "";
+                diff = Float.parseFloat(getIntent().getStringExtra("singleTaskSpeechResult")) - Float.parseFloat(getResult());
+                if(diff < 0)
+                    diff = (float)0;
                 // add diff and result to firebase,add timestamps to user
                 //validate when you have more
                 dualTaskRef.child("dualTask").setValue(getResult()).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -113,13 +116,13 @@ public class AttentionDualTaskTest extends AppCompatActivity implements Recognit
                         userRef.child("DualTask1Completed").setValue(formatDate.format(new Date())).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                resultRef.child("difference").setValue(String.format("%.2f",Float.parseFloat(getIntent().getStringExtra("singleTaskSpeechResult")) - Float.parseFloat(getResult()))).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                resultRef.child("difference").setValue(String.format("%.4f",diff)).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         resultRef.child("impairment").setValue(getFinalResult());
                                         resultIntent = new Intent(getApplicationContext(),AttentionResultsPage.class);
                                         resultIntent.putExtra("result",getFinalResult());
-                                        resultIntent.putExtra("diff",String.format("%.2f",Float.parseFloat(getIntent().getStringExtra("singleTaskSpeechResult")) - Float.parseFloat(getResult())));
+                                        resultIntent.putExtra("diff",String.format("%.4f",diff));
                                         startActivity(resultIntent);
                                     }
                                 });
@@ -180,7 +183,7 @@ public class AttentionDualTaskTest extends AppCompatActivity implements Recognit
                 speechRecognizer.startListening(speechIntent);
                 AudioManager audioManager = (AudioManager)AttentionDualTaskTest.this.getSystemService(Context.AUDIO_SERVICE);
                 audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-                countDownTimer = new CountDownTimer(12000,1000){
+                countDownTimer = new CountDownTimer(15000,1000){
 
                     @Override
                     public void onTick(long l) {
@@ -201,7 +204,7 @@ public class AttentionDualTaskTest extends AppCompatActivity implements Recognit
                         toneGen.startTone(ToneGenerator.TONE_PROP_BEEP,3000);
                         walking.setVisibility(View.INVISIBLE);
                         listening.setVisibility(View.INVISIBLE);
-                        speechTime = 12;
+                        speechTime = 15;
                         speechRecognizer.stopListening(); //COMMENT this and check
                         Toast.makeText(getApplicationContext(),String.valueOf(speechTime) + " seconds",Toast.LENGTH_SHORT).show();
                         recordingTimer = 0;
@@ -323,8 +326,8 @@ public class AttentionDualTaskTest extends AppCompatActivity implements Recognit
 
     private String getFinalResult() {
 
-        diff = Float.parseFloat(getIntent().getStringExtra("singleTaskSpeechResult")) - Float.parseFloat(getResult());
-        Finalresult = (float)(diff/Float.parseFloat(getIntent().getStringExtra("singleTaskSpeechResult"))) * 100;
+        Finalresult = (diff/Float.parseFloat(getIntent().getStringExtra("singleTaskSpeechResult"))) * 100;
         return String.format("%.2f",Finalresult);
     }
+
 }
