@@ -195,7 +195,7 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
                 speechRecognizer.startListening(speechIntent); // start listening using the configured recognizer intent
                 AudioManager audioManager = (AudioManager)AttentionSpeechTest.this.getSystemService(Context.AUDIO_SERVICE);
                 audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-                countDownTimer = new CountDownTimer(12000,1000){
+                countDownTimer = new CountDownTimer(15000,1000){
 
                     @Override
                     public void onTick(long l) {
@@ -211,7 +211,7 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
 //                         To set full volume
                         int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_RING);
                         audioManager.setStreamVolume(AudioManager.STREAM_RING, maxVolume, AudioManager.FLAG_SHOW_UI + AudioManager.FLAG_PLAY_SOUND);
-                        speechTime = 12;
+                        speechTime = 15;
                         speechRecognizer.stopListening(); //COMMENT this and check
                         Toast.makeText(getApplicationContext(),String.valueOf(speechTime) + " seconds",Toast.LENGTH_SHORT).show();
                         recordingTimer = 0;

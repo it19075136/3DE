@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <com.google.android.material.textview.MaterialTextView
@@ -18,15 +19,27 @@
             android:id="@+id/roundHeader"
             android:layout_height="wrap_content"
             android:text="Round 1"
-            android:layout_marginLeft="30dp"
             android:textSize="20dp" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/skipBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SKIP ROUND"
+            android:backgroundTint="@color/teal_200"
+            android:layout_marginStart="10sp"
+            android:onClick="nextRound"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            app:cornerRadius="10dp"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/exitBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="EXIT"
             android:backgroundTint="@color/error"
-            android:layout_marginStart="150sp"
+            android:layout_marginStart="20dp"
             android:onClick="navigateBack"
             style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             app:cornerRadius="10dp"
@@ -34,6 +47,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/imageBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -60,7 +74,8 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/question"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:gravity="center"
         android:layout_height="wrap_content"
         style="@style/TextAppearance.MaterialComponents.Body1"
         android:text="@string/have_you_seen_this_picture_before"
@@ -72,10 +87,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginTop="40dp"
         android:gravity="center"
-        android:layout_marginBottom="100dp"
+        android:layout_below="@+id/imageBox"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true">
+        >
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/yesBtn"
