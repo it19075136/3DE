@@ -14,10 +14,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 
 import mobile.application3DE.decisionMaking.Dec_making_task;
-import mobile.application3DE.orientation.OrientationChoice;
 import mobile.application3DE.orientation.tccCalculation;
 
 public class activity_choice_landing extends AppCompatActivity {
@@ -47,7 +45,7 @@ public class activity_choice_landing extends AppCompatActivity {
         memoryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                i = new Intent(getApplicationContext(), mobile.application3DE.verbalMemory.LevelMusicPlayActivity.class);
+                i = new Intent(getApplicationContext(), mobile.application3DE.LevelMusicPlayActivity.class);
                 startActivity(i);
             }
         });
@@ -87,9 +85,9 @@ public class activity_choice_landing extends AppCompatActivity {
 
     }
 
-    public void directToOrientation(View view) {
+    public void directToTCC(View view) {
 
-        i = new Intent(this, OrientationChoice.class);
+        i = new Intent(this, tccCalculation.class);
         startActivity(i);
 
     }
