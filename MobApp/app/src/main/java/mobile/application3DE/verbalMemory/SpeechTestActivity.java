@@ -1,10 +1,11 @@
-package mobile.application3DE;
+package mobile.application3DE.verbalMemory;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.view.View;
@@ -18,12 +19,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import mobile.application3DE.R;
+import mobile.application3DE.verbalMemory.ProgressActivity;
+
 public class SpeechTestActivity extends AppCompatActivity {
     private static final int REQ_CODE_SPEECH_INPUT = 100;
     private TextView mVoiceInputTv;
     private ImageButton mSpeakBtn;
     Integer level;
     String testResult="";
+    SharedPreferences pref ;
+    SharedPreferences.Editor editor;
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     DatabaseReference databaseReference = firebaseDatabase.getReference();
     DatabaseReference getResults = databaseReference.child("Test").child("Result");
@@ -31,8 +37,11 @@ public class SpeechTestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_speech_test);
+        pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+        editor = pref.edit();
         Intent intent=getIntent();
-        level= Integer.parseInt(intent.getStringExtra("level"));
+        level = Integer.parseInt(pref.getString("level", null));
+        // level= Integer.parseInt(intent.getStringExtra("level"));
         mVoiceInputTv = (TextView) findViewById(R.id.voiceInput);
         mSpeakBtn = (ImageButton) findViewById(R.id.btnSpeak);
         mSpeakBtn.setOnClickListener(new View.OnClickListener() {
