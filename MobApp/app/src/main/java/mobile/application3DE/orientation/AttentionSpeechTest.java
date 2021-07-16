@@ -1,6 +1,7 @@
 package mobile.application3DE.orientation;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -8,19 +9,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioFormat;
-import android.media.AudioManager;
 import android.media.AudioRecord;
-import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.StrictMode;
-import android.speech.RecognitionListener;
-import android.speech.RecognizerIntent;
-import android.speech.SpeechRecognizer;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,12 +27,12 @@ import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -43,18 +40,20 @@ import com.google.firebase.database.FirebaseDatabase;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
+import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.file.Files;
+import java.nio.ByteOrder;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Date;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import mobile.application3DE.R;
@@ -62,7 +61,6 @@ import mobile.application3DE.utilities.BaseActivity;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -76,10 +74,26 @@ public class AttentionSpeechTest extends BaseActivity{
     private ProgressBar progressBar;
     TextView counter,instruct;
     int count = 3,recordingTimer = 0,speechTime = 0;
-    SpeechRecognizer speechRecognizer;
-    MediaPlayer mediaPlayer;
-    MediaRecorder mediaRecorder;
-    private static final int SAMPLE_RATE = 44100;
+
+    // [START recording_parameters]
+    private static final int AUDIO_SOURCE = MediaRecorder.AudioSource.UNPROCESSED;
+    private static final int SAMPLE_RATE_IN_HZ = 16000;
+    private static final int CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;
+    private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
+    // [END recording_parameters]
+    private static final int RECORD_PERMISSIONS_REQUEST_CODE = 15623;
+    private static final String TAG = "RecordingHelper";
+
+    private static final int BUFFER_SIZE = AudioRecord.getMinBufferSize(SAMPLE_RATE_IN_HZ, CHANNEL_CONFIG, AUDIO_FORMAT);
+    private static final String RAW_FILE_PATH = Environment.getExternalStorageDirectory().getPath() + "/speech-recording.raw";
+    private static final String WAV_FILE_PATH = Environment.getExternalStorageDirectory().getPath() + "/speech-recording.wav";
+    private static final int SAMPLE_RATE = 16000;
+
+
+    private AudioRecord audioRecord;
+    private boolean isRecording = false;
+    private BufferedOutputStream outputStream;
+
     CountDownTimer countDownTimer;
     AlertDialog dialog;
     Intent speechIntent,dualTask;
@@ -114,7 +128,8 @@ public class AttentionSpeechTest extends BaseActivity{
         str = new String();
         formatDate = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
-        requestRecordAudioPermission();
+        if(!hasRequiredPermissions(this))
+            requestRequiredPermissions(this);
 
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
 // Adding signed in user.
@@ -171,34 +186,6 @@ public class AttentionSpeechTest extends BaseActivity{
     }
 
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
-//        if(SpeechRecognizer.isRecognitionAvailable(this))
-//            speechRecognizer.setRecognitionListener(this);
-//        else {
-//            Snackbar.make(findViewById(android.R.id.content).getRootView(),"Speech recognition is unavaliable on your device",Snackbar.LENGTH_SHORT).show();
-//            finish();
-//        }
-//        startSpeechRecoginition();
-//    }
-//
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        speechRecognizer.stopListening();
-//    }
-//
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        if (speechRecognizer != null) {
-//            speechRecognizer.destroy();
-//        }
-//    }
-
-
 
     public void startSpeechRecoginition() {
 
@@ -217,39 +204,21 @@ public class AttentionSpeechTest extends BaseActivity{
                 str = "";
                 instruct.setVisibility(View.VISIBLE);
                 instruct.setText("Listening...");
-//                speechBtn.setEnabled(false);
                 counter.setVisibility(View.INVISIBLE);
                 count = 3;
                 counter.setText(String.valueOf(count));
-//                speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-//                speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-//                if (getString(R.string.language).equals(getString(R.string.sinhala)))
-//                    speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "si-LK");
-//                else
-//                    speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-//                speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speech to text");
-//                speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 5000);
-//                speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 5000);
-//                speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 50000);
-//                speechRecognizer = SpeechRecognizer.createSpeechRecognizer(AttentionSpeechTest.this); // creating a speech recognizer object
-//                speechRecognizer.setRecognitionListener(AttentionSpeechTest.this); //setting the recognition listener
-//                speechRecognizer.startListening(speechIntent); // start listening using the configured recognizer intent
+                startRecording(new RecordingListener() {
+                    @Override
+                    public void onRecordingSucceeded(File output) {
+                        Log.d(TAG,"Recorded successfully");
+                        translateRecording(output);
+                    }
 
-//                mediaRecorder = new MediaRecorder();
-//                mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-//                mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-//                mediaRecorder.setOutputFile(getRecordingFilePath());
-//                mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-//                try {
-//                    mediaRecorder.prepare();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//                mediaRecorder.start();
-
-                 startRecording();
-//                AudioManager audioManager = (AudioManager)AttentionSpeechTest.this.getSystemService(Context.AUDIO_SERVICE);
-//                audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                    @Override
+                    public void onRecordingFailed(Exception e) {
+                        Log.d(TAG,"Recording failed");
+                    }
+                });
                 countDownTimer = new CountDownTimer(15000,1000){
 
                     @Override
@@ -259,18 +228,7 @@ public class AttentionSpeechTest extends BaseActivity{
 
                     @Override
                     public void onFinish() {
-
-//                        mediaRecorder.stop();
-//                        mediaRecorder.release();
-//                        mediaRecorder = null;
-
-                         stopRecording();
-//                        AudioManager audioManager = (AudioManager)AttentionSpeechTest.this.getSystemService(Context.AUDIO_SERVICE);
-//                        audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-
-//                         To set full volume
-//                        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_RING);
-//                        audioManager.setStreamVolume(AudioManager.STREAM_RING, maxVolume, AudioManager.FLAG_SHOW_UI + AudioManager.FLAG_PLAY_SOUND);
+                        stopRecording();
                         speechTime = 15;
 //                        speechRecognizer.stopListening(); //COMMENT this and check
                         Toast.makeText(getApplicationContext(),String.valueOf(speechTime) + " seconds",Toast.LENGTH_SHORT).show();
@@ -287,35 +245,30 @@ public class AttentionSpeechTest extends BaseActivity{
 
     }
 
-    private void translateRecording(byte[] audioArray) {
+    private void translateRecording(File audioFile) {
 
-//        mediaPlayer = new MediaPlayer();
-//        try {
-//            mediaPlayer.setDataSource(getRecordingFilePath());
-//            mediaPlayer.prepare();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        mediaPlayer.start();
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            path = Paths.get(getRecordingFilePath());
-//        }
-//
-//        try {
-//            byte[] audioArray = new byte[0];
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                audioArray = Files.readAllBytes(path);
-        String audioString = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            audioString = Base64.getEncoder().encodeToString(audioArray);
+        byte[] data = new byte[(int) audioFile.length()];
+        DataInputStream input = null;
+        int readBytes = 0;
+        try {
+            input = new DataInputStream(new FileInputStream(audioFile));
+            readBytes = input.read(data);
+            Log.i(TAG, readBytes + " read from input file.");
+            input.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String audioString =  Base64.encodeToString(data, Base64.NO_WRAP);
         Log.d(LOG_TAG,"buffer string: "+audioString);
 
                 //SEND THE HTTP REQUEST
                 client = new OkHttpClient.Builder()
-                        .connectTimeout(30, TimeUnit.SECONDS)
+                        .connectTimeout(60, TimeUnit.SECONDS)
                         .build();
 
-//                client = new OkHttpClient();
 
                 String url = "https://three-de.herokuapp.com/speech/api";
 
@@ -325,11 +278,6 @@ public class AttentionSpeechTest extends BaseActivity{
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-//                RequestBody requestBody = new MultipartBody.Builder()
-//                        .setType(MultipartBody.FORM)
-//                        .addFormDataPart("audio",audioString)
-//                        .build();
 
                 Request req = new Request.Builder()
                         .url(url)
@@ -370,9 +318,6 @@ public class AttentionSpeechTest extends BaseActivity{
                             });
                     }
                 });
-        }
-        else
-            Toast.makeText(this,"Translation not supported!",Toast.LENGTH_LONG).show();
     }
 
     private String getRecordingFilePath() {
@@ -389,83 +334,265 @@ public class AttentionSpeechTest extends BaseActivity{
         return mThread != null;
     }
 
-    public void startRecording() {
-        if (mThread != null)
-            return;
+//    public void startRecording() {
+//        if (mThread != null)
+//            return;
+//
+//        mShouldContinue = true;
+//        mThread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                record();
+//            }
+//        });
+//        mThread.start();
+//    }
 
-        mShouldContinue = true;
-        mThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                record();
+    public void startRecording(final RecordingListener recordingListener) {
+        isRecording = true;
+
+        new Thread(() -> {
+            android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
+
+            byte data[] = new byte[BUFFER_SIZE];
+            audioRecord = new AudioRecord(
+                    AUDIO_SOURCE,
+                    SAMPLE_RATE_IN_HZ,
+                    CHANNEL_CONFIG,
+                    AUDIO_FORMAT,
+                    BUFFER_SIZE
+            );
+
+            audioRecord.startRecording();
+
+            try {
+                outputStream = new BufferedOutputStream(new FileOutputStream(RAW_FILE_PATH));
+            } catch (FileNotFoundException e) {
+                Log.e(TAG, "Couldn't find file: " + RAW_FILE_PATH, e);
+                recordingListener.onRecordingFailed(e);
             }
-        });
-        mThread.start();
+
+            // This loop runs until the client calls stopRecording().
+            while (isRecording) {
+                int status = audioRecord.read(data, 0, data.length);
+
+                if (status == AudioRecord.ERROR_INVALID_OPERATION || status == AudioRecord.ERROR_BAD_VALUE) {
+                    Log.e(TAG, "Couldn't read data");
+                    recordingListener.onRecordingFailed(new IOException());
+                }
+
+                try {
+                    outputStream.write(data, 0, data.length);
+                } catch (IOException e) {
+                    Log.e(TAG, "Couldn't save data", e);
+                    recordingListener.onRecordingFailed(e);
+                }
+            }
+
+            // After the client calls stopRecording(), this method processes the recorded audio.
+            try {
+                outputStream.close();
+                audioRecord.stop();
+                audioRecord.release();
+
+                Log.v(TAG, "Recording stopped");
+
+                File rawFile = new File(RAW_FILE_PATH);
+                File wavFile = new File(WAV_FILE_PATH);
+                saveAsWave(rawFile, wavFile);
+                recordingListener.onRecordingSucceeded(wavFile);
+            } catch (IOException e) {
+                Log.e(TAG, "File error", e);
+                recordingListener.onRecordingFailed(e);
+            }
+        }).start();
     }
+
 
     public void stopRecording() {
-        if (mThread == null)
-            return;
-
-        mShouldContinue = false;
-        mThread = null;
+        isRecording = false;
     }
 
-    private void record() {
-        Log.v(LOG_TAG, "Start");
-        android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_AUDIO);
-
-        // buffer size in bytes
-        int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE,
-                AudioFormat.CHANNEL_IN_MONO,
-                AudioFormat.ENCODING_PCM_16BIT);
-
-        if (bufferSize == AudioRecord.ERROR || bufferSize == AudioRecord.ERROR_BAD_VALUE) {
-            bufferSize = SAMPLE_RATE * 2;
+    private void saveAsWave(final File rawFile, final File waveFile) throws IOException {
+        byte[] rawData = new byte[(int) rawFile.length()];
+        try (DataInputStream input = new DataInputStream(new FileInputStream(rawFile))) {
+            int readBytes;
+            do {
+                readBytes = input.read(rawData);
+            }
+            while(readBytes != -1);
         }
+        try (DataOutputStream output = new DataOutputStream(new FileOutputStream(waveFile))) {
+            // WAVE specification
+            Charset asciiCharset = Charset.forName("US-ASCII");
+            // Chunk ID: "RIFF" string in US-ASCII charset—4 bytes Big Endian
+            output.write("RIFF".getBytes(asciiCharset));
+            // Chunk size: The size of the actual sound data plus the rest
+            //             of this header (36 bytes)—4 bytes Little Endian
+            output.write(convertToLittleEndian(36 + rawData.length));
+            // Format: "WAVE" string in US-ASCII charset—4 bytes Big Endian
+            output.write("WAVE".getBytes(asciiCharset));
+            // Subchunk 1 ID: "fmt " string in US-ASCII charset—4 bytes Big Endian
+            output.write("fmt ".getBytes(asciiCharset));
+            // Subchunk 1 size: The size of the subchunk.
+            //                  It must be 16 for PCM—4 bytes Little Endian
+            output.write(convertToLittleEndian(16));
+            // Audio format: Use 1 for PCM—2 bytes Little Endian
+            output.write(convertToLittleEndian((short)1));
+            // Number of channels: This sample only supports one channel—2 bytes Little Endian
+            output.write(convertToLittleEndian((short)1));
+            // Sample rate: The sample rate in hertz—4 bytes Little Endian
+            output.write(convertToLittleEndian(SAMPLE_RATE_IN_HZ));
+            // Bit rate: SampleRate * NumChannels * BitsPerSample/8—4 bytes Little Endian
+            output.write(convertToLittleEndian(SAMPLE_RATE_IN_HZ * 2));
+            // Block align: NumChannels * BitsPerSample/8—2 bytes Little Endian
+            output.write(convertToLittleEndian((short)2));
+            // Bits per sample: 16 bits—2 bytes Little Endian
+            output.write(convertToLittleEndian((short)16));
+            // Subchunk 2 ID: "fmt " string in US-ASCII charset—4 bytes Big Endian
+            output.write("data".getBytes(asciiCharset));
+            // Subchunk 2 size: The size of the actual audio data—4 bytes Little Endian
+            output.write(convertToLittleEndian(rawData.length));
 
-        byte[] audioBuffer = new byte[bufferSize];
+            // Audio data:  Sound data bytes—Little Endian
+            short[] rawShorts = new short[rawData.length / 2];
+            ByteBuffer.wrap(rawData).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(rawShorts);
+            ByteBuffer bytes = ByteBuffer.allocate(rawData.length);
+            for (short s : rawShorts) {
+                bytes.putShort(s);
+            }
 
-        AudioRecord record = new AudioRecord(MediaRecorder.AudioSource.DEFAULT,
-                SAMPLE_RATE,
-                AudioFormat.CHANNEL_IN_MONO,
-                AudioFormat.ENCODING_PCM_16BIT,
-                bufferSize);
-
-        if (record.getState() != AudioRecord.STATE_INITIALIZED) {
-            Log.e(LOG_TAG, "Audio Record can't initialize!");
-            return;
+            output.write(readFile(rawFile));
         }
-        record.startRecording();
-
-        Log.v(LOG_TAG, "Start recording");
-
-        long shortsRead = 0;
-
-        while (mShouldContinue) {
-            int numberOfShort = record.read(audioBuffer, 0, audioBuffer.length);
-            shortsRead += numberOfShort;
-        }
-
-        translateRecording(audioBuffer);
-        record.stop();
-        record.release();
-
-        Log.v(LOG_TAG, String.format("Recording stopped. Samples read: %d", shortsRead));
     }
 
-    private void requestRecordAudioPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            String requiredPermission = Manifest.permission.RECORD_AUDIO;
-            String requiredPermissionStorage = Manifest.permission.MANAGE_EXTERNAL_STORAGE;
-
-            // If the user previously denied this permission then show a message explaining why
-            // this permission is needed
-            if (checkCallingOrSelfPermission(requiredPermission) == PackageManager.PERMISSION_DENIED) {
-                requestPermissions(new String[]{requiredPermission,requiredPermissionStorage}, 101);
+    private byte[] readFile(File f) throws IOException {
+        int size = (int) f.length();
+        byte bytes[] = new byte[size];
+        byte tmpBuff[] = new byte[size];
+        try (FileInputStream fis = new FileInputStream(f)) {
+            int read = fis.read(bytes, 0, size);
+            if (read < size) {
+                int remain = size - read;
+                while (remain > 0) {
+                    read = fis.read(tmpBuff, 0, remain);
+                    System.arraycopy(tmpBuff, 0, bytes, size - remain, read);
+                    remain -= read;
+                }
             }
         }
+        return bytes;
     }
+
+    private byte[] convertToLittleEndian(Object value) {
+        int size;
+        if(value.getClass().equals(Integer.class)) {
+            size = 4;
+        } else if (value.getClass().equals(Short.class)) {
+            size = 2;
+        } else {
+            throw new IllegalArgumentException("Only int and short types are supported");
+        }
+
+        byte[] littleEndianBytes = new byte[size];
+        ByteBuffer byteBuffer = ByteBuffer.allocate(size);
+        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+
+        if(value.getClass().equals(Integer.class)) {
+            byteBuffer.putInt((int)value);
+        } else if (value.getClass().equals(Short.class)) {
+            byteBuffer.putShort((short)value);
+        }
+
+        byteBuffer.flip();
+        byteBuffer.get(littleEndianBytes);
+
+        return littleEndianBytes;
+    }
+
+//    public void stopRecording() {
+//        if (mThread == null)
+//            return;
+//
+//        mShouldContinue = false;
+//        mThread = null;
+//    }
+
+//    private void record() {
+//        Log.v(LOG_TAG, "Start");
+//        android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_AUDIO);
+//
+//        // buffer size in bytes
+//        int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE,
+//                AudioFormat.CHANNEL_IN_MONO,
+//                AudioFormat.ENCODING_PCM_16BIT);
+//
+//        if (bufferSize == AudioRecord.ERROR || bufferSize == AudioRecord.ERROR_BAD_VALUE) {
+//            bufferSize = SAMPLE_RATE * 2;
+//        }
+//
+//        byte[] audioBuffer = new byte[bufferSize];
+//
+//        AudioRecord record = new AudioRecord(MediaRecorder.AudioSource.UNPROCESSED,
+//                SAMPLE_RATE,
+//                AudioFormat.CHANNEL_IN_MONO,
+//                AudioFormat.ENCODING_PCM_16BIT,
+//                bufferSize);
+//
+//        if (record.getState() != AudioRecord.STATE_INITIALIZED) {
+//            Log.e(LOG_TAG, "Audio Record can't initialize!");
+//            return;
+//        }
+//        record.startRecording();
+//
+//        Log.v(LOG_TAG, "Start recording");
+//
+//        long shortsRead = 0;
+//
+//        while (mShouldContinue) {
+//            int numberOfShort = record.read(audioBuffer, 0, audioBuffer.length);
+//            shortsRead += numberOfShort;
+//        }
+//
+//        translateRecording(audioBuffer);
+//        record.stop();
+//        record.release();
+//
+//        Log.v(LOG_TAG, String.format("Recording stopped. Samples read: %d", shortsRead));
+//    }
+
+    public boolean hasRequiredPermissions(Context context) {
+        int recordAudioPermissionCheck = ContextCompat.checkSelfPermission(
+                context, Manifest.permission.RECORD_AUDIO);
+        int writeExternalStoragePermissionCheck = ContextCompat.checkSelfPermission(
+                context, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        return recordAudioPermissionCheck == PackageManager.PERMISSION_GRANTED &&
+                writeExternalStoragePermissionCheck == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public void requestRequiredPermissions(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            activity.requestPermissions(
+                    new String[]{
+                            Manifest.permission.RECORD_AUDIO,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    },
+                    RECORD_PERMISSIONS_REQUEST_CODE
+            );
+        }
+    }
+//    private void requestRecordAudioPermission() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            String requiredPermission = Manifest.permission.RECORD_AUDIO;
+//            String requiredPermissionStorage = Manifest.permission.MANAGE_EXTERNAL_STORAGE;
+//
+//            // If the user previously denied this permission then show a message explaining why
+//            // this permission is needed
+//            if (checkCallingOrSelfPermission(requiredPermission) == PackageManager.PERMISSION_DENIED) {
+//                requestPermissions(new String[]{requiredPermission,requiredPermissionStorage}, 101);
+//            }
+//        }
+//    }
 
     private String getResult() {
 
@@ -474,5 +601,10 @@ public class AttentionSpeechTest extends BaseActivity{
         Log.d("WORD_COUNT",String.valueOf(words.length));
         float result = (float)(words.length)/speechTime;
         return String.format("%.4f",result);
+    }
+
+    public interface RecordingListener {
+        void onRecordingSucceeded(File output);
+        void onRecordingFailed(Exception e);
     }
 }
