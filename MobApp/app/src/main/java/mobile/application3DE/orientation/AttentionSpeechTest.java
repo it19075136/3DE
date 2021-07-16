@@ -37,6 +37,7 @@ import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -48,14 +49,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import mobile.application3DE.R;
 import mobile.application3DE.utilities.BaseActivity;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -250,7 +254,7 @@ public class AttentionSpeechTest extends BaseActivity{
 //                         To set full volume
 //                        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_RING);
 //                        audioManager.setStreamVolume(AudioManager.STREAM_RING, maxVolume, AudioManager.FLAG_SHOW_UI + AudioManager.FLAG_PLAY_SOUND);
-//                        speechTime = 15;
+                        speechTime = 15;
 //                        speechRecognizer.stopListening(); //COMMENT this and check
                         Toast.makeText(getApplicationContext(),String.valueOf(speechTime) + " seconds",Toast.LENGTH_SHORT).show();
                         playRecording();
@@ -267,7 +271,7 @@ public class AttentionSpeechTest extends BaseActivity{
 
     }
 
-    private void playRecording(){
+    private void playRecording() {
 
         mediaPlayer = new MediaPlayer();
         try {
@@ -285,36 +289,59 @@ public class AttentionSpeechTest extends BaseActivity{
             byte[] audioArray = new byte[0];
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 audioArray = Files.readAllBytes(path);
+                String audioString = Base64.getEncoder().encodeToString(audioArray);
+
+                //SEND THE HTTP REQUEST
+                client = new OkHttpClient.Builder()
+                        .connectTimeout(30, TimeUnit.SECONDS)
+                        .build();
+
+                String url = "https://three-de.herokuapp.com/speech/api";
+
+//                JSONObject audioObj = new JSONObject();
+//                try {
+//                    audioObj.put("audio", audioString);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+
+                RequestBody requestBody = new MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
+                        .addFormDataPart("audio",audioString)
+                        .build();
+
+                Request req = new Request.Builder()
+                        .url(url)
+                        .post(requestBody)
+                        .build();
+
+                client.newCall(req).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+
+                        AttentionSpeechTest.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Log.d("TRANSCRIPT", response.body().string());
+                                    Toast.makeText(AttentionSpeechTest.this, response.body().string(), Toast.LENGTH_LONG).show();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+                });
             }
-
-            ByteBuffer byteBuffer = ByteBuffer.wrap(audioArray);
-            String audioString = new String(byteBuffer.array(), "UTF-8");
-            Toast.makeText(this,audioString,Toast.LENGTH_LONG).show();
-
-            //SEND THE HTTP REQUEST
-            client = new OkHttpClient();
-            String url = "https://three-de.herokuapp.com/speech/api";
-
-            Request req = new Request.Builder()
-                    .url(url)
-                    .post(RequestBody.create(MediaType.parse("application/json"),"{'audio': '"+audioString+"'}"))
-                    .build();
-
-            client.newCall(req).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    e.printStackTrace();
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    Toast.makeText(AttentionSpeechTest.this,response.body().string(),Toast.LENGTH_LONG).show();
-                }
-            });
-
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     private String getRecordingFilePath() {
