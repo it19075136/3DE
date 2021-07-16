@@ -7,7 +7,9 @@ import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.AudioFormat;
 import android.media.AudioManager;
+import android.media.AudioRecord;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Build;
@@ -68,6 +70,7 @@ import okhttp3.Response;
 
 public class AttentionSpeechTest extends BaseActivity{
 
+    private static final String LOG_TAG = "SPEECHTEST";
     ImageView speechBtn;
     MaterialTextView spokenWords;
     private ProgressBar progressBar;
@@ -76,6 +79,7 @@ public class AttentionSpeechTest extends BaseActivity{
     SpeechRecognizer speechRecognizer;
     MediaPlayer mediaPlayer;
     MediaRecorder mediaRecorder;
+    private static final int SAMPLE_RATE = 44100;
     CountDownTimer countDownTimer;
     AlertDialog dialog;
     Intent speechIntent,dualTask;
@@ -230,18 +234,20 @@ public class AttentionSpeechTest extends BaseActivity{
 //                speechRecognizer = SpeechRecognizer.createSpeechRecognizer(AttentionSpeechTest.this); // creating a speech recognizer object
 //                speechRecognizer.setRecognitionListener(AttentionSpeechTest.this); //setting the recognition listener
 //                speechRecognizer.startListening(speechIntent); // start listening using the configured recognizer intent
-                mediaRecorder = new MediaRecorder();
-                mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-                mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-                mediaRecorder.setOutputFile(getRecordingFilePath());
-                mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-                try {
-                    mediaRecorder.prepare();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                mediaRecorder.start();
 
+//                mediaRecorder = new MediaRecorder();
+//                mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+//                mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+//                mediaRecorder.setOutputFile(getRecordingFilePath());
+//                mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+//                try {
+//                    mediaRecorder.prepare();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                mediaRecorder.start();
+
+                 startRecording();
 //                AudioManager audioManager = (AudioManager)AttentionSpeechTest.this.getSystemService(Context.AUDIO_SERVICE);
 //                audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
                 countDownTimer = new CountDownTimer(15000,1000){
@@ -254,9 +260,11 @@ public class AttentionSpeechTest extends BaseActivity{
                     @Override
                     public void onFinish() {
 
-                        mediaRecorder.stop();
-                        mediaRecorder.release();
-                        mediaRecorder = null;
+//                        mediaRecorder.stop();
+//                        mediaRecorder.release();
+//                        mediaRecorder = null;
+
+                         stopRecording();
 //                        AudioManager audioManager = (AudioManager)AttentionSpeechTest.this.getSystemService(Context.AUDIO_SERVICE);
 //                        audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 
@@ -266,7 +274,6 @@ public class AttentionSpeechTest extends BaseActivity{
                         speechTime = 15;
 //                        speechRecognizer.stopListening(); //COMMENT this and check
                         Toast.makeText(getApplicationContext(),String.valueOf(speechTime) + " seconds",Toast.LENGTH_SHORT).show();
-                        playRecording();
                         recordingTimer = 0;
 //                        dialog.show();
 //                        instruct.setText("Tap to Start Recording");
@@ -280,25 +287,28 @@ public class AttentionSpeechTest extends BaseActivity{
 
     }
 
-    private void playRecording() {
+    private void translateRecording(byte[] audioArray) {
 
-        mediaPlayer = new MediaPlayer();
-        try {
-            mediaPlayer.setDataSource(getRecordingFilePath());
-            mediaPlayer.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        mediaPlayer.start();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            path = Paths.get(getRecordingFilePath());
-        }
-
-        try {
-            byte[] audioArray = new byte[0];
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                audioArray = Files.readAllBytes(path);
-                String audioString = Base64.getEncoder().encodeToString(audioArray);
+//        mediaPlayer = new MediaPlayer();
+//        try {
+//            mediaPlayer.setDataSource(getRecordingFilePath());
+//            mediaPlayer.prepare();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        mediaPlayer.start();
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            path = Paths.get(getRecordingFilePath());
+//        }
+//
+//        try {
+//            byte[] audioArray = new byte[0];
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                audioArray = Files.readAllBytes(path);
+        String audioString = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            audioString = Base64.getEncoder().encodeToString(audioArray);
+        Log.d(LOG_TAG,"buffer string: "+audioString);
 
                 //SEND THE HTTP REQUEST
                 client = new OkHttpClient.Builder()
@@ -326,7 +336,8 @@ public class AttentionSpeechTest extends BaseActivity{
                         .post(RequestBody.create(MediaType.parse("application/json"), String.valueOf(audioObj)))
                         .build();
 
-                client.newCall(req).enqueue(new Callback() {
+            String finalAudioString = audioString;
+            client.newCall(req).enqueue(new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
                         e.printStackTrace();
@@ -346,7 +357,7 @@ public class AttentionSpeechTest extends BaseActivity{
                                     e.printStackTrace();
                                 }
                                 Log.d("TRANSCRIPT",res );
-                                Log.d("REQBODY", audioString);
+                                Log.d("REQBODY", finalAudioString);
                                 Toast.makeText(AttentionSpeechTest.this,res, Toast.LENGTH_LONG).show();
                             }
                         });
@@ -359,11 +370,9 @@ public class AttentionSpeechTest extends BaseActivity{
                             });
                     }
                 });
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-
+        else
+            Toast.makeText(this,"Translation not supported!",Toast.LENGTH_LONG).show();
     }
 
     private String getRecordingFilePath() {
@@ -373,93 +382,77 @@ public class AttentionSpeechTest extends BaseActivity{
         return  file.getPath();
     }
 
-//    @Override
-//    public void onReadyForSpeech(Bundle bundle) {
-//        Log.d("TAG", "onReadyForSpeech");
-//    }
-//
-//    @Override
-//    public void onBeginningOfSpeech() {
-//        Log.d("TAG", "onBeginningOfSpeech");
-//        progressBar.setIndeterminate(false);
-//        progressBar.setMax(10);
-//    }
-//
-//    @Override
-//    public void onRmsChanged(float v) {
-//        Log.d("TAG", "onRmsChanged "+v);
-//        progressBar.setProgress((int) v);
-//
-//    }
-//
-//    @Override
-//    public void onBufferReceived(byte[] bytes) {
-//        Log.d("TAG", "onBufferReceived");
-//    }
-//
-//    @Override
-//    public void onEndOfSpeech() {
-//        Log.d("TAG", "onEndofSpeech");
-//        progressBar.setIndeterminate(true);
-//        speechRecognizer.stopListening();
-//    }
-//
-//    @Override
-//    public void onError(int i) {
-//        Log.d("TAG",  "error " +  i);
-//        if(i == SpeechRecognizer.ERROR_NO_MATCH) {
-//            speechRecognizer = SpeechRecognizer.createSpeechRecognizer(AttentionSpeechTest.this);
-//            speechRecognizer.setRecognitionListener(AttentionSpeechTest.this);
-//            speechRecognizer.startListening(speechIntent);
-//        }
-//        else {
-////            Toast.makeText(this, "Recording failed,please try again", Toast.LENGTH_SHORT).show();
-//            countDownTimer.cancel();
-//            recordingTimer = 0;
-////            spokenWords.setText("Your words will appear here");
-////            instruct.setText("Tap to Start Recording");
-//            instruct.setVisibility(View.INVISIBLE);
-////            speechBtn.setEnabled(true);
-//        }
-//    }
-//
-//    @Override
-//    public void onResults(Bundle bundle) {
-//
-//        Log.d("TAG", "onResults " + bundle);
-//        ArrayList data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-//        for (int i = 0; i < data.size(); i++)
-//        {
-//            Log.d("TAG", "result " + data.get(i));
-//            str += data.get(i);
-//        }
-//        str = str + " ";
-//        spokenWords.setText(str);
-////        if(speechTime == 20) {
-////            speechRecognizer.destroy();
-////        }
-////        else
-//            speechRecognizer.startListening(speechIntent);
-//
-//    }
-//
-//    @Override
-//    public void onPartialResults(Bundle bundle) {
-//        Log.d("TAG", "onPartialResults");
-//        ArrayList data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-//        for (int i = 0; i < data.size(); i++)
-//        {
-//            Log.d("TAG", "result " + data.get(i));
-//            str += data.get(i);
-//        }
-//        str = str + " ";
-//        spokenWords.setText(str);
-//    }
-//
-//    @Override
-//    public void onEvent(int i, Bundle bundle) {
-//        Log.d("TAG", "onEvent " + i);
-//    }
+    private boolean mShouldContinue;
+    private Thread mThread;
+
+    public boolean recording() {
+        return mThread != null;
+    }
+
+    public void startRecording() {
+        if (mThread != null)
+            return;
+
+        mShouldContinue = true;
+        mThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                record();
+            }
+        });
+        mThread.start();
+    }
+
+    public void stopRecording() {
+        if (mThread == null)
+            return;
+
+        mShouldContinue = false;
+        mThread = null;
+    }
+
+    private void record() {
+        Log.v(LOG_TAG, "Start");
+        android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_AUDIO);
+
+        // buffer size in bytes
+        int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE,
+                AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.ENCODING_PCM_16BIT);
+
+        if (bufferSize == AudioRecord.ERROR || bufferSize == AudioRecord.ERROR_BAD_VALUE) {
+            bufferSize = SAMPLE_RATE * 2;
+        }
+
+        byte[] audioBuffer = new byte[bufferSize];
+
+        AudioRecord record = new AudioRecord(MediaRecorder.AudioSource.DEFAULT,
+                SAMPLE_RATE,
+                AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.ENCODING_PCM_16BIT,
+                bufferSize);
+
+        if (record.getState() != AudioRecord.STATE_INITIALIZED) {
+            Log.e(LOG_TAG, "Audio Record can't initialize!");
+            return;
+        }
+        record.startRecording();
+
+        Log.v(LOG_TAG, "Start recording");
+
+        long shortsRead = 0;
+
+        while (mShouldContinue) {
+            int numberOfShort = record.read(audioBuffer, 0, audioBuffer.length);
+            shortsRead += numberOfShort;
+        }
+
+        translateRecording(audioBuffer);
+        record.stop();
+        record.release();
+
+        Log.v(LOG_TAG, String.format("Recording stopped. Samples read: %d", shortsRead));
+    }
 
     private void requestRecordAudioPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
