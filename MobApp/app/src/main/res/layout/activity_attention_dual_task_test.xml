@@ -40,7 +40,7 @@
                     android:textAlignment="center"
                     style="@style/TextAppearance.MaterialComponents.Body1"
                     android:textSize="22sp"
-                    android:text="@string/ds_listening"/>
+                    android:text="listening..."/>
 
             </LinearLayout>
 

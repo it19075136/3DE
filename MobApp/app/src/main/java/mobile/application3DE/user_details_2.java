@@ -22,7 +22,6 @@ public class user_details_2 extends BaseActivity {
     User u;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference dbRef;
-    String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

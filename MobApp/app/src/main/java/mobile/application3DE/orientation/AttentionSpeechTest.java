@@ -3,13 +3,17 @@ package mobile.application3DE.orientation;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -33,6 +37,15 @@ import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,8 +53,15 @@ import java.util.Locale;
 
 import mobile.application3DE.R;
 import mobile.application3DE.utilities.BaseActivity;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
-public class AttentionSpeechTest extends BaseActivity implements  RecognitionListener{
+public class AttentionSpeechTest extends BaseActivity{
 
     ImageView speechBtn;
     MaterialTextView spokenWords;
@@ -49,12 +69,16 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
     TextView counter,instruct;
     int count = 3,recordingTimer = 0,speechTime = 0;
     SpeechRecognizer speechRecognizer;
+    MediaPlayer mediaPlayer;
+    MediaRecorder mediaRecorder;
     CountDownTimer countDownTimer;
     AlertDialog dialog;
     Intent speechIntent,dualTask;
     String str,currentUser;
     DatabaseReference userRef,singleTaskRef;
     SimpleDateFormat formatDate;
+    OkHttpClient client;
+    Path path;
 
     // we will get the default FirebaseDatabase instance
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -100,7 +124,7 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
                 Toast.makeText(getApplicationContext(),"Your speech rate is : "+getResult()+" wps",Toast.LENGTH_LONG).show(); //shows result
-                speechRecognizer.destroy();
+//                speechRecognizer.destroy();
                 str = "";
                  //validate when you have more
                 singleTaskRef.child("SingleTask").setValue(getResult()).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -121,7 +145,7 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
         builder.setNegativeButton(R.string.retry, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
 //                spokenWords.setText("Your words will appear here");
-                speechRecognizer.destroy();
+//                speechRecognizer.destroy();
                 startSpeechRecoginition();
             }
         });
@@ -180,21 +204,33 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
                 counter.setVisibility(View.INVISIBLE);
                 count = 3;
                 counter.setText(String.valueOf(count));
-                speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-                if (getString(R.string.language).equals(getString(R.string.sinhala)))
-                    speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "si-LK");
-                else
-                    speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-                speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speech to text");
-                speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 5000);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 5000);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 50000);
-                speechRecognizer = SpeechRecognizer.createSpeechRecognizer(AttentionSpeechTest.this); // creating a speech recognizer object
-                speechRecognizer.setRecognitionListener(AttentionSpeechTest.this); //setting the recognition listener
-                speechRecognizer.startListening(speechIntent); // start listening using the configured recognizer intent
-                AudioManager audioManager = (AudioManager)AttentionSpeechTest.this.getSystemService(Context.AUDIO_SERVICE);
-                audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+//                speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+//                speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+//                if (getString(R.string.language).equals(getString(R.string.sinhala)))
+//                    speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "si-LK");
+//                else
+//                    speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+//                speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speech to text");
+//                speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 5000);
+//                speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 5000);
+//                speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 50000);
+//                speechRecognizer = SpeechRecognizer.createSpeechRecognizer(AttentionSpeechTest.this); // creating a speech recognizer object
+//                speechRecognizer.setRecognitionListener(AttentionSpeechTest.this); //setting the recognition listener
+//                speechRecognizer.startListening(speechIntent); // start listening using the configured recognizer intent
+                mediaRecorder = new MediaRecorder();
+                mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+                mediaRecorder.setOutputFile(getRecordingFilePath());
+                mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+                try {
+                    mediaRecorder.prepare();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                mediaRecorder.start();
+
+//                AudioManager audioManager = (AudioManager)AttentionSpeechTest.this.getSystemService(Context.AUDIO_SERVICE);
+//                audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
                 countDownTimer = new CountDownTimer(15000,1000){
 
                     @Override
@@ -205,17 +241,21 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
                     @Override
                     public void onFinish() {
 
-                        AudioManager audioManager = (AudioManager)AttentionSpeechTest.this.getSystemService(Context.AUDIO_SERVICE);
-                        audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                        mediaRecorder.stop();
+                        mediaRecorder.release();
+                        mediaRecorder = null;
+//                        AudioManager audioManager = (AudioManager)AttentionSpeechTest.this.getSystemService(Context.AUDIO_SERVICE);
+//                        audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 
 //                         To set full volume
-                        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_RING);
-                        audioManager.setStreamVolume(AudioManager.STREAM_RING, maxVolume, AudioManager.FLAG_SHOW_UI + AudioManager.FLAG_PLAY_SOUND);
-                        speechTime = 15;
-                        speechRecognizer.stopListening(); //COMMENT this and check
+//                        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_RING);
+//                        audioManager.setStreamVolume(AudioManager.STREAM_RING, maxVolume, AudioManager.FLAG_SHOW_UI + AudioManager.FLAG_PLAY_SOUND);
+//                        speechTime = 15;
+//                        speechRecognizer.stopListening(); //COMMENT this and check
                         Toast.makeText(getApplicationContext(),String.valueOf(speechTime) + " seconds",Toast.LENGTH_SHORT).show();
+                        playRecording();
                         recordingTimer = 0;
-                        dialog.show();
+//                        dialog.show();
 //                        instruct.setText("Tap to Start Recording");
                         instruct.setVisibility(View.INVISIBLE);
 //                        speechBtn.setEnabled(true);
@@ -227,102 +267,160 @@ public class AttentionSpeechTest extends BaseActivity implements  RecognitionLis
 
     }
 
-    @Override
-    public void onReadyForSpeech(Bundle bundle) {
-        Log.d("TAG", "onReadyForSpeech");
-    }
+    private void playRecording(){
 
-    @Override
-    public void onBeginningOfSpeech() {
-        Log.d("TAG", "onBeginningOfSpeech");
-        progressBar.setIndeterminate(false);
-        progressBar.setMax(10);
-    }
-
-    @Override
-    public void onRmsChanged(float v) {
-        Log.d("TAG", "onRmsChanged "+v);
-        progressBar.setProgress((int) v);
-
-    }
-
-    @Override
-    public void onBufferReceived(byte[] bytes) {
-        Log.d("TAG", "onBufferReceived");
-    }
-
-    @Override
-    public void onEndOfSpeech() {
-        Log.d("TAG", "onEndofSpeech");
-        progressBar.setIndeterminate(true);
-        speechRecognizer.stopListening();
-    }
-
-    @Override
-    public void onError(int i) {
-        Log.d("TAG",  "error " +  i);
-        if(i == SpeechRecognizer.ERROR_NO_MATCH) {
-            speechRecognizer = SpeechRecognizer.createSpeechRecognizer(AttentionSpeechTest.this);
-            speechRecognizer.setRecognitionListener(AttentionSpeechTest.this);
-            speechRecognizer.startListening(speechIntent);
+        mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setDataSource(getRecordingFilePath());
+            mediaPlayer.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        else {
-//            Toast.makeText(this, "Recording failed,please try again", Toast.LENGTH_SHORT).show();
-            countDownTimer.cancel();
-            recordingTimer = 0;
-//            spokenWords.setText("Your words will appear here");
-//            instruct.setText("Tap to Start Recording");
-            instruct.setVisibility(View.INVISIBLE);
-//            speechBtn.setEnabled(true);
+        mediaPlayer.start();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            path = Paths.get(getRecordingFilePath());
+        }
+
+        try {
+            byte[] audioArray = new byte[0];
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                audioArray = Files.readAllBytes(path);
+            }
+
+            ByteBuffer byteBuffer = ByteBuffer.wrap(audioArray);
+            String audioString = new String(byteBuffer.array(), "UTF-8");
+            Toast.makeText(this,audioString,Toast.LENGTH_LONG).show();
+
+            //SEND THE HTTP REQUEST
+            client = new OkHttpClient();
+            String url = "https://three-de.herokuapp.com/speech/api";
+
+            Request req = new Request.Builder()
+                    .url(url)
+                    .post(RequestBody.create(MediaType.parse("application/json"),"{'audio': '"+audioString+"'}"))
+                    .build();
+
+            client.newCall(req).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    e.printStackTrace();
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    Toast.makeText(AttentionSpeechTest.this,response.body().string(),Toast.LENGTH_LONG).show();
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    @Override
-    public void onResults(Bundle bundle) {
+    private String getRecordingFilePath() {
+        ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
+        File musicDir = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+        File file = new File(musicDir, "speechRecording"+".mp3");
+        return  file.getPath();
+    }
 
-        Log.d("TAG", "onResults " + bundle);
-        ArrayList data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-        for (int i = 0; i < data.size(); i++)
-        {
-            Log.d("TAG", "result " + data.get(i));
-            str += data.get(i);
-        }
-        str = str + " ";
-        spokenWords.setText(str);
-//        if(speechTime == 20) {
-//            speechRecognizer.destroy();
+//    @Override
+//    public void onReadyForSpeech(Bundle bundle) {
+//        Log.d("TAG", "onReadyForSpeech");
+//    }
+//
+//    @Override
+//    public void onBeginningOfSpeech() {
+//        Log.d("TAG", "onBeginningOfSpeech");
+//        progressBar.setIndeterminate(false);
+//        progressBar.setMax(10);
+//    }
+//
+//    @Override
+//    public void onRmsChanged(float v) {
+//        Log.d("TAG", "onRmsChanged "+v);
+//        progressBar.setProgress((int) v);
+//
+//    }
+//
+//    @Override
+//    public void onBufferReceived(byte[] bytes) {
+//        Log.d("TAG", "onBufferReceived");
+//    }
+//
+//    @Override
+//    public void onEndOfSpeech() {
+//        Log.d("TAG", "onEndofSpeech");
+//        progressBar.setIndeterminate(true);
+//        speechRecognizer.stopListening();
+//    }
+//
+//    @Override
+//    public void onError(int i) {
+//        Log.d("TAG",  "error " +  i);
+//        if(i == SpeechRecognizer.ERROR_NO_MATCH) {
+//            speechRecognizer = SpeechRecognizer.createSpeechRecognizer(AttentionSpeechTest.this);
+//            speechRecognizer.setRecognitionListener(AttentionSpeechTest.this);
+//            speechRecognizer.startListening(speechIntent);
 //        }
-//        else
-            speechRecognizer.startListening(speechIntent);
-
-    }
-
-    @Override
-    public void onPartialResults(Bundle bundle) {
-        Log.d("TAG", "onPartialResults");
-        ArrayList data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-        for (int i = 0; i < data.size(); i++)
-        {
-            Log.d("TAG", "result " + data.get(i));
-            str += data.get(i);
-        }
-        str = str + " ";
-        spokenWords.setText(str);
-    }
-
-    @Override
-    public void onEvent(int i, Bundle bundle) {
-        Log.d("TAG", "onEvent " + i);
-    }
+//        else {
+////            Toast.makeText(this, "Recording failed,please try again", Toast.LENGTH_SHORT).show();
+//            countDownTimer.cancel();
+//            recordingTimer = 0;
+////            spokenWords.setText("Your words will appear here");
+////            instruct.setText("Tap to Start Recording");
+//            instruct.setVisibility(View.INVISIBLE);
+////            speechBtn.setEnabled(true);
+//        }
+//    }
+//
+//    @Override
+//    public void onResults(Bundle bundle) {
+//
+//        Log.d("TAG", "onResults " + bundle);
+//        ArrayList data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+//        for (int i = 0; i < data.size(); i++)
+//        {
+//            Log.d("TAG", "result " + data.get(i));
+//            str += data.get(i);
+//        }
+//        str = str + " ";
+//        spokenWords.setText(str);
+////        if(speechTime == 20) {
+////            speechRecognizer.destroy();
+////        }
+////        else
+//            speechRecognizer.startListening(speechIntent);
+//
+//    }
+//
+//    @Override
+//    public void onPartialResults(Bundle bundle) {
+//        Log.d("TAG", "onPartialResults");
+//        ArrayList data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+//        for (int i = 0; i < data.size(); i++)
+//        {
+//            Log.d("TAG", "result " + data.get(i));
+//            str += data.get(i);
+//        }
+//        str = str + " ";
+//        spokenWords.setText(str);
+//    }
+//
+//    @Override
+//    public void onEvent(int i, Bundle bundle) {
+//        Log.d("TAG", "onEvent " + i);
+//    }
 
     private void requestRecordAudioPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             String requiredPermission = Manifest.permission.RECORD_AUDIO;
+            String requiredPermissionStorage = Manifest.permission.MANAGE_EXTERNAL_STORAGE;
 
             // If the user previously denied this permission then show a message explaining why
             // this permission is needed
             if (checkCallingOrSelfPermission(requiredPermission) == PackageManager.PERMISSION_DENIED) {
-                requestPermissions(new String[]{requiredPermission}, 101);
+                requestPermissions(new String[]{requiredPermission,requiredPermissionStorage}, 101);
             }
         }
     }

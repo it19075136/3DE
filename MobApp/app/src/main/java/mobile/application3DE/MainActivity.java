@@ -79,7 +79,7 @@ public class MainActivity extends BaseActivity {
 
         if(Validate_Inputs()) {
             Intent i = new Intent(this, user_details_2.class);
-            user = new User(id,fName.getText().toString(), lName.getText().toString(),email, dateInput.getText().toString(), gBtn.getText().toString());
+            user = new User(id,fName.getText().toString(), lName.getText().toString(),email, dateInput.getText().toString(), gBtn.getText().toString(), getIntent().getStringExtra("lang"));
             i.putExtra("user", user);
             startActivity(i);
         }
