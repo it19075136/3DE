@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -154,9 +155,17 @@ public class AttentionSpeechTest extends BaseActivity{
             }
         });
 
+        int SDK_INT = android.os.Build.VERSION.SDK_INT;
+        if (SDK_INT > 8) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                    .permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+
         dialog = builder.create();
         startSpeechRecoginition();
     }
+
 
 //    @Override
 //    public void onResume() {
@@ -296,23 +305,25 @@ public class AttentionSpeechTest extends BaseActivity{
                         .connectTimeout(30, TimeUnit.SECONDS)
                         .build();
 
+//                client = new OkHttpClient();
+
                 String url = "https://three-de.herokuapp.com/speech/api";
 
-//                JSONObject audioObj = new JSONObject();
-//                try {
-//                    audioObj.put("audio", audioString);
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
+                JSONObject audioObj = new JSONObject();
+                try {
+                    audioObj.put("audio", audioString);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
-                RequestBody requestBody = new MultipartBody.Builder()
-                        .setType(MultipartBody.FORM)
-                        .addFormDataPart("audio",audioString)
-                        .build();
+//                RequestBody requestBody = new MultipartBody.Builder()
+//                        .setType(MultipartBody.FORM)
+//                        .addFormDataPart("audio",audioString)
+//                        .build();
 
                 Request req = new Request.Builder()
                         .url(url)
-                        .post(requestBody)
+                        .post(RequestBody.create(MediaType.parse("application/json"), String.valueOf(audioObj)))
                         .build();
 
                 client.newCall(req).enqueue(new Callback() {
@@ -324,17 +335,28 @@ public class AttentionSpeechTest extends BaseActivity{
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
 
+                        if(response.isSuccessful())
                         AttentionSpeechTest.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                String res = null;
                                 try {
-                                    Log.d("TRANSCRIPT", response.body().string());
-                                    Toast.makeText(AttentionSpeechTest.this, response.body().string(), Toast.LENGTH_LONG).show();
+                                    res = response.body().string();
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
+                                Log.d("TRANSCRIPT",res );
+                                Log.d("REQBODY", audioString);
+                                Toast.makeText(AttentionSpeechTest.this,res, Toast.LENGTH_LONG).show();
                             }
                         });
+                        else
+                            AttentionSpeechTest.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
+                                }
+                            });
                     }
                 });
             }
