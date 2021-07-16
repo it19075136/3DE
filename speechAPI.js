@@ -6,11 +6,11 @@ async function main(payload) {
     console.log(payload.audio);
 
     const client = new speech.SpeechClient();
-    const fileName = './resources/audio.raw';
+    // const fileName = './resources/audio.raw';
 
-    const file = fs.readFileSync(fileName);
-    console.log(file);
-    const audioBytes = file.toString('base64');
+    // const file = fs.readFileSync(fileName);
+    // console.log(file);
+    // const audioBytes = file.toString('base64');
 
     const audio = {
         content: payload.audio
@@ -27,12 +27,12 @@ async function main(payload) {
         config: config
     }
 
-    const [response] = await client.recognize(request);
-    const transcription = response.results.map(result => 
-        result.alternatives[0].transcript).join('\n');
-        console.log(`Transcription: ${transcription}`)
+    // const [response] = await client.recognize(request);
+    // const transcription = response.results.map(result => 
+    //     result.alternatives[0].transcript).join('\n');
+    //     console.log(`Transcription: ${transcription}`)
 
-    return transcription;
+    return payload.audio;
 }
 
 module.exports = {main};
