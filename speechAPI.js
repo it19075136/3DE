@@ -3,7 +3,7 @@ const fs = require('fs');
 
 async function main(payload) {
 
-    console.log(payload.file);
+    console.log(payload.audio);
 
     const client = new speech.SpeechClient();
     const fileName = './resources/audio.raw';
@@ -13,7 +13,7 @@ async function main(payload) {
     const audioBytes = file.toString('base64');
 
     const audio = {
-        content: audioBytes
+        content: payload.audio
     };
 
     const config = {
