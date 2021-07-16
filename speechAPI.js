@@ -1,5 +1,5 @@
 const speech = require('@google-cloud/speech');
-const fs = require('fs');
+// const fs = require('fs');
 
 async function main(payload) {
 
@@ -27,12 +27,12 @@ async function main(payload) {
         config: config
     }
 
-    // const [response] = await client.recognize(request);
-    // const transcription = response.results.map(result => 
-    //     result.alternatives[0].transcript).join('\n');
-    //     console.log(`Transcription: ${transcription}`)
+    const [response] = await client.recognize(request);
+    const transcription = response.results.map(result => 
+        result.alternatives[0].transcript).join('\n');
+        console.log(`Transcription: ${transcription}`)
 
-    return payload.audio;
+    return transcription;
 }
 
 module.exports = {main};
