@@ -81,14 +81,11 @@ public class AttentionSpeechTest extends BaseActivity{
     private static final int CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;
     private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
     // [END recording_parameters]
-    private static final int RECORD_PERMISSIONS_REQUEST_CODE = 15623;
-    private static final String TAG = "RecordingHelper";
+    private static final String TAG = "SPEECHTEST";
 
     private static final int BUFFER_SIZE = AudioRecord.getMinBufferSize(SAMPLE_RATE_IN_HZ, CHANNEL_CONFIG, AUDIO_FORMAT);
-    private static final String RAW_FILE_PATH = Environment.getExternalStorageDirectory().getPath() + "/speech-recording.raw";
-    private static final String WAV_FILE_PATH = Environment.getExternalStorageDirectory().getPath() + "/speech-recording.wav";
-    private static final int SAMPLE_RATE = 16000;
-
+    ContextWrapper contextWrapper;
+    private String RAW_FILE_PATH,WAV_FILE_PATH;
 
     private AudioRecord audioRecord;
     private boolean isRecording = false;
@@ -114,6 +111,10 @@ public class AttentionSpeechTest extends BaseActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attention_speech_test);
 
+        contextWrapper = new ContextWrapper(getApplicationContext());
+        RAW_FILE_PATH = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC) + "/speech-recording.raw";
+        WAV_FILE_PATH = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC) + "/speech-recording.wav";
+
 //        speechBtn = findViewById(R.id.recordBtn);
         spokenWords = (MaterialTextView)findViewById(R.id.header);
         spokenWords.setMovementMethod(new ScrollingMovementMethod());
@@ -127,9 +128,6 @@ public class AttentionSpeechTest extends BaseActivity{
 
         str = new String();
         formatDate = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-
-        if(!hasRequiredPermissions(this))
-            requestRequiredPermissions(this);
 
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
 // Adding signed in user.
@@ -561,26 +559,7 @@ public class AttentionSpeechTest extends BaseActivity{
 //        Log.v(LOG_TAG, String.format("Recording stopped. Samples read: %d", shortsRead));
 //    }
 
-    public boolean hasRequiredPermissions(Context context) {
-        int recordAudioPermissionCheck = ContextCompat.checkSelfPermission(
-                context, Manifest.permission.RECORD_AUDIO);
-        int writeExternalStoragePermissionCheck = ContextCompat.checkSelfPermission(
-                context, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        return recordAudioPermissionCheck == PackageManager.PERMISSION_GRANTED &&
-                writeExternalStoragePermissionCheck == PackageManager.PERMISSION_GRANTED;
-    }
 
-    public void requestRequiredPermissions(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            activity.requestPermissions(
-                    new String[]{
-                            Manifest.permission.RECORD_AUDIO,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    },
-                    RECORD_PERMISSIONS_REQUEST_CODE
-            );
-        }
-    }
 //    private void requestRecordAudioPermission() {
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 //            String requiredPermission = Manifest.permission.RECORD_AUDIO;
