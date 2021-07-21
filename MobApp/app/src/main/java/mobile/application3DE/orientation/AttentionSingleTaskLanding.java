@@ -33,25 +33,9 @@ public class AttentionSingleTaskLanding extends BaseActivity {
 
         if(choiceIdentifier.equals("speech")){
             testintent = new Intent(this, AttentionSpeechTest.class);
-            NotificationManager notificationManager =
-                    (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
-                    && !notificationManager.isNotificationPolicyAccessGranted()) {
-                Intent intent = new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
-                this.startActivityForResult(intent,100);
-            }
-            else
-                startActivity(testintent);
+            startActivity(testintent);
         }
 
         // else for walking activity
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 100)
-            startActivity(testintent);
     }
 }

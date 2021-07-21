@@ -40,7 +40,7 @@
                     android:textAlignment="center"
                     style="@style/TextAppearance.MaterialComponents.Body1"
                     android:textSize="22sp"
-                    android:text="@string/ds_listening"/>
+                    android:text="listening..."/>
 
             </LinearLayout>
 
@@ -65,16 +65,16 @@
                     android:text="walking..."/>
 
             </LinearLayout>
+
         </LinearLayout>
+
         <ProgressBar
-            android:id="@+id/progressBar1"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_marginBottom="10dp"
-            android:layout_height="20dp"
-            android:layout_marginTop="28dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp" />
+            android:id="@+id/loadingPanel"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
+
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/header"
             android:layout_width="match_parent"

@@ -67,7 +67,7 @@ public class SignInPage extends BaseActivity {
                     if(snapshot.exists())
                         intent[0] = new Intent(getApplicationContext(), activity_choice_landing.class);
                     else if(intent[0] == null)
-                        intent[0] = new Intent(getApplicationContext(), MainActivity.class);
+                        intent[0] = new Intent(getApplicationContext(), Landing.class);
                     intent[0].putExtra("email",account.getEmail());
                     intent[0].putExtra("id",account.getId());
                     startActivity(intent[0]);
