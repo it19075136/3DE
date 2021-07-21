@@ -64,6 +64,12 @@
             android:textSize="22sp"
             />
 
+        <ProgressBar
+            android:id="@+id/loadingPanel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
+
     </LinearLayout>
 
     <TextView
