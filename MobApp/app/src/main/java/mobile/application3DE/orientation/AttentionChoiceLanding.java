@@ -21,7 +21,7 @@ public class AttentionChoiceLanding extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attention_choice_landing);
 
-        findViewById(R.id.walkingBtn).setEnabled(false);
+        walkingBtn = findViewById(R.id.walkingBtn);
         talkingBtn = findViewById(R.id.talkingBtn);
 
         talkingBtn.setOnClickListener(new View.OnClickListener() {
@@ -32,6 +32,13 @@ public class AttentionChoiceLanding extends BaseActivity {
             }
         });
 
+        walkingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                intent = new Intent(getApplicationContext(),AttentionWalkingLanding.class);
+                startActivity(intent);
+            }
+        });
 
     }
 }
