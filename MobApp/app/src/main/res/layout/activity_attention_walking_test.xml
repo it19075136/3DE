@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".orientation.AttentionWalkingTest">
+
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Status will appear here"
+        android:textAlignment="center"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:textSize="26sp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="600dp"
+        android:scrollbars="vertical"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:id="@+id/counter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.MaterialComponents.Headline4"
+            android:text="3"
+            android:textAlignment="center"
+            android:textSize="72sp" />
+
+        <ImageView
+            android:id="@+id/footStepImg"
+            android:layout_width="339dp"
+            android:layout_height="158dp"
+            android:src="@drawable/footstep" />
+
+        <ProgressBar
+            android:id="@+id/progressBar1"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_marginTop="28dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/instruct"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Walking"
+            style="@style/TextAppearance.MaterialComponents.Body1"
+            android:textSize="22sp"
+            />
+
+        <ProgressBar
+            android:id="@+id/loadingPanel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/output"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30sp"
+        style="@style/TextAppearance.MaterialComponents.Headline6"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:text="5 metres"
+        android:textAlignment="center"
+        android:textSize="30sp" />
+
+</RelativeLayout>
