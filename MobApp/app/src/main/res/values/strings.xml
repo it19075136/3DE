@@ -44,6 +44,7 @@
     <string name="start_test">Start Test</string>
     <string name="ok">OK</string>
     <string name="retry">Retry</string>
+    <string name="title_activity_attention_walking_landing">AttentionWalkingLanding</string>
 
 
 </resources>
