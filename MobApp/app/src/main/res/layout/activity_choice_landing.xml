@@ -60,7 +60,7 @@
        android:layout_height="60dp"
        android:layout_marginTop="60dp"
        android:backgroundTint="@color/teal_200"
-       android:onClick="directToTCC"
+       android:onClick="directToOrientation"
        android:text="@string/orientation"
        android:textColor="@color/black"
        android:textSize="26sp"

@@ -14,14 +14,14 @@ import com.google.firebase.database.FirebaseDatabase;
 
 
 import mobile.application3DE.models.User;
+import mobile.application3DE.utilities.BaseActivity;
 
-public class user_details_2 extends AppCompatActivity {
+public class user_details_2 extends BaseActivity {
 
     TextInputEditText g_name_,g_mobile_,g_mail_;
     User u;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference dbRef;
-    String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

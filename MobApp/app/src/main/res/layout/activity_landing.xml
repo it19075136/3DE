@@ -7,6 +7,19 @@
     android:orientation="vertical"
     tools:context=".Landing">
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/chosen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:text="Select a language"
+        android:textAlignment="center"
+        android:textSize="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/sinhala"
         style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -14,8 +27,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="49dp"
         android:layout_marginBottom="260dp"
-        android:onClick="onLangSelected"
         android:text="@string/sinhala"
+        android:onClick="onLangSelected"
         android:textColor="@color/black"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -30,15 +43,15 @@
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="260dp"
-        android:onClick="onLangSelected"
+        android:layout_marginTop="167dp"
         android:text="@string/english"
+        android:onClick="onLangSelected"
         android:textColor="@color/black"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/chosen" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

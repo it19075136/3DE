@@ -16,8 +16,9 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.Calendar;
 
 import mobile.application3DE.models.User;
+import mobile.application3DE.utilities.BaseActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     TextInputEditText dateInput, fName, lName;
     RadioGroup gender;
@@ -78,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(Validate_Inputs()) {
             Intent i = new Intent(this, user_details_2.class);
-            user = new User(id,fName.getText().toString(), lName.getText().toString(),email, dateInput.getText().toString(), gBtn.getText().toString());
+            user = new User(id,fName.getText().toString(), lName.getText().toString(),email, dateInput.getText().toString(), gBtn.getText().toString(), getIntent().getStringExtra("lang"));
             i.putExtra("user", user);
             startActivity(i);
         }

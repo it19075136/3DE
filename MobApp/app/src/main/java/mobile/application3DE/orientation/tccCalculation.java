@@ -26,8 +26,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import mobile.application3DE.R;
+import mobile.application3DE.utilities.BaseActivity;
 
-public class tccCalculation extends AppCompatActivity {
+public class tccCalculation extends BaseActivity {
 
     Intent intent = null;
     Button startBtn;
@@ -66,7 +67,7 @@ public class tccCalculation extends AppCompatActivity {
 
         userRef = databaseReference.child("users/"+currentUser);
 
-        userRef.child("TCC1completed").addValueEventListener(new ValueEventListener() {
+        userRef.child("TCC1completed").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()){

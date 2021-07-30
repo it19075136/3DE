@@ -4,15 +4,24 @@ import java.io.Serializable;
 
 public class User implements Serializable {
 
-    String id,fName,lName,dob,gender,email,guardianName,guardianMob,guardianMail;
+    String id,fName,lName,dob,gender,email,guardianName,guardianMob,guardianMail,language;
 
-    public User(String id,String fName,String lName,String email,String dob,String gender){
+    public User(String id,String fName,String lName,String email,String dob,String gender,String language){
         this.id = id;
         this.fName = fName;
         this.lName = lName;
         this.email = email;
         this.dob = dob;
         this.gender = gender;
+        this.language = language;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 
     public String getId() {
