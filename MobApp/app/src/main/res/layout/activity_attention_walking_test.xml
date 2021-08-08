@@ -6,19 +6,32 @@
     android:layout_height="match_parent"
     tools:context=".orientation.AttentionWalkingTest">
 
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginTop="600dp"
+    android:gravity="center"
+    >
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/status"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Status will appear here"
-        android:textAlignment="center"
+        android:id="@+id/instruct"
         style="@style/TextAppearance.MaterialComponents.Body1"
-        android:textSize="26sp"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="600dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:scrollbars="vertical"
-        />
+        android:text="Walking: "
+        android:textAlignment="center"
+        android:textSize="26sp" />
+
+    <ImageView
+        android:id="@+id/status"
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
+        android:src="@drawable/failure" />
+
+</LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,7 +42,7 @@
         android:orientation="vertical"
         >
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/counter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -53,24 +66,9 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp" />
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/instruct"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Walking"
-            style="@style/TextAppearance.MaterialComponents.Body1"
-            android:textSize="22sp"
-            />
-
-        <ProgressBar
-            android:id="@+id/loadingPanel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true" />
-
     </LinearLayout>
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/output"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
