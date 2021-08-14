@@ -1,5 +1,8 @@
 package mobile.application3DE.orientation;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -9,19 +12,14 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.hardware.TriggerEvent;
-import android.hardware.TriggerEventListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -37,25 +35,22 @@ import java.util.Calendar;
 import java.util.Date;
 
 import mobile.application3DE.R;
-import mobile.application3DE.utilities.BaseActivity;
 
-//@RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-public class AttentionWalkingTest extends BaseActivity implements SensorEventListener {
+public class AttentionDualTaskTestWalkBased extends AppCompatActivity implements SensorEventListener {
 
-    MaterialTextView counter,instruct,output;
+    TextView testInstruct,counter;
     ImageView status;
     ProgressBar progressBar;
-    int count = 3,activityCounter = 0;
-    SensorManager  sensorManager;
-    CountDownTimer pauseCounter,activityTimer;
+    int count = 3,activityCounter = 0;;
+    SensorManager sensorManager;
+    CountDownTimer pauseCounter,activityTimer;;
     int pauseTimer = 0;
     Sensor sensor;
     boolean walking = true;
-    float initSteps = 0;
     AlertDialog dialog;
-    float walkingSpeed = 0;
+    float walkingSpeed = 0,diff,initSteps = 0;
     String currentUser;
-    DatabaseReference userRef,singleTaskRef;
+    DatabaseReference userRef,dualTaskRef;
     SimpleDateFormat formatDate;
 
     // we will get the default FirebaseDatabase instance
@@ -63,17 +58,17 @@ public class AttentionWalkingTest extends BaseActivity implements SensorEventLis
 
     // we will get a DatabaseReference for the database root node
     DatabaseReference databaseReference = firebaseDatabase.getReference();
+    private float Finalresult;
 
-    //    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_attention_walking_test);
+        setContentView(R.layout.activity_attention_dual_task_test_walk_based);
 
+        progressBar = findViewById(R.id.progressBar);
         counter = findViewById(R.id.counter);
-        instruct = findViewById(R.id.instruct);
-        instruct.setVisibility(View.INVISIBLE);
-        output = findViewById(R.id.output);
+        testInstruct = findViewById(R.id.testInstruct);
+        testInstruct.setVisibility(View.INVISIBLE);
         status = findViewById(R.id.status);
         status.setVisibility(View.INVISIBLE);
         progressBar = findViewById(R.id.progressBar);
@@ -87,7 +82,7 @@ public class AttentionWalkingTest extends BaseActivity implements SensorEventLis
             currentUser = acct.getId();
 
         userRef = databaseReference.child("users/"+currentUser);
-        singleTaskRef = databaseReference.child("ComponentBasedResults/"+currentUser+"/Orientation/Attention/1/walking");
+        dualTaskRef = databaseReference.child("ComponentBasedResults/"+currentUser+"/Orientation/Attention/1/walking");
 //        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 //        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_SIGNIFICANT_MOTION);
 
@@ -110,7 +105,7 @@ public class AttentionWalkingTest extends BaseActivity implements SensorEventLis
 
     private void startTest() {
 
-        output.setText("Start walking in");
+        testInstruct.setText("Start Activity in");
         progressBar.setProgress(0);
         count = 3;
         counter.setText(String.valueOf(count));
@@ -136,7 +131,7 @@ public class AttentionWalkingTest extends BaseActivity implements SensorEventLis
         activityCounter = 0;
         counter.setVisibility(View.INVISIBLE);
         status.setVisibility(View.VISIBLE);
-        instruct.setVisibility(View.VISIBLE);
+        testInstruct.setVisibility(View.VISIBLE);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
@@ -146,6 +141,7 @@ public class AttentionWalkingTest extends BaseActivity implements SensorEventLis
 
     private void startWalkTest() {
 
+        walking = true;
         activityTimer = new CountDownTimer(600000, 1000) {
             @Override
             public void onTick(long l) {
@@ -154,11 +150,10 @@ public class AttentionWalkingTest extends BaseActivity implements SensorEventLis
 
             @Override
             public void onFinish() {
-                Toast.makeText(AttentionWalkingTest.this, "You failed to complete the activity, Please retry!",Toast.LENGTH_SHORT).show();
+                Toast.makeText(AttentionDualTaskTestWalkBased.this, "You failed to complete the activity, Please retry!",Toast.LENGTH_SHORT).show();
                 dialog.show();
             }
         }.start();
-        walking = true;
         if(sensor != null) {
             sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_FASTEST);
             pauseCounter = new CountDownTimer(10000, 1000) {
@@ -189,17 +184,19 @@ public class AttentionWalkingTest extends BaseActivity implements SensorEventLis
             initSteps = sensorEvent.values[0];
 
         if((sensorEvent.values[0] - initSteps) >= 50) {
-            activityTimer.cancel();
             walking = false;
-            output.setText(String.valueOf(sensorEvent.values[0] - initSteps));
+            activityTimer.cancel();
             pauseCounter.cancel();
+            testInstruct.setText(String.valueOf(sensorEvent.values[0] - initSteps));
             sensorManager.unregisterListener(this);
             walkingSpeed = (sensorEvent.values[0] - initSteps)/activityCounter;
             dialog.show();
         }
 
+
+
         if(walking) {
-            output.setText(String.valueOf(sensorEvent.values[0] - initSteps));
+            testInstruct.setText(String.valueOf(sensorEvent.values[0] - initSteps));
             progressBar.setProgress((int)(sensorEvent.values[0] - initSteps)*2);
 //            Toast.makeText(this,"WALKING", Toast.LENGTH_SHORT).show();
 //            Log.d("WALKING","Object is moving");
@@ -217,15 +214,15 @@ public class AttentionWalkingTest extends BaseActivity implements SensorEventLis
             case SensorManager.SENSOR_STATUS_ACCURACY_MEDIUM:
                 accuracy = "Normal";
                 break;
-                case SensorManager.SENSOR_STATUS_ACCURACY_LOW:
-                    accuracy = "Low";
-                    break;
-                    case SensorManager.SENSOR_STATUS_NO_CONTACT:
-                        accuracy = "Sensor has no Contact";
-                        break;
-                        case SensorManager.SENSOR_STATUS_UNRELIABLE:
-                            accuracy = "Unreliable";
-                            break;
+            case SensorManager.SENSOR_STATUS_ACCURACY_LOW:
+                accuracy = "Low";
+                break;
+            case SensorManager.SENSOR_STATUS_NO_CONTACT:
+                accuracy = "Sensor has no Contact";
+                break;
+            case SensorManager.SENSOR_STATUS_UNRELIABLE:
+                accuracy = "Unreliable";
+                break;
             default:
                 accuracy = "High";
         }
@@ -240,17 +237,28 @@ public class AttentionWalkingTest extends BaseActivity implements SensorEventLis
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
-                Toast.makeText(AttentionWalkingTest.this,"Your walking speed is "+walkingSpeed+" secs",Toast.LENGTH_SHORT).show();
-                singleTaskRef.child("SingleTask").setValue(walkingSpeed).addOnCompleteListener(new OnCompleteListener<Void>() {
+                Toast.makeText(AttentionDualTaskTestWalkBased.this,"Your walking speed is "+walkingSpeed+" secs",Toast.LENGTH_SHORT).show();
+                diff = Float.parseFloat(getIntent().getStringExtra("singleTaskResult")) - walkingSpeed;
+                if(diff < 0)
+                    diff = (float)0;
+                // add diff and result to firebase,add timestamps to user
+                //validate when you have more
+                dualTaskRef.child("dualTask").setValue(walkingSpeed).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        userRef.child("SingleTaskWalking1Completed").setValue(formatDate.format(new Date())).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        userRef.child("DualTask1WalkBasedCompleted").setValue(formatDate.format(new Date())).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                Intent dualTask = new Intent(getApplicationContext(), AttentionDualTaskStart.class);
-                                dualTask.putExtra("singleTaskWalkingResult",String.valueOf(walkingSpeed));
-                                dualTask.putExtra("originator","walkTest");
-                                startActivity(dualTask);
+                                dualTaskRef.child("difference").setValue(String.format("%.4f",diff)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        dualTaskRef.child("impairment").setValue(getFinalResult());
+//                                        resultIntent = new Intent(getApplicationContext(),AttentionResultsPage.class);
+//                                        resultIntent.putExtra("result",getFinalResult());
+//                                        resultIntent.putExtra("diff",String.format("%.4f",diff));
+//                                        startActivity(resultIntent);
+                                    }
+                                });
                             }
                         });
                     }
@@ -266,4 +274,9 @@ public class AttentionWalkingTest extends BaseActivity implements SensorEventLis
 
     }
 
+    private String getFinalResult() {
+
+        Finalresult = (diff/Float.parseFloat(getIntent().getStringExtra("singleTaskResult"))) * 100;
+        return String.format("%.2f",Finalresult);
+    }
 }
