@@ -10,8 +10,9 @@ import android.os.SystemClock;
 import android.widget.TextView;
 
 import mobile.application3DE.R;
+import mobile.application3DE.utilities.BaseActivity;
 
-public class WaitingActivity extends AppCompatActivity {
+public class WaitingActivity extends BaseActivity {
     Handler handler;
     int Seconds, Minutes, MilliSeconds,Hours ;
     long MillisecondTime, StartTime, TimeBuff, UpdateTime = 0L ;
@@ -54,8 +55,14 @@ public class WaitingActivity extends AppCompatActivity {
                 editor.putBoolean("notComplete",false);
                 editor.commit();
                 handler.removeCallbacks(runnable);
-                Intent i1 = new Intent(getApplicationContext(), SpeechTestActivity.class);
-                startActivity(i1);
+                if(pref.getBoolean("sinhala",false)){
+                    Intent i1 = new Intent(getApplicationContext(), SinhalaTestActivity.class);
+                    startActivity(i1);
+                }else{
+                    Intent i1 = new Intent(getApplicationContext(), SpeechTestActivity.class);
+                    startActivity(i1);
+                }
+
             }
         }
 

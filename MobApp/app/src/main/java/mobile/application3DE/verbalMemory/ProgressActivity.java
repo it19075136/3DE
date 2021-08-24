@@ -17,9 +17,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import mobile.application3DE.R;
+import mobile.application3DE.utilities.BaseActivity;
 import mobile.application3DE.verbalMemory.ResultActivity;
 
-public class ProgressActivity extends AppCompatActivity {
+public class ProgressActivity extends BaseActivity {
     ImageView xx,xxx;
     private DatabaseReference mDatabase;
     SharedPreferences pref ;
@@ -46,7 +47,7 @@ public class ProgressActivity extends AppCompatActivity {
                             if(pref.getBoolean("notComplete", true)){
                                 editor.putString("IR",data); // Storing string
                                 editor.commit();
-                                mDatabase.child("Result").child(pref.getString("id",null)).child("IR").setValue(data);
+                                mDatabase.child("Result").child(pref.getString("email","null")).child("IR").setValue(data);
                                 Intent i1 = new Intent(getApplicationContext(), WaitingActivity.class);
                                 i1.putExtra("value",data);
                                 startActivity(i1);
@@ -54,7 +55,7 @@ public class ProgressActivity extends AppCompatActivity {
                             else{
                                 editor.putString("DR",data); // Storing string
                                 editor.commit();
-                                mDatabase.child("Result").child(pref.getString("id",null)).child("DR").setValue(data);
+                                mDatabase.child("Result").child(pref.getString("email","null")).child("DR").setValue(data);
                                 Intent i1 = new Intent(getApplicationContext(), ResultActivity.class);
                                 i1.putExtra("value",data);
                                 startActivity(i1);

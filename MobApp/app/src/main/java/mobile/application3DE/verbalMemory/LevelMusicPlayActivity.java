@@ -21,9 +21,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 
 import mobile.application3DE.R;
+import mobile.application3DE.utilities.BaseActivity;
 import pl.droidsonroids.gif.GifImageView;
 
-public class LevelMusicPlayActivity extends AppCompatActivity {
+public class LevelMusicPlayActivity extends BaseActivity {
     MediaPlayer music;
     GifImageView gifImageView;
     Integer level = 0;
@@ -76,17 +77,32 @@ public class LevelMusicPlayActivity extends AppCompatActivity {
             public void onClick(View view)
             {
                 String value =LevelsAutoTV.getText().toString();
-                if(value.contentEquals("O/L Not Passed")){
-                    music = MediaPlayer.create(LevelMusicPlayActivity.this, R.raw.three);
+                if(value.contentEquals(getResources().getString(R.string.olfail))){
+                    if(pref.getBoolean("sinhala",false)){
+                        music = MediaPlayer.create(LevelMusicPlayActivity.this, R.raw.one1);
+
+                    }else{
+                        music = MediaPlayer.create(LevelMusicPlayActivity.this, R.raw.one);
+                    }
                     level=3;
                 }
 
-                else if(value.contentEquals("O/L Passed")){
-                    music = MediaPlayer.create(LevelMusicPlayActivity.this, R.raw.two);
+                else if(value.contentEquals(getResources().getString(R.string.olpass))){
+                    if(pref.getBoolean("sinhala",false)){
+                        music = MediaPlayer.create(LevelMusicPlayActivity.this, R.raw.two1);
+
+                    }else{
+                        music = MediaPlayer.create(LevelMusicPlayActivity.this, R.raw.two);
+                    }
                     level=2;
                 }
-                else if(value.contentEquals("A/L Passed")){
-                    music = MediaPlayer.create(LevelMusicPlayActivity.this, R.raw.one);
+                else if(value.contentEquals(getResources().getString(R.string.alpass))){
+                    if(pref.getBoolean("sinhala",false)){
+                        music = MediaPlayer.create(LevelMusicPlayActivity.this, R.raw.three1);
+
+                    }else{
+                        music = MediaPlayer.create(LevelMusicPlayActivity.this, R.raw.three);
+                    }
                     level=1;
                 }
                 else{
@@ -102,28 +118,32 @@ public class LevelMusicPlayActivity extends AppCompatActivity {
     private ArrayList<String> getLevelsList()
     {
         ArrayList<String> levels = new ArrayList<>();
-        levels.add("O/L Not Passed");
-        levels.add("O/L Passed");
-        levels.add("A/L Passed");
+        levels.add(getResources().getString(R.string.olfail));
+        levels.add(getResources().getString(R.string.olpass));
+        levels.add(getResources().getString(R.string.alpass));
         return levels;
     }
     public void showDialog(){
 
         new MaterialAlertDialogBuilder(LevelMusicPlayActivity.this)
-                .setTitle("Is Listening Complete? ")
-                .setMessage("If You are ok to go then Press OK")
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setTitle(getResources().getString(R.string.isleaningcom))
+                .setPositiveButton(getResources().getString(R.string.yesv), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
-                        Intent i1 = new Intent(getApplicationContext(), SpeechTestActivity.class);
                         editor.putString("level",level.toString()); // Storing string
                         editor.commit();
-                        i1.putExtra("level",level.toString());
-                        startActivity(i1);
+                        if(pref.getBoolean("sinhala",false)){
+                            Intent i1 = new Intent(getApplicationContext(), SinhalaTestActivity.class);
+                            i1.putExtra("level",level.toString());
+                            startActivity(i1);
+                        }else{
+                            Intent i1 = new Intent(getApplicationContext(), SpeechTestActivity.class);
+                            i1.putExtra("level",level.toString());
+                            startActivity(i1);
+                        }
                     }
                 })
-                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getResources().getString(R.string.nov), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
