@@ -154,6 +154,7 @@ public class AttentionSpeechTest extends BaseActivity{
                             public void onComplete(@NonNull Task<Void> task) {
                                 dualTask = new Intent(getApplicationContext(), AttentionDualTaskStart.class);
                                 dualTask.putExtra("singleTaskSpeechResult",getResult());
+                                dualTask.putExtra("originator","speechTest");
                                 startActivity(dualTask);
                             }
                         });
