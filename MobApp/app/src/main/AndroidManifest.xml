@@ -32,7 +32,8 @@
         android:roundIcon="@mipmap/app_logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MobApp">
-        <activity android:name=".orientation.AttentionWalkingTest"></activity>
+        <activity android:name=".orientation.AttentionDualTaskTestWalkBased"></activity>
+        <activity android:name=".orientation.AttentionWalkingTest" />
         <activity
             android:name=".orientation.AttentionWalkingLanding"
             android:label="@string/title_activity_attention_walking_landing"

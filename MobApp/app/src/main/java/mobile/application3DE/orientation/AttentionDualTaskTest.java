@@ -149,9 +149,9 @@ public class AttentionDualTaskTest extends BaseActivity {
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
-                Toast.makeText(getApplicationContext(),"Your speech rate is : "+getResult()+" wps, Previous speech rate:"+getIntent().getStringExtra("singleTaskSpeechResult")+" wps",Toast.LENGTH_LONG).show(); //shows result
+                Toast.makeText(getApplicationContext(),"Your speech rate is : "+getResult()+" wps, Previous speech rate:"+getIntent().getStringExtra("singleTaskResult")+" wps",Toast.LENGTH_LONG).show(); //shows result
                 str = "";
-                diff = Float.parseFloat(getIntent().getStringExtra("singleTaskSpeechResult")) - Float.parseFloat(getResult());
+                diff = Float.parseFloat(getIntent().getStringExtra("singleTaskResult")) - Float.parseFloat(getResult());
                 if(diff < 0)
                     diff = (float)0;
                 // add diff and result to firebase,add timestamps to user
@@ -517,7 +517,7 @@ public class AttentionDualTaskTest extends BaseActivity {
 
     private String getFinalResult() {
 
-        Finalresult = (diff/Float.parseFloat(getIntent().getStringExtra("singleTaskSpeechResult"))) * 100;
+        Finalresult = (diff/Float.parseFloat(getIntent().getStringExtra("singleTaskResult"))) * 100;
         return String.format("%.2f",Finalresult);
     }
 
