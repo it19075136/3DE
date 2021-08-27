@@ -168,6 +168,7 @@ public class AttentionDualTaskTest extends BaseActivity {
                                         resultRef.child("impairment").setValue(getFinalResult());
                                         resultIntent = new Intent(getApplicationContext(),AttentionResultsPage.class);
                                         resultIntent.putExtra("result",getFinalResult());
+                                        resultIntent.putExtra("originator","speech");
                                         resultIntent.putExtra("diff",String.format("%.4f",diff));
                                         startActivity(resultIntent);
                                     }

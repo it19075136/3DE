@@ -52,6 +52,7 @@ public class AttentionDualTaskTestWalkBased extends AppCompatActivity implements
     String currentUser;
     DatabaseReference userRef,dualTaskRef;
     SimpleDateFormat formatDate;
+    Intent resultIntent;
 
     // we will get the default FirebaseDatabase instance
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -253,10 +254,11 @@ public class AttentionDualTaskTestWalkBased extends AppCompatActivity implements
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         dualTaskRef.child("impairment").setValue(getFinalResult());
-//                                        resultIntent = new Intent(getApplicationContext(),AttentionResultsPage.class);
-//                                        resultIntent.putExtra("result",getFinalResult());
-//                                        resultIntent.putExtra("diff",String.format("%.4f",diff));
-//                                        startActivity(resultIntent);
+                                        resultIntent = new Intent(getApplicationContext(),AttentionResultsPage.class);
+                                        resultIntent.putExtra("result",getFinalResult());
+                                        resultIntent.putExtra("originator","walk");
+                                        resultIntent.putExtra("diff",String.format("%.4f",diff));
+                                        startActivity(resultIntent);
                                     }
                                 });
                             }
