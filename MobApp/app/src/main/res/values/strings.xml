@@ -46,5 +46,30 @@
     <string name="retry">Retry</string>
     <string name="title_activity_attention_walking_landing">AttentionWalkingLanding</string>
 
+    <string name="olfail">O/L Failed</string>
+    <string name="olpass">O/L Passed</string>
+    <string name="alpass">A/L Passed</string>
+    <string name="play">Hit Play Button to Play</string>
+    <string name="isleaningcom">Is Listening Complete?</string>
+    <string name="yesv">OK</string>
+    <string name="nov">CANCEL</string>
+
+    <string name="procced">PROCEED</string>
+    <string name="processing">PROCESSING...</string>
+    <string name="next_test">NEXT TEST IN</string>
+    <string name="result">RESULTS</string>
+    <string name="memorystuts_pass">Memory Status : Pass</string>
+    <string name="memorystuts_fail">Memory Status : Fail</string>
+    <string name="pass">Pass</string>
+    <string name="fail">Fail</string>
+    <string name="risklevel_no">Risk Level : No</string>
+    <string name="risklevel_low">Risk Level : Low</string>
+    <string name="risklevel_medium">Risk Level : Medium</string>
+    <string name="risklevel_high">Risk Level : High</string>
+    <string name="has">Yes</string>
+    <string name="hasnot">No</string>
+    <string name="immediate">Immediate Recall :</string>
+    <string name="delayed">Delayed Recall :</string>
+    <string name="selectlevel">Select Your Level</string>
 
 </resources>
