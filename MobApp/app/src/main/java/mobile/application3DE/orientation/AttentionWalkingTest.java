@@ -240,21 +240,27 @@ public class AttentionWalkingTest extends BaseActivity implements SensorEventLis
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
-                Toast.makeText(AttentionWalkingTest.this,"Your walking speed is "+walkingSpeed+" secs",Toast.LENGTH_SHORT).show();
-                singleTaskRef.child("SingleTask").setValue(walkingSpeed).addOnCompleteListener(new OnCompleteListener<Void>() {
+                Toast.makeText(AttentionWalkingTest.this,"Your walking speed is "+walkingSpeed/2+" secs per metre",Toast.LENGTH_SHORT).show();
+                Intent dualTask = new Intent(getApplicationContext(), AttentionDualTaskStart.class);
+                dualTask.putExtra("singleTaskWalkingResult",String.valueOf(walkingSpeed/2));
+                dualTask.putExtra("originator","walkTest");
+
+                if (getIntent().getStringExtra("type") == null)
+                    singleTaskRef.child("SingleTask").setValue(walkingSpeed/2).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         userRef.child("SingleTaskWalking1Completed").setValue(formatDate.format(new Date())).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                Intent dualTask = new Intent(getApplicationContext(), AttentionDualTaskStart.class);
-                                dualTask.putExtra("singleTaskWalkingResult",String.valueOf(walkingSpeed));
-                                dualTask.putExtra("originator","walkTest");
                                 startActivity(dualTask);
                             }
                         });
                     }
                 });
+                else{
+                    dualTask.putExtra("type","once");
+                    startActivity(dualTask);
+                }
             }
         });
         builder.setNegativeButton(R.string.retry, new DialogInterface.OnClickListener() {

@@ -11,7 +11,7 @@ import mobile.application3DE.R;
 public class AttentionDualTaskStart extends AppCompatActivity {
 
     Intent dualTaskTest;
-    String originator;
+    String originator,type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,11 +25,13 @@ public class AttentionDualTaskStart extends AppCompatActivity {
     public void directToDualTaskTest(View view) {
 
         dualTaskTest = new Intent(getApplicationContext(),AttentionDualTaskInstruction.class);
-        if(originator == "speechTest")
+        if(originator.equals("speechTest"))
             dualTaskTest.putExtra("singleTaskResult",getIntent().getStringExtra("singleTaskSpeechResult"));
         else
             dualTaskTest.putExtra("singleTaskResult", getIntent().getStringExtra("singleTaskWalkingResult"));
         dualTaskTest.putExtra("originator",originator);
+        if (getIntent().getStringExtra("type") != null)
+            dualTaskTest.putExtra("type","once");
         startActivity(dualTaskTest);
 
     }

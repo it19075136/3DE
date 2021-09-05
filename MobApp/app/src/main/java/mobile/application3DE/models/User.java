@@ -16,6 +16,9 @@ public class User implements Serializable {
         this.language = language;
     }
 
+    public User() {
+    }
+
     public String getLanguage() {
         return language;
     }
