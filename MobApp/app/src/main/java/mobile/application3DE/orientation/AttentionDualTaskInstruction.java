@@ -29,6 +29,8 @@ public class AttentionDualTaskInstruction extends AppCompatActivity {
 
     public void startPage(View view) {
         startDual.putExtra("singleTaskResult",getIntent().getStringExtra("singleTaskResult"));
+        if (getIntent().getStringExtra("type") != null)
+            startDual.putExtra("type","once");
         startActivity(startDual);
     }
 

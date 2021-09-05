@@ -32,7 +32,11 @@
         android:roundIcon="@mipmap/app_logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MobApp">
-        <activity android:name=".orientation.AttentionDualTaskTestWalkBased"></activity>
+        <activity
+            android:name=".ProfileManagement"
+            android:label="@string/title_activity_profile_management"
+            android:theme="@style/Theme.MobApp.NoActionBar"></activity>
+        <activity android:name=".orientation.AttentionDualTaskTestWalkBased" />
         <activity android:name=".orientation.AttentionWalkingTest" />
         <activity
             android:name=".orientation.AttentionWalkingLanding"
@@ -60,10 +64,11 @@
             android:name=".LevelMusicPlayActivity"
             android:label="@string/title_activity_level_music_play"
             android:theme="@style/Theme.MobApp.NoActionBar" />
-        <activity android:name=".SpeechTestActivity" /> <!-- check if largeHeap is ok to use -->
+        <activity android:name=".SpeechTestActivity" />
         <activity
             android:name=".activity_choice_landing"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MobApp.NoActionBar" />
         <activity
             android:name=".orientation.TccImageLayout"
             android:screenOrientation="portrait" />
