@@ -49,5 +49,6 @@
     <string name="navigation_drawer_close">Close Navigation Drawer</string>
     <string name="update">Update</string>
     <string name="add">Add</string>
+    <string name="title_activity_profile_management">ProfileManagement</string>
 
 </resources>

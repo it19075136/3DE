@@ -52,6 +52,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import mobile.application3DE.R;
+import mobile.application3DE.models.Result;
 import mobile.application3DE.utilities.BaseActivity;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -146,20 +147,26 @@ public class AttentionSpeechTest extends BaseActivity{
                 dialog.cancel();
                 Toast.makeText(getApplicationContext(),"Your speech rate is : "+getResult()+" wps",Toast.LENGTH_LONG).show(); //shows result
                 str = "";
+                dualTask = new Intent(getApplicationContext(), AttentionDualTaskStart.class);
+                dualTask.putExtra("singleTaskSpeechResult",getResult());
+                dualTask.putExtra("originator","speechTest");
+
+                if (getIntent().getStringExtra("type") == null)
                 singleTaskRef.child("SingleTask").setValue(getResult()).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         userRef.child("SingleTaskSpeech1Completed").setValue(formatDate.format(new Date())).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                dualTask = new Intent(getApplicationContext(), AttentionDualTaskStart.class);
-                                dualTask.putExtra("singleTaskSpeechResult",getResult());
-                                dualTask.putExtra("originator","speechTest");
                                 startActivity(dualTask);
                             }
                         });
                     }
                 });
+                else{
+                    dualTask.putExtra("type","once");
+                    startActivity(dualTask);
+                }
             }
         });
         builder.setNegativeButton(R.string.retry, new DialogInterface.OnClickListener() {

@@ -35,6 +35,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import mobile.application3DE.R;
+import mobile.application3DE.models.Result;
 
 public class AttentionDualTaskTestWalkBased extends AppCompatActivity implements SensorEventListener {
 
@@ -49,8 +50,8 @@ public class AttentionDualTaskTestWalkBased extends AppCompatActivity implements
     boolean walking = true;
     AlertDialog dialog;
     float walkingSpeed = 0,diff,initSteps = 0;
-    String currentUser;
-    DatabaseReference userRef,dualTaskRef;
+    String currentUser,type = "gen";
+    DatabaseReference userRef,dualTaskRef,attentionRef;
     SimpleDateFormat formatDate;
     Intent resultIntent;
 
@@ -82,8 +83,12 @@ public class AttentionDualTaskTestWalkBased extends AppCompatActivity implements
         if(acct != null)
             currentUser = acct.getId();
 
+        if (getIntent().getStringExtra("type") != null)
+            type = "once";
+
         userRef = databaseReference.child("users/"+currentUser);
         dualTaskRef = databaseReference.child("ComponentBasedResults/"+currentUser+"/Orientation/Attention/1/walking");
+        attentionRef = databaseReference.child("AttentionResults/"+currentUser+"/Orientation/Attention/walking");
 //        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 //        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_SIGNIFICANT_MOTION);
 
@@ -238,31 +243,39 @@ public class AttentionDualTaskTestWalkBased extends AppCompatActivity implements
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
-                Toast.makeText(AttentionDualTaskTestWalkBased.this,"Your walking speed is "+walkingSpeed+" secs",Toast.LENGTH_SHORT).show();
-                diff = Float.parseFloat(getIntent().getStringExtra("singleTaskResult")) - walkingSpeed;
+                Toast.makeText(AttentionDualTaskTestWalkBased.this,"Your walking speed is "+walkingSpeed/2+" secs per metre",Toast.LENGTH_SHORT).show();
+                diff = Float.parseFloat(getIntent().getStringExtra("singleTaskResult")) - walkingSpeed/2;
                 if(diff < 0)
                     diff = (float)0;
                 // add diff and result to firebase,add timestamps to user
                 //validate when you have more
-                dualTaskRef.child("dualTask").setValue(walkingSpeed).addOnCompleteListener(new OnCompleteListener<Void>() {
+                attentionRef.child(formatDate.format(new Date())).setValue(new Result(type,formatDate.format(new Date()),getIntent().getStringExtra("singleTaskResult"),String.valueOf(walkingSpeed/2),getFinalResult(),String.format("%.4f",diff))).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        userRef.child("DualTask1WalkBasedCompleted").setValue(formatDate.format(new Date())).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        resultIntent = new Intent(getApplicationContext(),AttentionResultsPage.class);
+                        resultIntent.putExtra("result",getFinalResult());
+                        resultIntent.putExtra("originator","walk");
+                        resultIntent.putExtra("diff",String.format("%.4f",diff));
+                        if (type.equals("gen"))
+                            dualTaskRef.child("dualTask").setValue(walkingSpeed/2).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                dualTaskRef.child("difference").setValue(String.format("%.4f",diff)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                userRef.child("DualTask1WalkBasedCompleted").setValue(formatDate.format(new Date())).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-                                        dualTaskRef.child("impairment").setValue(getFinalResult());
-                                        resultIntent = new Intent(getApplicationContext(),AttentionResultsPage.class);
-                                        resultIntent.putExtra("result",getFinalResult());
-                                        resultIntent.putExtra("originator","walk");
-                                        resultIntent.putExtra("diff",String.format("%.4f",diff));
-                                        startActivity(resultIntent);
+                                        dualTaskRef.child("difference").setValue(String.format("%.4f",diff)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                dualTaskRef.child("impairment").setValue(getFinalResult());
+                                                startActivity(resultIntent);
+                                            }
+                                        });
                                     }
                                 });
                             }
                         });
+                        else
+                            startActivity(resultIntent);
                     }
                 });
             }

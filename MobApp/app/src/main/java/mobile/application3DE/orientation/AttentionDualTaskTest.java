@@ -53,6 +53,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import mobile.application3DE.R;
+import mobile.application3DE.models.Result;
 import mobile.application3DE.utilities.BaseActivity;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -68,6 +69,7 @@ public class AttentionDualTaskTest extends BaseActivity {
     MaterialTextView spokenWords;
     TextView counter,walking,listening,instruct;
     int count = 3,recordingTimer = 0,speechTime = 0;
+    String type = "gen";
 
     // [START recording_parameters]
     private static final int AUDIO_SOURCE = MediaRecorder.AudioSource.UNPROCESSED;
@@ -87,10 +89,10 @@ public class AttentionDualTaskTest extends BaseActivity {
 
     CountDownTimer countDownTimer;
     private ProgressBar loading;
-    AlertDialog dialog,dialogDualTask;
-    Intent speechIntent,resultIntent;
+    AlertDialog dialog;
+    Intent resultIntent;
     String str,currentUser,lang;
-    DatabaseReference userRef,dualTaskRef,resultRef;
+    DatabaseReference userRef,dualTaskRef,attentionRef;
     SimpleDateFormat formatDate;
     Float diff,Finalresult;
     OkHttpClient client;
@@ -138,9 +140,12 @@ public class AttentionDualTaskTest extends BaseActivity {
         if(acct != null)
             currentUser = acct.getId();
 
+        if (getIntent().getStringExtra("type") != null)
+            type = "once";
+
         userRef = databaseReference.child("users/"+currentUser);
         dualTaskRef = databaseReference.child("ComponentBasedResults/"+currentUser+"/Orientation/Attention/1/Talking");
-        resultRef = databaseReference.child("ComponentBasedResults/"+currentUser+"/Orientation/Attention/1");
+        attentionRef = databaseReference.child("AttentionResults/"+currentUser+"/Orientation/Attention/Talking");
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Do you confirm your recording?")
@@ -156,25 +161,34 @@ public class AttentionDualTaskTest extends BaseActivity {
                     diff = (float)0;
                 // add diff and result to firebase,add timestamps to user
                 //validate when you have more
-                dualTaskRef.child("dualTask").setValue(getResult()).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                attentionRef.child(formatDate.format(new Date())).setValue(new Result(type,formatDate.format(new Date()),getIntent().getStringExtra("singleTaskResult"),getResult(),getFinalResult(),String.format("%.4f",diff))).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        userRef.child("DualTask1Completed").setValue(formatDate.format(new Date())).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        resultIntent = new Intent(getApplicationContext(),AttentionResultsPage.class);
+                        resultIntent.putExtra("result",getFinalResult());
+                        resultIntent.putExtra("originator","speech");
+                        resultIntent.putExtra("diff",String.format("%.4f",diff));
+                        if (type.equals("gen"))
+                        dualTaskRef.child("dualTask").setValue(getResult()).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                resultRef.child("difference").setValue(String.format("%.4f",diff)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                dualTaskRef.child("impairment").setValue(getFinalResult());
+                                userRef.child("DualTask1Completed").setValue(formatDate.format(new Date())).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-                                        resultRef.child("impairment").setValue(getFinalResult());
-                                        resultIntent = new Intent(getApplicationContext(),AttentionResultsPage.class);
-                                        resultIntent.putExtra("result",getFinalResult());
-                                        resultIntent.putExtra("originator","speech");
-                                        resultIntent.putExtra("diff",String.format("%.4f",diff));
-                                        startActivity(resultIntent);
+                                        dualTaskRef.child("difference").setValue(String.format("%.4f",diff)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                startActivity(resultIntent);
+                                            }
+                                        });
                                     }
                                 });
                             }
                         });
+                        else
+                            startActivity(resultIntent);
                     }
                 });
             }

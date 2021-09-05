@@ -32,7 +32,10 @@
         android:roundIcon="@mipmap/app_logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MobApp">
-        <activity android:name=".UserProfile"></activity>
+        <activity
+            android:name=".ProfileManagement"
+            android:label="@string/title_activity_profile_management"
+            android:theme="@style/Theme.MobApp.NoActionBar"></activity>
         <activity android:name=".orientation.AttentionDualTaskTestWalkBased" />
         <activity android:name=".orientation.AttentionWalkingTest" />
         <activity

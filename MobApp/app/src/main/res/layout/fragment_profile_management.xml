@@ -3,20 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context=".UserProfile">
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/textView"
-        style="@style/Widget.MaterialComponents.TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:text="@string/user_details"
-        android:textColor="@color/black"
-        android:textSize="26sp" />
+    tools:context=".UserDetails">
 
     <!--First Name-->
     <com.google.android.material.textfield.TextInputLayout
@@ -100,49 +90,7 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/guardianHeader"
-        style="@style/Widget.MaterialComponents.TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:text="@string/guardian_details"
-        android:textColor="@color/black"
-        android:textSize="26sp" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20sp"
-        android:orientation="horizontal">
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/guardianName"
-            style="@style/TextAppearance.MaterialComponents.Body1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginTop="50dp"
-            android:text="@string/guardian_name"
-            android:textColor="@color/black"
-            android:textSize="26sp" />
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="20dp"
-            android:src="@drawable/ic_baseline_edit_24" />
-
-    </LinearLayout>
-
     <!--Submit Button-->
-    <!--Add Guardian Button-->
-    <ImageView
-        android:id="@+id/addGuard"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/ic_baseline_add_circle_24" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/submitBtn"
@@ -150,7 +98,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:onClick="update"
         android:text="@string/update" />
 
 </LinearLayout>

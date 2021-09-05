@@ -23,6 +23,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import mobile.application3DE.decisionMaking.Dec_making_task;
+import mobile.application3DE.orientation.AttentionChoiceLanding;
 import mobile.application3DE.orientation.OrientationChoice;
 import mobile.application3DE.orientation.tccCalculation;
 import mobile.application3DE.utilities.BaseActivity;
@@ -107,10 +108,15 @@ public class activity_choice_landing extends BaseActivity implements NavigationV
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_account:
-                i = new Intent(this, UserProfile.class);
+                i = new Intent(this, ProfileManagement.class);
                 startActivity(i);
                 break;
-            case R.id.nav_settings:
+            case R.id.nav_attemtion_test:
+                i = new Intent(this, AttentionChoiceLanding.class);
+                i.putExtra("type","once");
+                startActivity(i);
+                break;
+                case R.id.nav_settings:
 
                 break;
             case R.id.nav_help:

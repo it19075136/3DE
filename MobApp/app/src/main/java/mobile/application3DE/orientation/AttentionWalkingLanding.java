@@ -39,7 +39,8 @@ public class AttentionWalkingLanding extends BaseActivity {
                 requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 100);
             }
         }
-
+        if (getIntent().getStringExtra("type") != null)
+            intent.putExtra("type","once");
         startActivity(intent);
     }
 }
