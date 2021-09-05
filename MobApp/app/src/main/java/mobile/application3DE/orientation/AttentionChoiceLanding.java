@@ -28,6 +28,8 @@ public class AttentionChoiceLanding extends BaseActivity {
             @Override
             public void onClick(View view) {
                 intent = new Intent(getApplicationContext(), AttentionSpeechLanding.class);
+                if (getIntent().getStringExtra("type") != null)
+                    intent.putExtra("type","once");
                 startActivity(intent);
             }
         });
@@ -36,6 +38,8 @@ public class AttentionChoiceLanding extends BaseActivity {
             @Override
             public void onClick(View view) {
                 intent = new Intent(getApplicationContext(),AttentionWalkingLanding.class);
+                if (getIntent().getStringExtra("type") != null)
+                    intent.putExtra("type","once");
                 startActivity(intent);
             }
         });
