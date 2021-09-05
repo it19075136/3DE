@@ -1,19 +1,19 @@
 const speech = require('@google-cloud/speech');
-const fs = require('fs');
+// const fs = require('fs');
 
 async function main(payload) {
 
-    console.log(payload.file);
+    console.log(payload.audio);
 
     const client = new speech.SpeechClient();
-    const fileName = './resources/audio.raw';
+    // const fileName = './resources/audio.raw';
 
-    const file = fs.readFileSync(fileName);
-    console.log(file);
-    const audioBytes = file.toString('base64');
+    // const file = fs.readFileSync(fileName);
+    // console.log(file);
+    // const audioBytes = file.toString('base64');
 
     const audio = {
-        content: audioBytes
+        content: payload.audio
     };
 
     const config = {
