@@ -10,6 +10,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,14 +27,18 @@ public class ProgressActivity extends BaseActivity {
     private DatabaseReference mDatabase;
     SharedPreferences pref ;
     SharedPreferences.Editor editor;
+    GoogleSignInAccount acc;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_progress);
+        acc = GoogleSignIn.getLastSignedInAccount(this);
         xx=findViewById(R.id.xx);
         mDatabase = FirebaseDatabase.getInstance().getReference();
         xxx=findViewById(R.id.xxx);
         pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+
         editor = pref.edit();
         final Animation anim = AnimationUtils.loadAnimation(this, R.anim.animationrotate);
         xx.startAnimation(anim);
@@ -47,7 +53,7 @@ public class ProgressActivity extends BaseActivity {
                             if(pref.getBoolean("notComplete", true)){
                                 editor.putString("IR",data); // Storing string
                                 editor.commit();
-                                mDatabase.child("Result").child(pref.getString("email","null")).child("IR").setValue(data);
+                                mDatabase.child("ComponentBasedResults").child(acc.getId()).child("verbalMemory").child("IR").setValue(data);
                                 Intent i1 = new Intent(getApplicationContext(), WaitingActivity.class);
                                 i1.putExtra("value",data);
                                 startActivity(i1);
@@ -55,7 +61,7 @@ public class ProgressActivity extends BaseActivity {
                             else{
                                 editor.putString("DR",data); // Storing string
                                 editor.commit();
-                                mDatabase.child("Result").child(pref.getString("email","null")).child("DR").setValue(data);
+                                mDatabase.child("ComponentBasedResults").child(acc.getId()).child("verbalMemory").child("DR").setValue(data);
                                 Intent i1 = new Intent(getApplicationContext(), ResultActivity.class);
                                 i1.putExtra("value",data);
                                 startActivity(i1);

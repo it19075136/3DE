@@ -20,9 +20,10 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import mobile.application3DE.R;
+import mobile.application3DE.utilities.BaseActivity;
 import mobile.application3DE.verbalMemory.ProgressActivity;
 
-public class SpeechTestActivity extends AppCompatActivity {
+public class SpeechTestActivity extends BaseActivity {
     private static final int REQ_CODE_SPEECH_INPUT = 100;
     private TextView mVoiceInputTv;
     private ImageButton mSpeakBtn;
