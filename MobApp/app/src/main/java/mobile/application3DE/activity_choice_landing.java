@@ -20,6 +20,7 @@ import mobile.application3DE.decisionMaking.Dec_making_task;
 import mobile.application3DE.orientation.OrientationChoice;
 import mobile.application3DE.orientation.tccCalculation;
 import mobile.application3DE.utilities.BaseActivity;
+import mobile.application3DE.verbalMemory.LevelMusicPlayActivity;
 
 public class activity_choice_landing extends BaseActivity {
 
@@ -48,7 +49,7 @@ public class activity_choice_landing extends BaseActivity {
         memoryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                i = new Intent(getApplicationContext(), mobile.application3DE.LevelMusicPlayActivity.class);
+                i = new Intent(getApplicationContext(), LevelMusicPlayActivity.class);
                 startActivity(i);
             }
         });
