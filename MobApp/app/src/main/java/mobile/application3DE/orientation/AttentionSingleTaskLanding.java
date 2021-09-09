@@ -44,6 +44,9 @@ public class AttentionSingleTaskLanding extends BaseActivity {
             testintent = new Intent(this, AttentionWalkingTest.class);
         }
 
+        if (getIntent().getStringExtra("type") != null)
+            testintent.putExtra("type","once");
+
     }
 
     public void directToTest(View view) {

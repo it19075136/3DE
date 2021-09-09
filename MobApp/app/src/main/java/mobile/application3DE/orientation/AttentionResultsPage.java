@@ -11,6 +11,7 @@ import mobile.application3DE.R;
 public class AttentionResultsPage extends AppCompatActivity {
 
     MaterialTextView diff,results;
+    String diffText,resultsText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,8 +21,21 @@ public class AttentionResultsPage extends AppCompatActivity {
         diff = findViewById(R.id.diff);
         results = findViewById(R.id.result);
 
-        diff.setText("Speech rate difference: " + getIntent().getStringExtra("diff"));
-        results.setText("Attention impairment: "+getIntent().getStringExtra("result")+"%");
+        switch (getIntent().getStringExtra("originator")){
+            case "walk":
+                diffText = "Walk speed difference: ";
+                resultsText = "Attention impairment: ";
+                break;
+            case "speech":
+                diffText = "Speech rate difference: ";
+                resultsText = "Attention impairment: ";
+                break;
+            default:
+                break;
+        }
+
+        diff.setText(diffText+ getIntent().getStringExtra("diff"));
+        results.setText(resultsText+getIntent().getStringExtra("result")+"%");
 
     }
 
