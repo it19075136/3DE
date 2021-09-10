@@ -27,6 +27,7 @@ import mobile.application3DE.orientation.AttentionChoiceLanding;
 import mobile.application3DE.orientation.OrientationChoice;
 import mobile.application3DE.orientation.tccCalculation;
 import mobile.application3DE.utilities.BaseActivity;
+import mobile.application3DE.verbalMemory.LevelMusicPlayActivity;
 
 public class activity_choice_landing extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -63,13 +64,14 @@ public class activity_choice_landing extends BaseActivity implements NavigationV
 
         googleSignInClient = GoogleSignIn.getClient(this, gso);
 
-//        memoryBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                i = new Intent(getApplicationContext(), Level.class);
-//                startActivity(i);
-//            }
-//        });
+        memoryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                i = new Intent(getApplicationContext(), LevelMusicPlayActivity.class);
+                startActivity(i);
+            }
+        });
+
         decisionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

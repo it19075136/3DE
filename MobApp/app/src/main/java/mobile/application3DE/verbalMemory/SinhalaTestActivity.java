@@ -18,6 +18,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -26,20 +29,23 @@ import java.util.Arrays;
 import java.util.List;
 
 import mobile.application3DE.R;
+import mobile.application3DE.utilities.BaseActivity;
 import mobile.application3DE.verbalMemory.models.Words;
 
 
-public class SinhalaTestActivity extends AppCompatActivity {
+public class SinhalaTestActivity extends BaseActivity {
     MyCustomAdapter dataAdapter = null;
     Integer level;
     String testResult="";
     SharedPreferences pref ;
+    GoogleSignInAccount acc;
     SharedPreferences.Editor editor;
     private DatabaseReference mDatabase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sinhala_test);
+        acc = GoogleSignIn.getLastSignedInAccount(this);
         mDatabase = FirebaseDatabase.getInstance().getReference();
         pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
         editor = pref.edit();
@@ -184,14 +190,14 @@ public class SinhalaTestActivity extends AppCompatActivity {
                 if(pref.getBoolean("notComplete", true)){
                     editor.putString("IR",data); // Storing string
                     editor.commit();
-                    mDatabase.child("Result").child(pref.getString("email","null")).child("IR").setValue(data);
+                    mDatabase.child("ComponentBasedResults").child(acc.getId()).child("verbalMemory").child("IR").setValue(data);
                     Intent i1 = new Intent(getApplicationContext(), WaitingActivity.class);
                     i1.putExtra("value",data);
                     startActivity(i1);
                 }else{
                     editor.putString("DR",data); // Storing string
                     editor.commit();
-                    mDatabase.child("Result").child(pref.getString("email","null")).child("DR").setValue(data);
+                    mDatabase.child("ComponentBasedResults").child(acc.getId()).child("verbalMemory").child("DR").setValue(data);
                     Intent i1 = new Intent(getApplicationContext(), ResultActivity.class);
                     i1.putExtra("value",data);
                     startActivity(i1);
