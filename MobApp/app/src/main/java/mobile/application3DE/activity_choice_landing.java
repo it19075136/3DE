@@ -71,6 +71,7 @@ public class activity_choice_landing extends BaseActivity implements NavigationV
                 startActivity(i);
             }
         });
+
         decisionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
