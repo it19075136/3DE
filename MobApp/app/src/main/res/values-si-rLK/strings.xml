@@ -16,6 +16,7 @@
     <string name="guardian_mail">භාරකරුගේ ඊ-තැපෑල</string>
     <string name="language">සිංහල</string>
     <string name="g_sign_in">ගූගල් සමඟ පුරනය වන්න</string>
+
     <string name="olfail">සාමාන්‍ය පෙල අසමත්</string>
     <string name="olpass">සාමාන්‍ය පෙල සමත්</string>
     <string name="alpass">උසස් පෙල සමත්</string>

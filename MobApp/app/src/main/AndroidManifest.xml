@@ -56,15 +56,15 @@
             android:screenOrientation="portrait" />
         <activity android:name=".decisionMaking.Dec_making_task" />
         <activity
-            android:name=".ResultActivity"
+            android:name=".verbalMemory.ResultActivity"
             android:label="@string/title_activity_result"
             android:theme="@style/Theme.MobApp.NoActionBar" />
-        <activity android:name=".ProgressActivity" />
+        <activity android:name=".verbalMemory.ProgressActivity" />
         <activity
-            android:name=".LevelMusicPlayActivity"
+            android:name=".verbalMemory.LevelMusicPlayActivity"
             android:label="@string/title_activity_level_music_play"
             android:theme="@style/Theme.MobApp.NoActionBar" />
-        <activity android:name=".SpeechTestActivity" />
+        <activity android:name=".verbalMemory.SpeechTestActivity" />
         <activity
             android:name=".activity_choice_landing"
             android:screenOrientation="portrait"

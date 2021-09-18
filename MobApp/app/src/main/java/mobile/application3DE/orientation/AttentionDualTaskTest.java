@@ -250,7 +250,7 @@ public class AttentionDualTaskTest extends BaseActivity {
                         Log.d(TAG,"Recording failed");
                     }
                 });
-                countDownTimer = new CountDownTimer(15000,1000){
+                countDownTimer = new CountDownTimer(40000,1000){
 
                     @Override
                     public void onTick(long l) {
@@ -262,7 +262,7 @@ public class AttentionDualTaskTest extends BaseActivity {
                         ToneGenerator toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
                         toneGen.startTone(ToneGenerator.TONE_PROP_BEEP,3000);
                         stopRecording();
-                        speechTime = 15;
+                        speechTime = 40;
                         Toast.makeText(getApplicationContext(),String.valueOf(speechTime) + " seconds",Toast.LENGTH_SHORT).show();
                         recordingTimer = 0;
                         instruct.setText("Please wait...");

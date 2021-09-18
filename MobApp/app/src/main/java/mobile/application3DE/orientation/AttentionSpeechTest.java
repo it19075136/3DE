@@ -228,7 +228,7 @@ public class AttentionSpeechTest extends BaseActivity{
                         Log.d(TAG,"Recording failed");
                     }
                 });
-                countDownTimer = new CountDownTimer(15000,1000){
+                countDownTimer = new CountDownTimer(40000,1000){
 
                     @Override
                     public void onTick(long l) {
@@ -238,7 +238,7 @@ public class AttentionSpeechTest extends BaseActivity{
                     @Override
                     public void onFinish() {
                         stopRecording();
-                        speechTime = 15;
+                        speechTime = 40;
                         Toast.makeText(getApplicationContext(),String.valueOf(speechTime) + " seconds",Toast.LENGTH_SHORT).show();
                         recordingTimer = 0;
                         instruct.setText("Please wait...");
@@ -499,6 +499,7 @@ public class AttentionSpeechTest extends BaseActivity{
         return littleEndianBytes;
     }
 
+    // word count calculation
     private String getResult() {
 
         String spokenText = spokenWords.getText().toString();
