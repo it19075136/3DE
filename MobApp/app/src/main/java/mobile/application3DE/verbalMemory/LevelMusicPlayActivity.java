@@ -22,11 +22,11 @@ import java.util.ArrayList;
 
 import mobile.application3DE.R;
 import mobile.application3DE.utilities.BaseActivity;
-import pl.droidsonroids.gif.GifImageView;
+//import pl.droidsonroids.gif.GifImageView;
 
 public class LevelMusicPlayActivity extends BaseActivity {
     MediaPlayer music;
-    GifImageView gifImageView;
+//    GifImageView gifImageView;
     Integer level = 0;
     Button submitButton,start;
     SharedPreferences pref ;
@@ -35,7 +35,7 @@ public class LevelMusicPlayActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_level_music_play);
-        gifImageView=findViewById(R.id.animgif);
+//        gifImageView=findViewById(R.id.animgif);
         pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
         editor = pref.edit();
         editor.putBoolean("notComplete",true);
