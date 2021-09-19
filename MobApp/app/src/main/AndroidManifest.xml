@@ -65,6 +65,8 @@
             android:label="@string/title_activity_level_music_play"
             android:theme="@style/Theme.MobApp.NoActionBar" />
         <activity android:name=".verbalMemory.SpeechTestActivity" />
+        <activity android:name=".verbalMemory.WaitingActivity" />
+        <activity android:name=".verbalMemory.SinhalaTestActivity" />
         <activity
             android:name=".activity_choice_landing"
             android:screenOrientation="portrait"

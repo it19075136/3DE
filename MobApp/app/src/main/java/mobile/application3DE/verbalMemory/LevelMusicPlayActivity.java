@@ -80,7 +80,6 @@ public class LevelMusicPlayActivity extends BaseActivity {
                 if(value.contentEquals(getResources().getString(R.string.olfail))){
                     if(pref.getBoolean("sinhala",false)){
                         music = MediaPlayer.create(LevelMusicPlayActivity.this, R.raw.one1);
-
                     }else{
                         music = MediaPlayer.create(LevelMusicPlayActivity.this, R.raw.one);
                     }
@@ -132,7 +131,7 @@ public class LevelMusicPlayActivity extends BaseActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         editor.putString("level",level.toString()); // Storing string
                         editor.commit();
-                        if(pref.getBoolean("sinhala",false)){
+                        if(getString(R.string.language).equals(getString(R.string.sinhala))){
                             Intent i1 = new Intent(getApplicationContext(), SinhalaTestActivity.class);
                             i1.putExtra("level",level.toString());
                             startActivity(i1);
