@@ -78,7 +78,7 @@ public class LevelMusicPlayActivity extends BaseActivity {
             {
                 String value =LevelsAutoTV.getText().toString();
                 if(value.contentEquals(getResources().getString(R.string.olfail))){
-                    if(pref.getBoolean("sinhala",false)){
+                    if(getString(R.string.language).equals(getString(R.string.sinhala))){
                         music = MediaPlayer.create(LevelMusicPlayActivity.this, R.raw.one1);
                     }else{
                         music = MediaPlayer.create(LevelMusicPlayActivity.this, R.raw.one);
@@ -87,7 +87,7 @@ public class LevelMusicPlayActivity extends BaseActivity {
                 }
 
                 else if(value.contentEquals(getResources().getString(R.string.olpass))){
-                    if(pref.getBoolean("sinhala",false)){
+                    if(getString(R.string.language).equals(getString(R.string.sinhala))){
                         music = MediaPlayer.create(LevelMusicPlayActivity.this, R.raw.two1);
 
                     }else{
@@ -96,7 +96,7 @@ public class LevelMusicPlayActivity extends BaseActivity {
                     level=2;
                 }
                 else if(value.contentEquals(getResources().getString(R.string.alpass))){
-                    if(pref.getBoolean("sinhala",false)){
+                    if(getString(R.string.language).equals(getString(R.string.sinhala))){
                         music = MediaPlayer.create(LevelMusicPlayActivity.this, R.raw.three1);
 
                     }else{
