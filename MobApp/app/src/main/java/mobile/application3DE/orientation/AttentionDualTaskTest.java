@@ -250,7 +250,7 @@ public class AttentionDualTaskTest extends BaseActivity {
                         Log.d(TAG,"Recording failed");
                     }
                 });
-                countDownTimer = new CountDownTimer(40000,1000){
+                countDownTimer = new CountDownTimer(25000,1000){
 
                     @Override
                     public void onTick(long l) {
@@ -262,7 +262,7 @@ public class AttentionDualTaskTest extends BaseActivity {
                         ToneGenerator toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
                         toneGen.startTone(ToneGenerator.TONE_PROP_BEEP,3000);
                         stopRecording();
-                        speechTime = 40;
+                        speechTime = 25;
                         Toast.makeText(getApplicationContext(),String.valueOf(speechTime) + " seconds",Toast.LENGTH_SHORT).show();
                         recordingTimer = 0;
                         instruct.setText("Please wait...");
@@ -294,11 +294,12 @@ public class AttentionDualTaskTest extends BaseActivity {
         String audioString =  Base64.encodeToString(data, Base64.NO_WRAP);
         Log.d(LOG_TAG,"buffer string: "+audioString);
 
-        //SEND THE HTTP REQUEST
+        //CREATING HTTP CLIENT
         client = new OkHttpClient.Builder()
                 .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60,TimeUnit.SECONDS)
+                .writeTimeout(20,TimeUnit.SECONDS)
                 .build();
-
 
         String url = "https://three-de.herokuapp.com/speech/api";
 
@@ -319,15 +320,17 @@ public class AttentionDualTaskTest extends BaseActivity {
         client.newCall(req).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                try {
-                    translateRecording(audioFile);
-                } catch (SocketException socketException) {
-                    socketException.printStackTrace();
-                }
+                call.cancel();
+                AttentionDualTaskTest.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(AttentionDualTaskTest.this, e.getMessage()+", Poor network connection,Please try again",Toast.LENGTH_LONG).show();
+                    }
+                });
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(Call call, Response response) {
 
                 if(response.isSuccessful())
                     AttentionDualTaskTest.this.runOnUiThread(new Runnable() {
@@ -352,7 +355,7 @@ public class AttentionDualTaskTest extends BaseActivity {
                     AttentionDualTaskTest.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "Failed,Please try again", Toast.LENGTH_LONG).show();
                         }
                     });
             }

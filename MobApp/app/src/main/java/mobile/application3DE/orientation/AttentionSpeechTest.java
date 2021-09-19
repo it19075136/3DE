@@ -6,8 +6,10 @@ import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioFormat;
+import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
+import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
@@ -228,7 +230,7 @@ public class AttentionSpeechTest extends BaseActivity{
                         Log.d(TAG,"Recording failed");
                     }
                 });
-                countDownTimer = new CountDownTimer(40000,1000){
+                countDownTimer = new CountDownTimer(25000,1000){
 
                     @Override
                     public void onTick(long l) {
@@ -237,8 +239,10 @@ public class AttentionSpeechTest extends BaseActivity{
 
                     @Override
                     public void onFinish() {
+                        ToneGenerator toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
+                        toneGen.startTone(ToneGenerator.TONE_PROP_BEEP,3000);
                         stopRecording();
-                        speechTime = 40;
+                        speechTime = 25;
                         Toast.makeText(getApplicationContext(),String.valueOf(speechTime) + " seconds",Toast.LENGTH_SHORT).show();
                         recordingTimer = 0;
                         instruct.setText("Please wait...");
@@ -271,11 +275,12 @@ public class AttentionSpeechTest extends BaseActivity{
         String audioString =  Base64.encodeToString(data, Base64.NO_WRAP);
         Log.d(LOG_TAG,"buffer string: "+audioString);
 
-                //SEND THE HTTP REQUEST
+                //CREATING HTTP CLIENT
                 client = new OkHttpClient.Builder()
                         .connectTimeout(60, TimeUnit.SECONDS)
+                        .readTimeout(60,TimeUnit.SECONDS)
+                        .writeTimeout(20,TimeUnit.SECONDS)
                         .build();
-
 
                 String url = "https://three-de.herokuapp.com/speech/api";
 
@@ -296,16 +301,17 @@ public class AttentionSpeechTest extends BaseActivity{
             client.newCall(req).enqueue(new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        try {
-                            translateRecording(audioFile);
-                        } catch (SocketException socketException) {
-                            socketException.printStackTrace();
-                        }
-//                        Toast.makeText(AttentionSpeechTest.this, "Network error,Please Try again",Toast.LENGTH_LONG).show();
+                        call.cancel();
+                        AttentionSpeechTest.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                   Toast.makeText(AttentionSpeechTest.this, e.getMessage()+", Poor network connection,Please try again",Toast.LENGTH_LONG).show();
+                                }
+                            });
                     }
 
                     @Override
-                    public void onResponse(Call call, Response response) throws IOException {
+                    public void onResponse(Call call, Response response) {
 
                         if(response.isSuccessful())
                         AttentionSpeechTest.this.runOnUiThread(new Runnable() {
@@ -315,10 +321,9 @@ public class AttentionSpeechTest extends BaseActivity{
                                 try {
                                     res = response.body().string();
                                 } catch (IOException e) {
-                                    e.printStackTrace();
+                                    Log.d("OnResponse",e.getMessage());
                                 }
                                 Log.d("TRANSCRIPT",res );
-                                Log.d("REQBODY", finalAudioString);
                                 Toast.makeText(AttentionSpeechTest.this,res, Toast.LENGTH_LONG).show();
                                 spokenWords.setText(res);
                                 loading.setVisibility(View.INVISIBLE);
@@ -330,7 +335,7 @@ public class AttentionSpeechTest extends BaseActivity{
                             AttentionSpeechTest.this.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(), "Failed,Please try again", Toast.LENGTH_LONG).show();
                                 }
                             });
                     }
