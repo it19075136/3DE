@@ -2,8 +2,6 @@ const speech = require('@google-cloud/speech');
 
 async function main(payload) {
 
-    console.log(payload.audio);
-
     const client = new speech.SpeechClient();
 
     const audio = {
@@ -25,8 +23,7 @@ async function main(payload) {
     }
 
     const [response] = await client.recognize(request);
-    const transcription = response.results.map(result =>
-        result.alternatives[0].transcript).join('\n');
+    const transcription = response.results.map(result => result.alternatives[0].transcript).join('\n');
     console.log(`Transcription: ${transcription}`)
 
     return transcription;
