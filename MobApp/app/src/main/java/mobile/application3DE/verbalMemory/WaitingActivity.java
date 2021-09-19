@@ -55,7 +55,7 @@ public class WaitingActivity extends BaseActivity {
                 editor.putBoolean("notComplete",false);
                 editor.commit();
                 handler.removeCallbacks(runnable);
-                if(pref.getBoolean("sinhala",false)){
+                if(getString(R.string.language).equals(getString(R.string.sinhala))){
                     Intent i1 = new Intent(getApplicationContext(), SinhalaTestActivity.class);
                     startActivity(i1);
                 }else{
