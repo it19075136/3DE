@@ -1,16 +1,10 @@
 const speech = require('@google-cloud/speech');
-// const fs = require('fs');
 
 async function main(payload) {
 
     console.log(payload.audio);
 
     const client = new speech.SpeechClient();
-    // const fileName = './resources/audio.raw';
-
-    // const file = fs.readFileSync(fileName);
-    // console.log(file);
-    // const audioBytes = file.toString('base64');
 
     const audio = {
         content: payload.audio
@@ -19,7 +13,10 @@ async function main(payload) {
     const config = {
         encoding: 'LINEAR16',
         sampleRateHertz: 16000,
-        languageCode: 'en-US'
+        languageCode: payload.lang,
+        speechContexts: [{
+            "phrases": ["100 98	96	94	92	90	88	86 84	82	80	78	76	74	72	70	68	66	64	62	60	58	56	54	52	50	48	46	44	42	40	38	36	34	32	30	28	26	24	22	20	18	16	14	12	10	8	6	4	2	0"]
+        }]
     };
 
     const request = {
