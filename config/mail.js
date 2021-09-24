@@ -1,4 +1,4 @@
 const MAIL = '3de.sliit@gmail.com';
-const PWD = '3DE12345';
+const PWD = 'xdstuewdiitwvxdw';
 
 module.exports = { MAIL, PWD }
