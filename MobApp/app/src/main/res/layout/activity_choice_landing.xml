@@ -10,18 +10,13 @@
        android:id="@+id/logout"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
-       android:layout_marginTop="20dp"
-       android:layout_marginEnd="20dp"
-       android:layout_marginRight="20dp"
-       android:layout_marginBottom="112dp"
+       android:layout_marginTop="40dp"
        android:backgroundTint="@color/teal_700"
        android:text="Log out"
-       app:layout_constraintBottom_toTopOf="@+id/btn2"
        app:layout_constraintEnd_toEndOf="parent"
        app:layout_constraintHorizontal_bias="0.806"
        app:layout_constraintStart_toStartOf="parent"
-       app:layout_constraintTop_toTopOf="parent"
-       app:layout_constraintVertical_bias="1.0" />
+       app:layout_constraintTop_toTopOf="parent" />
 
    <com.google.android.material.button.MaterialButton
        android:id="@+id/btn1"
@@ -34,7 +29,7 @@
        android:textColor="@color/black"
        android:textSize="26sp"
        app:layout_constraintEnd_toEndOf="parent"
-       app:layout_constraintHorizontal_bias="0.5"
+       app:layout_constraintHorizontal_bias="0.504"
        app:layout_constraintStart_toStartOf="parent"
        app:layout_constraintTop_toBottomOf="@+id/btn3" />
 
@@ -43,7 +38,7 @@
        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
        android:layout_width="300dp"
        android:layout_height="60dp"
-       android:layout_marginTop="192dp"
+       android:layout_marginTop="30dp"
        android:backgroundTint="@color/teal_200"
        android:text="@string/memory"
        android:textColor="@color/black"
@@ -51,7 +46,7 @@
        app:layout_constraintEnd_toEndOf="parent"
        app:layout_constraintHorizontal_bias="0.5"
        app:layout_constraintStart_toStartOf="parent"
-       app:layout_constraintTop_toTopOf="parent" />
+       app:layout_constraintTop_toBottomOf="@+id/logout" />
 
    <com.google.android.material.button.MaterialButton
        android:id="@+id/btn3"
@@ -62,6 +57,21 @@
        android:backgroundTint="@color/teal_200"
        android:onClick="directToOrientation"
        android:text="@string/orientation"
+       android:textColor="@color/black"
+       android:textSize="26sp"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintHorizontal_bias="0.5"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toBottomOf="@+id/btn4" />
+
+   <com.google.android.material.button.MaterialButton
+       android:id="@+id/btn4"
+       style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+       android:layout_width="300dp"
+       android:layout_height="60dp"
+       android:layout_marginTop="60dp"
+       android:backgroundTint="@color/teal_200"
+       android:text="@string/visual_memory"
        android:textColor="@color/black"
        android:textSize="26sp"
        app:layout_constraintEnd_toEndOf="parent"

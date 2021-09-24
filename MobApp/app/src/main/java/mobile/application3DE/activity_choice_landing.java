@@ -22,7 +22,7 @@ import mobile.application3DE.orientation.tccCalculation;
 
 public class activity_choice_landing extends AppCompatActivity {
 
-    Button memoryBtn,orientationBtn,decisionBtn,logout;
+    Button memoryBtn,visualMemoryBtn,orientationBtn,decisionBtn,logout;
     Intent i;
     GoogleSignInClient googleSignInClient;
     private static final int TIME_INTERVAL = 2000;
@@ -33,10 +33,13 @@ public class activity_choice_landing extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choice_landing);
 
+
         memoryBtn = findViewById(R.id.btn2);
+        visualMemoryBtn = findViewById(R.id.btn4);
         orientationBtn = findViewById(R.id.btn3);
         decisionBtn = findViewById(R.id.btn1);
-        logout = findViewById(R.id.logout);
+
+             logout = findViewById(R.id.logout);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -47,7 +50,14 @@ public class activity_choice_landing extends AppCompatActivity {
         memoryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                i = new Intent(getApplicationContext(), mobile.application3DE.LevelMusicPlayActivity.class);
+                i = new Intent(getApplicationContext(), mobile.application3DE.verbalMemory.LevelMusicPlayActivity.class);
+                startActivity(i);
+            }
+        });
+        visualMemoryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                i = new Intent(getApplicationContext(), mobile.application3DE.Visual.MainActivity.class);
                 startActivity(i);
             }
         });
@@ -58,6 +68,7 @@ public class activity_choice_landing extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

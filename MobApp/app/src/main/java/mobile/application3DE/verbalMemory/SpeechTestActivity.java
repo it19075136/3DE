@@ -1,4 +1,4 @@
-package mobile.application3DE;
+package mobile.application3DE.verbalMemory;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,6 +17,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Locale;
+
+import mobile.application3DE.R;
 
 public class SpeechTestActivity extends AppCompatActivity {
     private static final int REQ_CODE_SPEECH_INPUT = 100;

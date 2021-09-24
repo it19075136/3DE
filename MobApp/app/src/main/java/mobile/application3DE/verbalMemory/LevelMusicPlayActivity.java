@@ -1,4 +1,4 @@
-package mobile.application3DE;
+package mobile.application3DE.verbalMemory;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
+import mobile.application3DE.R;
 import pl.droidsonroids.gif.GifImageView;
 
 public class LevelMusicPlayActivity extends AppCompatActivity {

@@ -1,4 +1,4 @@
-package mobile.application3DE;
+package mobile.application3DE.verbalMemory;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.view.View;
 import android.widget.TextView;
+
+import mobile.application3DE.R;
 
 public class ResultActivity extends AppCompatActivity {
 

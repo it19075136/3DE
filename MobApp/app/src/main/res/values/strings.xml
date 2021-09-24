@@ -40,6 +40,7 @@
     <string name="walking">walking</string>
     <string name="talking">talking</string>
     <string name="go">Go</string>
+    <string name="visual_memory">Visual Memory</string>
 
 
 </resources>
