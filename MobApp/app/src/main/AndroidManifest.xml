@@ -109,6 +109,18 @@
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".Visual.MainActivity" />
+        <activity android:name=".Visual.Third" />
+        <activity android:name=".Visual.Results" />
+        <activity android:name=".Visual.shapes.second" />
+        <activity android:name=".Visual.shapes.Shape2" />
+        <activity android:name=".Visual.shapes.Shape3" />
+        <activity android:name=".Visual.shapes.shape4" />
+        <activity android:name=".Visual.shapes.Shape5" />
+        <activity android:name=".Visual.shapes.Shape6" />
+        <activity android:name=".Visual.shapes.Shape7" />
+        <activity android:name=".Visual.shapes.Shape8" />
+        <activity android:name=".Visual.shapes.Shape9" />
+        <activity android:name=".Visual.shapes.Shape10" />
     </application>
-
 </manifest>
