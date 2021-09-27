@@ -20,7 +20,7 @@ public class LocaleManager {
   }
 
   public static final String ENGLISH = "en";
-  public static final String SINHALA = "sin";
+  public static final String SINHALA = "si";
 
   /**
    * SharedPreferences Key

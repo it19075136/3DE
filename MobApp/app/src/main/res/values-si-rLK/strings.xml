@@ -14,6 +14,32 @@
     <string name="guardian_name">භාරකරුගේ නම</string>
     <string name="guardian_mobile">භාරකරුගේ දුරකථනය</string>
     <string name="guardian_mail">භාරකරුගේ ඊ-තැපෑල</string>
-    <string name="sinhala">සිංහල</string>
-    <string name="english" translatable="false">English</string>
+    <string name="language">සිංහල</string>
+    <string name="g_sign_in">ගූගල් සමඟ පුරනය වන්න</string>
+
+    <string name="olfail">සාමාන්‍ය පෙල අසමත්</string>
+    <string name="olpass">සාමාන්‍ය පෙල සමත්</string>
+    <string name="alpass">උසස් පෙල සමත්</string>
+    <string name="play">වාදනය කරන්න</string>
+    <string name="isleaningcom">සවන් දී අවසන් ද?</string>
+    <string name="yesv">ඔව්</string>
+    <string name="nov">නැත</string>
+
+    <string name="procced">ඉදිරියට යන්න</string>
+    <string name="processing">සැකසෙමින් පවතී...</string>
+    <string name="next_test">මීලගපරීක්ශනයට</string>
+    <string name="result">ප්‍රතිපලය</string>
+    <string name="memorystuts_pass">මතක තත්වය : සමත්</string>
+    <string name="memorystuts_fail">මතක තත්වය : අසමත්</string>
+    <string name="pass">සමත්</string>
+    <string name="fail">අසමත්</string>
+    <string name="risklevel_no">අවදානම් මට්ටම : නැත</string>
+    <string name="risklevel_low">අවදානම් මට්ටම : අඩු</string>
+    <string name="risklevel_medium">අවදානම් මට්ටම : මැද</string>
+    <string name="risklevel_high">අවදානම් මට්ටම : ඉහළ</string>
+    <string name="has">ඇත</string>
+    <string name="hasnot">නැත</string>
+    <string name="immediate">පක්ශනික මතකය :</string>
+    <string name="delayed">පසු මතකය :</string>
+    <string name="selectlevel">ඔබේ මට්ටම තෝරන්න</string>
 </resources>

@@ -9,8 +9,9 @@ import android.view.View;
 import com.google.android.material.button.MaterialButton;
 
 import mobile.application3DE.R;
+import mobile.application3DE.utilities.BaseActivity;
 
-public class AttentionChoiceLanding extends AppCompatActivity {
+public class AttentionChoiceLanding extends BaseActivity {
 
     MaterialButton talkingBtn,walkingBtn;
     Intent intent;
@@ -20,18 +21,28 @@ public class AttentionChoiceLanding extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attention_choice_landing);
 
-        findViewById(R.id.walkingBtn).setEnabled(false);
+        walkingBtn = findViewById(R.id.walkingBtn);
         talkingBtn = findViewById(R.id.talkingBtn);
 
         talkingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                intent = new Intent(getApplicationContext(), AttentionSingleTaskLanding.class);
-                intent.putExtra("choice","speech");
+                intent = new Intent(getApplicationContext(), AttentionSpeechLanding.class);
+                if (getIntent().getStringExtra("type") != null)
+                    intent.putExtra("type","once");
                 startActivity(intent);
             }
         });
 
+        walkingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                intent = new Intent(getApplicationContext(),AttentionWalkingLanding.class);
+                if (getIntent().getStringExtra("type") != null)
+                    intent.putExtra("type","once");
+                startActivity(intent);
+            }
+        });
 
     }
 }

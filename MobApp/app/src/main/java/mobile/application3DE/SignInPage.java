@@ -21,7 +21,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class SignInPage extends AppCompatActivity {
+import mobile.application3DE.utilities.BaseActivity;
+
+public class SignInPage extends BaseActivity {
 
     GoogleSignInClient mGoogleSignInClient;
     SignInButton gSignIn;
@@ -59,13 +61,13 @@ public class SignInPage extends AppCompatActivity {
         final Intent[] intent = {null};
         if(account != null) {
             userRef = databaseReference.child("users/"+account.getId());
-            userRef.addValueEventListener(new ValueEventListener() {
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.exists())
                         intent[0] = new Intent(getApplicationContext(), activity_choice_landing.class);
                     else if(intent[0] == null)
-                        intent[0] = new Intent(getApplicationContext(), MainActivity.class);
+                        intent[0] = new Intent(getApplicationContext(), Landing.class);
                     intent[0].putExtra("email",account.getEmail());
                     intent[0].putExtra("id",account.getId());
                     startActivity(intent[0]);
