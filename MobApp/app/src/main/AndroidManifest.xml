@@ -109,8 +109,6 @@
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait" />
-    </application>
-
         <activity android:name=".Visual.MainActivity" />
         <activity android:name=".Visual.Third" />
         <activity android:name=".Visual.Results" />
