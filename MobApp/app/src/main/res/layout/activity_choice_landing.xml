@@ -66,6 +66,21 @@
                android:text="@string/orientation"
                android:textColor="@color/black"
                android:textSize="26sp" />
+               
+    <com.google.android.material.button.MaterialButton
+       android:id="@+id/btn4"
+       style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+       android:layout_width="300dp"
+       android:layout_height="60dp"
+       android:layout_marginTop="60dp"
+       android:backgroundTint="@color/teal_200"
+       android:text="@string/visual_memory"
+       android:textColor="@color/black"
+       android:textSize="26sp"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintHorizontal_bias="0.5"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toBottomOf="@+id/btn2" />
 
             </LinearLayout>
 
@@ -80,5 +95,4 @@
        android:layout_gravity="start"
        app:headerLayout="@layout/nav_header"
        app:menu="@menu/menu" />
-
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -32,7 +32,7 @@ import mobile.application3DE.verbalMemory.LevelMusicPlayActivity;
 
 public class activity_choice_landing extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    Button memoryBtn, orientationBtn, decisionBtn;
+    Button memoryBtn,visualMemoryBtn,orientationBtn,decisionBtn,logout;
     Intent i;
     GoogleSignInClient googleSignInClient;
     private static final int TIME_INTERVAL = 2000;
@@ -44,7 +44,9 @@ public class activity_choice_landing extends BaseActivity implements NavigationV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choice_landing);
 
+
         memoryBtn = findViewById(R.id.btn2);
+        visualMemoryBtn = findViewById(R.id.btn4);
         orientationBtn = findViewById(R.id.btn3);
         decisionBtn = findViewById(R.id.btn1);
 
@@ -68,7 +70,14 @@ public class activity_choice_landing extends BaseActivity implements NavigationV
         memoryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                i = new Intent(getApplicationContext(), LevelMusicPlayActivity.class);
+                i = new Intent(getApplicationContext(), mobile.application3DE.verbalMemory.LevelMusicPlayActivity.class);
+                startActivity(i);
+            }
+        });
+        visualMemoryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                i = new Intent(getApplicationContext(), mobile.application3DE.Visual.MainActivity.class);
                 startActivity(i);
             }
         });
