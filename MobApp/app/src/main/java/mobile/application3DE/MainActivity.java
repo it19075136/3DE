@@ -59,8 +59,8 @@ public class MainActivity extends BaseActivity {
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
                                 // set day of month , month and year value in the edit text
-                                dateInput.setText(dayOfMonth + "/"
-                                        + (monthOfYear + 1) + "/" + year);
+                                dateInput.setText(dayOfMonth + "-"
+                                        + (monthOfYear + 1) + "-" + year + " 00:00:0");
 
                             }
                         }, mYear, mMonth, mDay);

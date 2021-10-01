@@ -24,6 +24,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import mobile.application3DE.decisionMaking.Dec_making_task;
 import mobile.application3DE.orientation.AttentionChoiceLanding;
+import mobile.application3DE.orientation.AttentionResultChartView;
 import mobile.application3DE.orientation.OrientationChoice;
 import mobile.application3DE.orientation.tccCalculation;
 import mobile.application3DE.utilities.BaseActivity;
@@ -134,7 +135,8 @@ public class activity_choice_landing extends BaseActivity implements NavigationV
 
                 break;
             case R.id.nav_reports:
-
+                i = new Intent(this, AttentionResultChartView.class);
+                startActivity(i);
                 break;
             case R.id.nav_logout:
                 googleSignInClient.signOut()
