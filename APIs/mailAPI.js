@@ -10,6 +10,8 @@ function send(payload) {
         recipients = recipients + payload.recipients[index] + ",";
     }
 
+    console.log(recipients);
+
     // create message body
     const messageBody = "User details\n\n"+payload.patient.name+"\n"+payload.patient.age+" Years\n\nUser dementia status:"+payload.results+"\n"+payload.suggestions+"\n\nYours' sincerely,\n3DE Team ❤"
     
