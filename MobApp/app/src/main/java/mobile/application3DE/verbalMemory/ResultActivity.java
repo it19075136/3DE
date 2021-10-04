@@ -32,50 +32,52 @@ public class ResultActivity extends BaseActivity {
         GoogleSignInAccount acc = GoogleSignIn.getLastSignedInAccount(this);
         String dddr = pref.getString("DR", null);
         String iiir = pref.getString("IR", null);
-        TextView result1 = findViewById(R.id.result1);
-        TextView result2 = findViewById(R.id.result2);
+        //TextView result1 = findViewById(R.id.result1);
+       // TextView result2 = findViewById(R.id.result2);
         TextView ir = findViewById(R.id.ir);
         TextView dr = findViewById(R.id.dr);
         float dd = Float.parseFloat(dddr);
         float ii = Float.parseFloat(iiir);
         if(dd*100>=40 && ii*100>=50){
-            String xx = getResources().getString(R.string.memorystuts_pass);
-            String yy = getResources().getString(R.string.risklevel_no);
-            result1.setText(xx);
-            result2.setText(yy);
+
+
+            String xx = "Pass";
+            String yy = "No";
+            //result1.setText(xx);
+            //result2.setText(yy);
             
             mDatabase.child("ComponentBasedResults").child(acc.getId()).child("verbalMemory").child("MemoryStatus").setValue(xx);
             mDatabase.child("ComponentBasedResults").child(acc.getId()).child("verbalMemory").child("RiskLevel").setValue(yy);
             
         }
         else if(dd*100<40 && ii*100>=50){
-            String xx = getResources().getString(R.string.memorystuts_fail);
-            String yy = getResources().getString(R.string.risklevel_medium);
-            result1.setText(xx);
-            result2.setText(yy);
+            String xx = "Fail";
+            String yy = "Moderate";
+            //result1.setText(xx);
+            //result2.setText(yy);
 
-            mDatabase.child("ComponentBasedResults").child(acc.getId()).child("verbalMemory").child("memoryStatus").setValue(xx);
+            mDatabase.child("ComponentBasedResults").child(acc.getId()).child("verbalMemory").child("MemoryStatus").setValue(xx);
             mDatabase.child("ComponentBasedResults").child(acc.getId()).child("verbalMemory").child("RiskLevel").setValue(yy);
 
 
         }
         else if(dd*100>=40 && ii*100<50){
-            String xx = getResources().getString(R.string.memorystuts_pass);
-            String yy = getResources().getString(R.string.risklevel_low);
-            result1.setText(xx);
-            result2.setText(yy);
+            String xx = "Pass";
+            String yy = "Mild";
+           // result1.setText(xx);
+            //result2.setText(yy);
 
-            mDatabase.child("ComponentBasedResults").child(acc.getId()).child("verbalMemory").child("memoryStatus").setValue(xx);
+            mDatabase.child("ComponentBasedResults").child(acc.getId()).child("verbalMemory").child("MemoryStatus").setValue(xx);
             mDatabase.child("ComponentBasedResults").child(acc.getId()).child("verbalMemory").child("RiskLevel").setValue(yy);
 
         }
         else if(dd*100<40 && ii*100<50){
-            String xx = getResources().getString(R.string.memorystuts_fail);
-            String yy = getResources().getString(R.string.risklevel_high);
-            result1.setText(xx);
-            result2.setText(yy);
+            String xx = "Fail";
+            String yy = "High";
+           //result1.setText(xx);
+            //result2.setText(yy);
 
-            mDatabase.child("ComponentBasedResults").child(acc.getId()).child("verbalMemory").child("memoryStatus").setValue(xx);
+            mDatabase.child("ComponentBasedResults").child(acc.getId()).child("verbalMemory").child("MemoryStatus").setValue(xx);
             mDatabase.child("ComponentBasedResults").child(acc.getId()).child("verbalMemory").child("RiskLevel").setValue(yy);
 
         }
