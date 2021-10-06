@@ -174,6 +174,7 @@ public class AttentionResultsPage extends BaseActivity {
                     recipients.add(g1.getGuardianMail());
                 if ((!Objects.equals(g2.getGuardianMail(), "") && g2.getGuardianMail() != null))
                     recipients.add(g2.getGuardianMail());
+                recipients.add(user.get("email"));
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
