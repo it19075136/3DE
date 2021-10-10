@@ -42,4 +42,38 @@
     <string name="immediate">පක්ශනික මතකය :</string>
     <string name="delayed">පසු මතකය :</string>
     <string name="selectlevel">ඔබේ මට්ටම තෝරන්න</string>
+
+//orientation
+
+    <string name="sinhala">සිංහල</string>
+    <string name="hello">ආයුබෝවන්</string>
+    <string name="orientation">Orientation</string>
+    <string name="memory">Memory</string>
+    <string name="decision_making">Decision Making</string>
+    //orientation
+    <string name="tcc">TCC</string>
+    <string name="instructions">උපදෙස්</string>
+    <string name="start">ආරම්භ කරන්න</string>
+    <string name="have_you_seen_this_picture_before">ඔබ මෙම පින්තූරය මීට පෙර දැක තිබේද?</string>
+    <string name="yes">ඔව්</string>
+    <string name="no">නැත</string>
+    <string name="hint">ආරම්භ කිරීමට මයික්‍රෆෝනය මත තට්ටු කරන්න</string>
+    <string name="title_activity_level_music_play">LevelMusicPlayActivity</string>
+
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="previous">Previous</string>
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_activity_result">ResultActivity</string>
+    <string name="attention">attention</string>
+    <string name="walking">walking</string>
+    <string name="talking">talking</string>
+    <string name="go">Go</string>
+    <string name="start_test">පරීක්ෂණය ආරම්භ කරන්න</string>
+    <string name="ok">හරි</string>
+    <string name="retry">නැවත උත්සාහ කරන්න</string>
+    <string name="title_activity_attention_walking_landing">AttentionWalkingLanding</string>
+
 </resources>

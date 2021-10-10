@@ -26,25 +26,7 @@
             android:text="@string/result"
             android:textStyle="italic"
             android:gravity="center"></TextView>
-        <TextView
-            android:id="@+id/result1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="35dp"
-            android:textColor="@color/white"
-            android:layout_gravity="center"
-            android:text="RESULT"
-            android:layout_marginBottom="20dp"
-            android:gravity="center"></TextView>
-        <TextView
-            android:id="@+id/result2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="35dp"
-            android:textColor="@color/white"
-            android:layout_gravity="center"
-            android:text="RESULT"
-            android:gravity="center"></TextView>
+
     </LinearLayout>
     <LinearLayout
         android:layout_weight="2"
