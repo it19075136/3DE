@@ -2,11 +2,18 @@ package mobile.application3DE;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -21,12 +28,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
+import java.io.FileWriter;
+
 import mobile.application3DE.utilities.BaseActivity;
 
 public class SignInPage extends BaseActivity {
 
     GoogleSignInClient mGoogleSignInClient;
     SignInButton gSignIn;
+    private static final int RECORD_PERMISSIONS_REQUEST_CODE = 15623;
+
     // we will get the default FirebaseDatabase instance
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
 
@@ -65,11 +77,14 @@ public class SignInPage extends BaseActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.exists())
-                        intent[0] = new Intent(getApplicationContext(), activity_choice_landing.class);
+                        intent[0] = new Intent(getApplicationContext(), StartFullTest.class);
                     else if(intent[0] == null)
                         intent[0] = new Intent(getApplicationContext(), Landing.class);
                     intent[0].putExtra("email",account.getEmail());
                     intent[0].putExtra("id",account.getId());
+                    if (!hasRequiredPermissions(getApplicationContext()))
+                        requestRequiredPermissions(SignInPage.this);
+                    writeFileOnInternalStorage(getApplicationContext(),"user.txt",account.getId());
                     startActivity(intent[0]);
                 }
 
@@ -120,6 +135,44 @@ public class SignInPage extends BaseActivity {
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         signIn(account);
 
+    }
+
+    public void writeFileOnInternalStorage(Context mcoContext, String sFileName, String sBody){
+
+        try {
+            if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                Toast.makeText(getApplicationContext(), Environment.getExternalStorageState(),Toast.LENGTH_LONG).show();
+                return;
+            }
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), sFileName);
+            FileWriter writer = new FileWriter(file);
+            writer.append(sBody);
+            writer.flush();
+            writer.close();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    public void requestRequiredPermissions(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            activity.requestPermissions(
+                    new String[]{
+                            Manifest.permission.MANAGE_EXTERNAL_STORAGE
+                    },
+                    RECORD_PERMISSIONS_REQUEST_CODE
+            );
+        }
+    }
+
+    public boolean hasRequiredPermissions(Context context) {
+        int writeExternalStoragePermissionCheck = ContextCompat.checkSelfPermission(
+                context, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int manageExternalStoragePermissionCheck = ContextCompat.checkSelfPermission(
+                context, Manifest.permission.MANAGE_EXTERNAL_STORAGE);
+        return  writeExternalStoragePermissionCheck == PackageManager.PERMISSION_GRANTED &&
+                manageExternalStoragePermissionCheck == PackageManager.PERMISSION_GRANTED;
     }
 
 }

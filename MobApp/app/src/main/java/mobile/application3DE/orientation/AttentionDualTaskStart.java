@@ -7,8 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 
 import mobile.application3DE.R;
+import mobile.application3DE.utilities.BaseActivity;
 
-public class AttentionDualTaskStart extends AppCompatActivity {
+public class AttentionDualTaskStart extends BaseActivity {
 
     Intent dualTaskTest;
     String originator,type;

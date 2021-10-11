@@ -59,7 +59,7 @@ public class user_details_2 extends BaseActivity {
 
             Snackbar.make(view,"Registration Successful!",Snackbar.LENGTH_SHORT).setBackgroundTint(resources.getColor(R.color.success)).show();
 
-            Intent i = new Intent(this, activity_choice_landing.class);
+            Intent i = new Intent(this, StartFullTest.class);
             i.putExtra("fname",u.get_fName());
             Thread thread = new Thread(){
                 @Override

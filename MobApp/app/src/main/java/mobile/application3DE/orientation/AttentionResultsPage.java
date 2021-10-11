@@ -50,13 +50,14 @@ public class AttentionResultsPage extends BaseActivity {
 
     MaterialTextView diff,results;
     String diffText,resultsText;
-    DatabaseReference userRef;
+    DatabaseReference userRef,finalResultRef;
     String currentUser;
     OkHttpClient client;
     HashMap<String,String> user;
     Guardian g1,g2;
     JSONObject mailObj,userObj;
     boolean isGuardianExist = true;
+    SimpleDateFormat formatDate;
 
     // we will get the default FirebaseDatabase instance
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -90,6 +91,7 @@ public class AttentionResultsPage extends BaseActivity {
 
         diff.setText(diffText+ getIntent().getStringExtra("diff"));
         results.setText(resultsText+getIntent().getStringExtra("result")+"%");
+        formatDate = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
 // Adding signed in user.
@@ -98,6 +100,20 @@ public class AttentionResultsPage extends BaseActivity {
             currentUser = acct.getId();
 
         userRef = databaseReference.child("users/"+currentUser);
+        finalResultRef = databaseReference.child("FinalResults/"+currentUser);
+
+        String type = getIntent().getStringExtra("type");
+        if (type.equals("gen")) {
+            String res = "Mild";
+            if (Double.parseDouble(getIntent().getStringExtra("result")) < 37.00)
+                res = "No";
+            finalResultRef.child(formatDate.format(new Date())).setValue(res).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Toast.makeText(getApplicationContext(), "You've successfully completed the test!", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
 
         //CREATING HTTP CLIENT
         client = new OkHttpClient.Builder()
@@ -109,8 +125,7 @@ public class AttentionResultsPage extends BaseActivity {
         mailObj = new JSONObject();
 
         createRequestPayload(); // creating mail object for request payload
-        if(isGuardianExist)
-            sendMailRequest(); //sending request and handling response
+
     }
 
     private void sendMailRequest() {
@@ -200,6 +215,8 @@ public class AttentionResultsPage extends BaseActivity {
                 }
 
                 Toast.makeText(AttentionResultsPage.this,String.valueOf(mailObj),Toast.LENGTH_LONG).show();
+                if(isGuardianExist)
+                    sendMailRequest(); //sending request and handling response
             }
         });
     }
@@ -210,8 +227,6 @@ public class AttentionResultsPage extends BaseActivity {
         if(requestCode == 200) {
             isGuardianExist = true;
             createRequestPayload();
-            if (isGuardianExist)
-                sendMailRequest();
         }
     }
 }

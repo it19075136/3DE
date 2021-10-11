@@ -91,7 +91,7 @@ public class tccCalculation extends BaseActivity {
                         }
                         if (run1Date != null) {
                             try {
-                                if (((dateFormat.parse(dateFormat.format(new Date())).getTime() - (run1Date.getTime())) / (1000 * 60 * 60)) % 24 < 1) {
+                                if ((((dateFormat.parse(dateFormat.format(new Date())).getTime() - (run1Date.getTime())) / (1000 * 60 * 60)) % 24 < 1) && (getIntent().getStringExtra("skipT") == null)) {
                                     Snackbar.make(findViewById(android.R.id.content).getRootView(), "Make sure you start this run after 1 hour from the completion of 1st run", Snackbar.LENGTH_LONG).show();
                                     startBtn.setText("Not allowed");
                                     startBtn.setEnabled(false);
@@ -102,6 +102,9 @@ public class tccCalculation extends BaseActivity {
                             }
                         }
                         if (execute) {
+                            if(getIntent().getStringExtra("skipT") == null)
+                                runIdentifier = 2;
+
                             getImages.runTransaction(new Transaction.Handler() {
                                 @NonNull
                                 @Override

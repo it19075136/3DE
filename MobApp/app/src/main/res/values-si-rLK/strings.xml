@@ -59,7 +59,7 @@
     <string name="no">නැත</string>
     <string name="hint">ආරම්භ කිරීමට මයික්‍රෆෝනය මත තට්ටු කරන්න</string>
     <string name="title_activity_level_music_play">LevelMusicPlayActivity</string>
-    <string name="g_sign_in">ගූගල් සමඟ ලොග් වන්න</string>
+
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
