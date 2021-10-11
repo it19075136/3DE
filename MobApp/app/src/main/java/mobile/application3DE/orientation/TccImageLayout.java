@@ -2,6 +2,7 @@ package mobile.application3DE.orientation;
 
 import androidx.annotation.NonNull;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -16,6 +17,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,6 +28,8 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,6 +37,9 @@ import java.util.Random;
 
 import mobile.application3DE.R;
 import mobile.application3DE.utilities.BaseActivity;
+import mobile.application3DE.verbalMemory.LevelMusicPlayActivity;
+import mobile.application3DE.verbalMemory.SinhalaTestActivity;
+import mobile.application3DE.verbalMemory.SpeechTestActivity;
 
 public class TccImageLayout extends BaseActivity {
 
@@ -50,7 +57,7 @@ public class TccImageLayout extends BaseActivity {
     Intent intent;
     CountDownTimer countDownTimer;
 
-    DatabaseReference tccRef,userRef;
+    DatabaseReference tccRef,userRef,finalResultRef;
     FirebaseDatabase fb;
     //  2 runs.. 6 rounds for each run. 12 distracter items and  8 target/repeating items.- 80 images.. Put 8 target items from run1 into distracter of the
     // 2 nd run ,amd take the remaining 8 distracters from run 1 among distractors
@@ -88,6 +95,7 @@ public class TccImageLayout extends BaseActivity {
         fb = FirebaseDatabase.getInstance();
         tccRef = fb.getReference("ComponentBasedResults/"+currentUser+"/Orientation/TCC");
         userRef = fb.getReference("users/"+currentUser);
+        finalResultRef = fb.getReference("FinalResults/"+currentUser);
 
         imageSet = getIntent().getStringArrayListExtra("imageSet");  // getting 80 images to the array
         runIdentifier = getIntent().getIntExtra("runIdentifier",1);
@@ -231,6 +239,28 @@ public class TccImageLayout extends BaseActivity {
 
     }
 
+    public void showDialog(){
+
+        new MaterialAlertDialogBuilder(TccImageLayout.this)
+                .setTitle("Continue strightaway")
+                .setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                            Intent i1 = new Intent(getApplicationContext(), tccCalculation.class);
+                            i1.putExtra("skipT","yes");
+                            startActivity(i1);
+                    }
+                })
+                .setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .show();
+
+    }
+
     public void updateUserData(){
 
         userRef.child("CompletedTCC1Run" + String.valueOf(runIdentifier)).setValue(formatDate.format(new Date())).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -290,6 +320,7 @@ public class TccImageLayout extends BaseActivity {
                     quest.setText("Run completed, please come back in 1 hour for the 2nd run.");
                     round_counter++;
                     mergedArr.clear();
+                    showDialog();
                 }
             }
         });
@@ -305,6 +336,30 @@ public class TccImageLayout extends BaseActivity {
         quest.setText("You've completed the TCC test case, your tcc value is "+tccValue);
         round_counter++;
         mergedArr.clear();
+        // store final result fail - mild, pass to attention
+        if(Double.parseDouble(tccValue) < 0.9) {
+            Toast.makeText(getApplicationContext(), "Please wait.. You will be directed to the next activity in few seconds",Toast.LENGTH_SHORT).show();
+            intent = new Intent(this, AttentionInstructions.class);
+            countDownTimer = new CountDownTimer(5000,1000){
+                @Override
+                public void onTick(long l) {
+                    Log.d("TICK", "tick");
+                }
+
+                @Override
+                public void onFinish() {
+                    startActivity(intent); //calling the method to set the flow according to the result
+                }
+            }.start();
+        }
+        else{
+            finalResultRef.child(formatDate.format(new Date())).setValue("Mild").addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Toast.makeText(getApplicationContext(),"You've successfully completed the test!",Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     public void handleLoadedImage(){

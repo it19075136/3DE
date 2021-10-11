@@ -2,7 +2,6 @@ package mobile.application3DE;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -20,19 +19,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 
 import mobile.application3DE.decisionMaking.Dec_making_task;
 import mobile.application3DE.orientation.AttentionChoiceLanding;
 import mobile.application3DE.orientation.AttentionResultChartView;
 import mobile.application3DE.orientation.OrientationChoice;
-import mobile.application3DE.orientation.tccCalculation;
 import mobile.application3DE.utilities.BaseActivity;
-import mobile.application3DE.verbalMemory.LevelMusicPlayActivity;
 
 public class activity_choice_landing extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    Button memoryBtn,visualMemoryBtn,orientationBtn,decisionBtn,logout;
+    Button walking,visualMemoryBtn,orientationBtn,talking,logout;
     Intent i;
     GoogleSignInClient googleSignInClient;
     private static final int TIME_INTERVAL = 2000;
@@ -45,10 +41,10 @@ public class activity_choice_landing extends BaseActivity implements NavigationV
         setContentView(R.layout.activity_choice_landing);
 
 
-        memoryBtn = findViewById(R.id.btn2);
-        visualMemoryBtn = findViewById(R.id.btn4);
-        orientationBtn = findViewById(R.id.btn3);
-        decisionBtn = findViewById(R.id.btn1);
+        talking = findViewById(R.id.btn2);
+//        visualMemoryBtn = findViewById(R.id.btn4);
+//        orientationBtn = findViewById(R.id.btn3);
+        walking = findViewById(R.id.btn1);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -67,14 +63,14 @@ public class activity_choice_landing extends BaseActivity implements NavigationV
 
         googleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        memoryBtn.setOnClickListener(new View.OnClickListener() {
+        talking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 i = new Intent(getApplicationContext(), mobile.application3DE.verbalMemory.LevelMusicPlayActivity.class);
                 startActivity(i);
             }
         });
-        visualMemoryBtn.setOnClickListener(new View.OnClickListener() {
+        walking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 i = new Intent(getApplicationContext(), mobile.application3DE.Visual.MainActivity.class);
@@ -82,13 +78,13 @@ public class activity_choice_landing extends BaseActivity implements NavigationV
             }
         });
 
-        decisionBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                i = new Intent(getApplicationContext(), Dec_making_task.class);
-                startActivity(i);
-            }
-        });
+//        decisionBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                i = new Intent(getApplicationContext(), Dec_making_task.class);
+//                startActivity(i);
+//            }
+//        });
 
     }
 

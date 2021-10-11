@@ -256,6 +256,7 @@ public class AttentionDualTaskTestWalkBased extends AppCompatActivity implements
                         resultIntent.putExtra("result",getFinalResult());
                         resultIntent.putExtra("originator","walk");
                         resultIntent.putExtra("diff",String.format("%.4f",diff));
+                        resultIntent.putExtra("type",type);
                         if (type.equals("gen"))
                             dualTaskRef.child("dualTask").setValue(walkingSpeed/2).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
