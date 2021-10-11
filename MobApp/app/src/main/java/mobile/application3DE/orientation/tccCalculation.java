@@ -102,6 +102,9 @@ public class tccCalculation extends BaseActivity {
                             }
                         }
                         if (execute) {
+                            if(getIntent().getStringExtra("skipT") == null)
+                                runIdentifier = 2;
+
                             getImages.runTransaction(new Transaction.Handler() {
                                 @NonNull
                                 @Override

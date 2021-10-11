@@ -5,8 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import mobile.application3DE.R;
+import mobile.application3DE.utilities.BaseActivity;
 
-public class AttentionSpeechTestStart extends AppCompatActivity {
+public class AttentionSpeechTestStart extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

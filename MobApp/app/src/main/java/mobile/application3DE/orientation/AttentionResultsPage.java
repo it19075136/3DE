@@ -125,8 +125,7 @@ public class AttentionResultsPage extends BaseActivity {
         mailObj = new JSONObject();
 
         createRequestPayload(); // creating mail object for request payload
-        if(isGuardianExist)
-            sendMailRequest(); //sending request and handling response
+
     }
 
     private void sendMailRequest() {
@@ -216,6 +215,8 @@ public class AttentionResultsPage extends BaseActivity {
                 }
 
                 Toast.makeText(AttentionResultsPage.this,String.valueOf(mailObj),Toast.LENGTH_LONG).show();
+                if(isGuardianExist)
+                    sendMailRequest(); //sending request and handling response
             }
         });
     }
@@ -226,8 +227,6 @@ public class AttentionResultsPage extends BaseActivity {
         if(requestCode == 200) {
             isGuardianExist = true;
             createRequestPayload();
-            if (isGuardianExist)
-                sendMailRequest();
         }
     }
 }

@@ -1,46 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".activity_choice_landing"
-    tools:openDrawer="start">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/teal_200"
-            android:elevation="4dp"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/Theme.MaterialComponents.Light" />
-
-        <FrameLayout
-            android:id="@+id/fragment_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+    tools:context=".activity_choice_landing">
 
             <com.google.android.material.textview.MaterialTextView
+                style="@style/TextAppearance.MaterialComponents.Headline4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textStyle="bold"
-                style="@style/TextAppearance.MaterialComponents.Headline4"
-                android:text="Select your best ability"/>
+                android:layout_marginTop="32sp"
+                android:text="Select your best ability"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn1"
@@ -48,8 +28,8 @@
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/teal_200"
-                    android:text="@string/walking"
                     android:padding="10dp"
+                    android:text="@string/walking"
                     android:textColor="@color/black"
                     android:textSize="26sp" />
 
@@ -64,66 +44,56 @@
                     android:textColor="@color/black"
                     android:textSize="26sp" />
 
-<!--           <com.google.andr                               android:layout_marginTop="20dp"
+                <!--           <com.google.andr                               android:layout_marginTop="20dp"
 oid.material.button.MaterialButton-->
-<!--               android:id="@+id/btn1"-->
-<!--               style="@style/Widget.MaterialComponents.Button.OutlinedButton"-->
-<!--               android:layout_width="300dp"-->
-<!--               android:layout_height="60dp"-->
-<!--               android:backgroundTint="@color/teal_200"-->
-<!--               android:text="@string/decision_making"-->
-<!--               android:textColor="@color/black"-->
-<!--               android:textSize="26sp" />-->
+                <!--               android:id="@+id/btn1"-->
+                <!--               style="@style/Widget.MaterialComponents.Button.OutlinedButton"-->
+                <!--               android:layout_width="300dp"-->
+                <!--               android:layout_height="60dp"-->
+                <!--               android:backgroundTint="@color/teal_200"-->
+                <!--               android:text="@string/decision_making"-->
+                <!--               android:textColor="@color/black"-->
+                <!--               android:textSize="26sp" />-->
 
-<!--           <com.google.android.material.button.MaterialButton-->
-<!--               android:id="@+id/btn2"-->
-<!--               style="@style/Widget.MaterialComponents.Button.OutlinedButton"-->
-<!--               android:layout_width="300dp"-->
-<!--               android:layout_height="60dp"-->
-<!--               android:layout_marginTop="20dp"-->
-<!--               android:backgroundTint="@color/teal_200"-->
-<!--               android:text="@string/memory"-->
-<!--               android:textColor="@color/black"-->
-<!--               android:textSize="26sp" />-->
+                <!--           <com.google.android.material.button.MaterialButton-->
+                <!--               android:id="@+id/btn2"-->
+                <!--               style="@style/Widget.MaterialComponents.Button.OutlinedButton"-->
+                <!--               android:layout_width="300dp"-->
+                <!--               android:layout_height="60dp"-->
+                <!--               android:layout_marginTop="20dp"-->
+                <!--               android:backgroundTint="@color/teal_200"-->
+                <!--               android:text="@string/memory"-->
+                <!--               android:textColor="@color/black"-->
+                <!--               android:textSize="26sp" />-->
 
-<!--           <com.google.android.material.button.MaterialButton-->
-<!--               android:id="@+id/btn3"-->
-<!--               style="@style/Widget.MaterialComponents.Button.OutlinedButton"-->
-<!--               android:layout_width="300dp"-->
-<!--               android:layout_height="60dp"-->
-<!--               android:layout_marginTop="20dp"-->
-<!--               android:backgroundTint="@color/teal_200"-->
-<!--               android:onClick="directToOrientation"-->
-<!--               android:text="@string/orientation"-->
-<!--               android:textColor="@color/black"-->
-<!--               android:textSize="26sp" />-->
-<!--               -->
-<!--    <com.google.android.material.button.MaterialButton-->
-<!--       android:id="@+id/btn4"-->
-<!--       style="@style/Widget.MaterialComponents.Button.OutlinedButton"-->
-<!--       android:layout_width="300dp"-->
-<!--       android:layout_height="60dp"-->
-<!--       android:layout_marginTop="60dp"-->
-<!--       android:backgroundTint="@color/teal_200"-->
-<!--       android:text="@string/visual_memory"-->
-<!--       android:textColor="@color/black"-->
-<!--       android:textSize="26sp"-->
-<!--       app:layout_constraintEnd_toEndOf="parent"-->
-<!--       app:layout_constraintHorizontal_bias="0.5"-->
-<!--       app:layout_constraintStart_toStartOf="parent"-->
-<!--       app:layout_constraintTop_toBottomOf="@+id/btn2" />-->
+                <!--           <com.google.android.material.button.MaterialButton-->
+                <!--               android:id="@+id/btn3"-->
+                <!--               style="@style/Widget.MaterialComponents.Button.OutlinedButton"-->
+                <!--               android:layout_width="300dp"-->
+                <!--               android:layout_height="60dp"-->
+                <!--               android:layout_marginTop="20dp"-->
+                <!--               android:backgroundTint="@color/teal_200"-->
+                <!--               android:onClick="directToOrientation"-->
+                <!--               android:text="@string/orientation"-->
+                <!--               android:textColor="@color/black"-->
+                <!--               android:textSize="26sp" />-->
+                <!--               -->
+                <!--    <com.google.android.material.button.MaterialButton-->
+                <!--       android:id="@+id/btn4"-->
+                <!--       style="@style/Widget.MaterialComponents.Button.OutlinedButton"-->
+                <!--       android:layout_width="300dp"-->
+                <!--       android:layout_height="60dp"-->
+                <!--       android:layout_marginTop="60dp"-->
+                <!--       android:backgroundTint="@color/teal_200"-->
+                <!--       android:text="@string/visual_memory"-->
+                <!--       android:textColor="@color/black"-->
+                <!--       android:textSize="26sp"-->
+                <!--       app:layout_constraintEnd_toEndOf="parent"-->
+                <!--       app:layout_constraintHorizontal_bias="0.5"-->
+                <!--       app:layout_constraintStart_toStartOf="parent"-->
+                <!--       app:layout_constraintTop_toBottomOf="@+id/btn2" />-->
 
             </LinearLayout>
 
-        </FrameLayout>
 
-    </LinearLayout>
-
-   <com.google.android.material.navigation.NavigationView
-       android:id="@+id/nav_view"
-       android:layout_width="wrap_content"
-       android:layout_height="match_parent"
-       android:layout_gravity="start"
-       app:headerLayout="@layout/nav_header"
-       app:menu="@menu/menu" />
-</androidx.drawerlayout.widget.DrawerLayout>
+</RelativeLayout>

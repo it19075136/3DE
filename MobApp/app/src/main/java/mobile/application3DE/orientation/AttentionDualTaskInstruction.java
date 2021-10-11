@@ -8,8 +8,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import mobile.application3DE.R;
+import mobile.application3DE.utilities.BaseActivity;
 
-public class AttentionDualTaskInstruction extends AppCompatActivity {
+public class AttentionDualTaskInstruction extends BaseActivity {
 
     Intent startDual;
     String originator;

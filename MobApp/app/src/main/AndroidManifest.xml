@@ -32,7 +32,11 @@
         android:roundIcon="@mipmap/app_logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MobApp">
-        <activity android:name=".orientation.AttentionResultChartView"></activity>
+        <activity android:name=".StartFullTest"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MobApp.NoActionBar" />
+        <activity android:name=".ChoiceLandingLegacy" />
+        <activity android:name=".orientation.AttentionResultChartView" />
         <activity
             android:name=".ProfileManagement"
             android:label="@string/title_activity_profile_management"
@@ -70,8 +74,7 @@
         <activity android:name=".verbalMemory.SinhalaTestActivity" />
         <activity
             android:name=".activity_choice_landing"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.MobApp.NoActionBar" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".orientation.TccImageLayout"
             android:screenOrientation="portrait" />
@@ -124,4 +127,5 @@
         <activity android:name=".Visual.shapes.Shape9" />
         <activity android:name=".Visual.shapes.Shape10" />
     </application>
+
 </manifest>

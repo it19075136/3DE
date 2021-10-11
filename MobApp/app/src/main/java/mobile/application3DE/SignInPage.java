@@ -77,7 +77,7 @@ public class SignInPage extends BaseActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.exists())
-                        intent[0] = new Intent(getApplicationContext(), activity_choice_landing.class);
+                        intent[0] = new Intent(getApplicationContext(), StartFullTest.class);
                     else if(intent[0] == null)
                         intent[0] = new Intent(getApplicationContext(), Landing.class);
                     intent[0].putExtra("email",account.getEmail());

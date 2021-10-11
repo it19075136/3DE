@@ -36,8 +36,9 @@ import java.util.Date;
 
 import mobile.application3DE.R;
 import mobile.application3DE.models.Result;
+import mobile.application3DE.utilities.BaseActivity;
 
-public class AttentionDualTaskTestWalkBased extends AppCompatActivity implements SensorEventListener {
+public class AttentionDualTaskTestWalkBased extends BaseActivity implements SensorEventListener {
 
     TextView testInstruct,counter;
     ImageView status;
