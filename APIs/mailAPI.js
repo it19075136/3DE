@@ -14,7 +14,7 @@ function send(payload) {
     console.log(recipients);
 
     // create message body
-    const messageBody = "User details\n\n"+payload.patient.name+"\n"+payload.patient.age+" Years\n\nUser dementia status:"+payload.results+"\n"+payload.suggestions+"\n\nYours' sincerely,\n3DE Team ❤"
+    const messageBody = "User details\n\nName:- "+payload.patient.name+"\nDate of Birth:- "+payload.patient.age+"\n\nUser's dementia status,\n"+payload.results+"\n"+payload.suggestions+"\n\nYours' sincerely,\n3DE Team ❤"
     
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
