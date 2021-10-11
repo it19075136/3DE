@@ -169,6 +169,7 @@ public class AttentionDualTaskTest extends BaseActivity {
                         resultIntent.putExtra("result",getFinalResult());
                         resultIntent.putExtra("originator","speech");
                         resultIntent.putExtra("diff",String.format("%.4f",diff));
+                        resultIntent.putExtra("type",type);
                         if (type.equals("gen"))
                         dualTaskRef.child("dualTask").setValue(getResult()).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override

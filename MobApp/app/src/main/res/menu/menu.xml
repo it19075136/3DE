@@ -17,6 +17,10 @@
             android:icon="@drawable/ic_baseline_science_24"
             android:title="Attention Test" />
         <item
+            android:id="@+id/nav_testing"
+            android:icon="@drawable/ic_baseline_science_24"
+            android:title="Testing" />
+        <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_baseline_settings_24"
             android:title="Settings" />

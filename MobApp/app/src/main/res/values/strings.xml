@@ -30,6 +30,7 @@
     <string name="hint">Tap on mic to start</string>
     <string name="title_activity_level_music_play">LevelMusicPlayActivity</string>
     <string name="g_sign_in">Sign in with Google</string>
+
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>

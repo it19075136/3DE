@@ -36,8 +36,9 @@ import java.util.Date;
 
 import mobile.application3DE.R;
 import mobile.application3DE.models.Result;
+import mobile.application3DE.utilities.BaseActivity;
 
-public class AttentionDualTaskTestWalkBased extends AppCompatActivity implements SensorEventListener {
+public class AttentionDualTaskTestWalkBased extends BaseActivity implements SensorEventListener {
 
     TextView testInstruct,counter;
     ImageView status;
@@ -256,6 +257,7 @@ public class AttentionDualTaskTestWalkBased extends AppCompatActivity implements
                         resultIntent.putExtra("result",getFinalResult());
                         resultIntent.putExtra("originator","walk");
                         resultIntent.putExtra("diff",String.format("%.4f",diff));
+                        resultIntent.putExtra("type",type);
                         if (type.equals("gen"))
                             dualTaskRef.child("dualTask").setValue(walkingSpeed/2).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
