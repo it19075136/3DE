@@ -7,8 +7,8 @@ function send(payload) {
 
     console.log(payload);
     // add guardian mail addresses to the recipients string
-    for (let index = 0; index < payload.recipients.length; index++) {
-        recipients = recipients + payload.recipients[index] + ",";
+    for (let index = 0; index < JSON.parse(payload.recipients).length; index++) {
+        recipients = recipients + JSON.parse(payload.recipients)[index] + ",";
     }
 
     console.log(recipients);
