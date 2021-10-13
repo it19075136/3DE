@@ -112,7 +112,7 @@ public class AttentionDualTaskTestWalkBased extends BaseActivity implements Sens
 
     private void startTest() {
 
-        testInstruct.setText("Start Activity in");
+        testInstruct.setText(R.string.startIn);
         progressBar.setProgress(0);
         count = 3;
         counter.setText(String.valueOf(count));

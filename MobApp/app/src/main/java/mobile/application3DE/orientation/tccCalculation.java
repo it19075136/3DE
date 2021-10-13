@@ -56,7 +56,7 @@ public class tccCalculation extends BaseActivity {
         setContentView(R.layout.tcc_layout);
 
         startBtn = findViewById(R.id.btnStart);
-        startBtn.setText("Please wait..");
+        startBtn.setText(R.string.pleaseWait);
         startBtn.setEnabled(false);
 
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
@@ -67,15 +67,15 @@ public class tccCalculation extends BaseActivity {
 
         userRef = databaseReference.child("users/"+currentUser);
 
-        userRef.child("TCC1completed").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    Snackbar.make(findViewById(android.R.id.content).getRootView(), "You have completed tcc test case 1", Snackbar.LENGTH_LONG).show();
-                    startBtn.setText("Completed");
-                    startBtn.setEnabled(false);
-                    execute = false;
-                }
+//        userRef.child("TCC1completed").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if(snapshot.exists()){
+//                    Snackbar.make(findViewById(android.R.id.content).getRootView(), "You have completed tcc test case 1", Snackbar.LENGTH_LONG).show();
+//                    startBtn.setText("Completed");
+//                    startBtn.setEnabled(false);
+//                    execute = false;
+//                }
 
                 if(execute) {
                     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -93,7 +93,7 @@ public class tccCalculation extends BaseActivity {
                             try {
                                 if ((((dateFormat.parse(dateFormat.format(new Date())).getTime() - (run1Date.getTime())) / (1000 * 60 * 60)) % 24 < 1) && (getIntent().getStringExtra("skipT") == null)) {
                                     Snackbar.make(findViewById(android.R.id.content).getRootView(), "Make sure you start this run after 1 hour from the completion of 1st run", Snackbar.LENGTH_LONG).show();
-                                    startBtn.setText("Not allowed");
+                                    startBtn.setText(R.string.notAllowed);
                                     startBtn.setEnabled(false);
                                     execute = false;
                                 }
@@ -128,13 +128,13 @@ public class tccCalculation extends BaseActivity {
                     });
                 }
 
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
 
     }
 

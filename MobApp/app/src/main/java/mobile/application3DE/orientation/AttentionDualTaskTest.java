@@ -266,7 +266,7 @@ public class AttentionDualTaskTest extends BaseActivity {
                         speechTime = 25;
                         Toast.makeText(getApplicationContext(),String.valueOf(speechTime) + " seconds",Toast.LENGTH_SHORT).show();
                         recordingTimer = 0;
-                        instruct.setText("Please wait...");
+                        instruct.setText(R.string.pleaseWait);
                         loading.setVisibility(View.VISIBLE);
                     }
                 }.start();

@@ -78,6 +78,26 @@
     <string name="add">Add</string>
     <string name="title_activity_profile_management">ProfileManagement</string>
     <string name="visual_memory">Visual Memory</string>
+    <string name="finalResults">Final Results</string>
+    <string name="resultsFor">Results for </string>
+    <string name="examDate">Exam date: </string>
+    <string name="demetiaStatus">Dementia Status: </string>
+    <string name="resultsSent">Results sent to : </string>
+    <string name="home">Home</string>
+    <string name="thank_you">Thank You</string>
+    <string name="startWalking">Start walking in</string>
+    <string name="walkingTask">Walking Task</string>
+    <string name="keepWalking">Keep walking until you hear a beep</string>
+    <string name="listening">Listening…</string>
+    <string name="pleaseWait">Please wait…</string>
+    <string name="notAllowed">Not allowed</string>
+    <string name="tccResult">You\'ve completed the TCC test case, your tcc value is </string>
+    <string name="tccRnCmpltd">Run completed, please come back in 1 hour for the 2nd run.</string>
+    <string name="round">Round </string>
+    <string name="startIn">Start Activity in</string>
+    <string name="let_s_start">Let\'s Start</string>
+    <string name="select_your_best_ability">Select your best ability</string>
+    <string name="results">Results</string>
 
 
 </resources>
