@@ -110,7 +110,7 @@ public class AttentionWalkingTest extends BaseActivity implements SensorEventLis
 
     private void startTest() {
 
-        output.setText("Start walking in");
+        output.setText(R.string.startWalking);
         progressBar.setProgress(0);
         count = 3;
         counter.setText(String.valueOf(count));

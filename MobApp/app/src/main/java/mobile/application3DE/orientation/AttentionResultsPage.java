@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import mobile.application3DE.FinalResultActivity;
 import mobile.application3DE.ProfileManagement;
 import mobile.application3DE.R;
 import mobile.application3DE.models.Guardian;
@@ -57,7 +58,7 @@ public class AttentionResultsPage extends BaseActivity {
     Guardian g1,g2;
     JSONObject mailObj,userObj;
     boolean isGuardianExist = true;
-    SimpleDateFormat formatDate;
+    Intent intent;
 
     // we will get the default FirebaseDatabase instance
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -91,7 +92,6 @@ public class AttentionResultsPage extends BaseActivity {
 
         diff.setText(diffText+ getIntent().getStringExtra("diff"));
         results.setText(resultsText+getIntent().getStringExtra("result")+"%");
-        formatDate = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
 // Adding signed in user.
@@ -100,20 +100,6 @@ public class AttentionResultsPage extends BaseActivity {
             currentUser = acct.getId();
 
         userRef = databaseReference.child("users/"+currentUser);
-        finalResultRef = databaseReference.child("FinalResults/"+currentUser);
-
-        String type = getIntent().getStringExtra("type");
-        if (type.equals("gen")) {
-            String res = "Mild";
-            if (Double.parseDouble(getIntent().getStringExtra("result")) < 37.00)
-                res = "No";
-            finalResultRef.child(formatDate.format(new Date())).setValue(res).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    Toast.makeText(getApplicationContext(), "You've successfully completed the test!", Toast.LENGTH_LONG).show();
-                }
-            });
-        }
 
         //CREATING HTTP CLIENT
         client = new OkHttpClient.Builder()
@@ -150,13 +136,24 @@ public class AttentionResultsPage extends BaseActivity {
             @Override
             public void onResponse(Call call, Response response) {
 
-                if(response.isSuccessful())
+                if(response.isSuccessful()) {
                     AttentionResultsPage.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Snackbar.make(findViewById(android.R.id.content).getRootView(), "Results are sent to the guardians!", Snackbar.LENGTH_LONG).setBackgroundTint(getResources().getColor(R.color.success)).show();
+                            Snackbar.make(findViewById(android.R.id.content).getRootView(), "Results have been sent to the guardians!", Snackbar.LENGTH_LONG).setBackgroundTint(getResources().getColor(R.color.success)).show();
                         }
                     });
+                    String type = getIntent().getStringExtra("type");
+                    if (type.equals("gen")) {
+                        intent = new Intent(AttentionResultsPage.this, FinalResultActivity.class);
+                        intent.putExtra("user", user);
+                        String res = "Mild";
+                        if (Double.parseDouble(getIntent().getStringExtra("result")) < 37.00)
+                            res = "No";
+                        intent.putExtra("result", res);
+                        startActivity(intent);
+                    }
+                }
                 else
                     AttentionResultsPage.this.runOnUiThread(new Runnable() {
                         @Override
