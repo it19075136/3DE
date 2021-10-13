@@ -32,7 +32,9 @@
         android:roundIcon="@mipmap/app_logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MobApp">
-        <activity android:name=".StartFullTest"
+        <activity android:name=".FinalResultActivity"/>
+        <activity
+            android:name=".StartFullTest"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MobApp.NoActionBar" />
         <activity android:name=".ChoiceLandingLegacy" />

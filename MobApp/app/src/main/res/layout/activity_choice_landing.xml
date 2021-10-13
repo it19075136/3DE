@@ -13,7 +13,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_marginTop="32sp"
-                android:text="Select your best ability"
+                android:text="@string/select_your_best_ability"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -27,10 +27,8 @@
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/teal_200"
                     android:padding="10dp"
                     android:text="@string/walking"
-                    android:textColor="@color/black"
                     android:textSize="26sp" />
 
                 <com.google.android.material.button.MaterialButton
@@ -39,9 +37,7 @@
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:backgroundTint="@color/teal_200"
                     android:text="@string/talking"
-                    android:textColor="@color/black"
                     android:textSize="26sp" />
 
                 <!--           <com.google.andr                               android:layout_marginTop="20dp"

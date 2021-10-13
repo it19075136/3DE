@@ -38,8 +38,8 @@ public class AttentionSingleTaskLanding extends BaseActivity {
             testintent = new Intent(this, AttentionSpeechTest.class);
         }
         else {
-            type.setText("Walking Task");
-            instruct.setText("Keep walking until you hear a beep");
+            type.setText(R.string.walkingTask);
+            instruct.setText(R.string.keepWalking);
             note.setVisibility(View.INVISIBLE);
             testintent = new Intent(this, AttentionWalkingTest.class);
         }
