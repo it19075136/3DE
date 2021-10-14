@@ -11,14 +11,13 @@
             android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Your words will appear here"
+            android:text="@string/your_words_will_appear_here"
             android:textAlignment="center"
             style="@style/TextAppearance.MaterialComponents.Body1"
             android:textSize="26sp"
             android:layout_alignParentTop="true"
             android:layout_marginTop="600dp"
-            android:scrollbars="vertical"
-            />
+            android:scrollbars="vertical" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -59,7 +58,7 @@
             android:id="@+id/instruct"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="Tap to Start Recording"
+            android:text="@string/tap_to_start_recording"
             style="@style/TextAppearance.MaterialComponents.Body1"
             android:textSize="22sp"
             />
@@ -81,7 +80,7 @@
         style="@style/TextAppearance.MaterialComponents.Headline6"
         android:layout_alignParentTop="true"
         android:gravity="center"
-        android:text="Substract 2 values starting from 50-0"
+        android:text="@string/Substract"
         android:textAlignment="center"
         android:textSize="30sp" />
 
