@@ -18,14 +18,14 @@
             android:layout_width="wrap_content"
             android:id="@+id/roundHeader"
             android:layout_height="wrap_content"
-            android:text="Round 1"
+            android:text="@string/round_1"
             android:textSize="20dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/skipBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="SKIP ROUND"
+            android:text="@string/skip_round"
             android:backgroundTint="@color/teal_200"
             android:layout_marginStart="10sp"
             android:onClick="nextRound"
@@ -37,7 +37,7 @@
             android:id="@+id/exitBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="EXIT"
+            android:text="@string/exit"
             android:backgroundTint="@color/error"
             android:layout_marginStart="20dp"
             android:onClick="navigateBack"
@@ -62,7 +62,7 @@
             android:textAlignment="center"
             android:textSize="20dp"
             style="@style/MaterialAlertDialog.MaterialComponents.Title.Panel.CenterStacked"
-            android:text="Try to remember the below image"
+            android:text="@string/try_to"
             />
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/imgView"

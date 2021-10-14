@@ -80,7 +80,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Your words will appear here"
+            android:text="@string/your_words_will_appear_here"
             style="@style/TextAppearance.MaterialComponents.Body1"
             android:textAlignment="center"
             android:scrollbars="vertical"
@@ -101,7 +101,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:text="Starts Activity in"
+            android:text="@string/starts_activity_in"
             style="@style/TextAppearance.MaterialComponents.Headline6"
             android:textAlignment="center"
             android:textSize="30sp" />
