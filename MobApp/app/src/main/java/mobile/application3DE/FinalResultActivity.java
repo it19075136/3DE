@@ -1,7 +1,6 @@
 package mobile.application3DE;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -33,9 +32,8 @@ import java.util.HashMap;
 import java.util.Objects;
 
 import mobile.application3DE.models.Guardian;
-import mobile.application3DE.models.User;
-import mobile.application3DE.orientation.AttentionResultsPage;
 import mobile.application3DE.utilities.BaseActivity;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -77,6 +75,7 @@ public class FinalResultActivity extends BaseActivity {
         result = findViewById(R.id.result);
         emails = findViewById(R.id.emails);
         btnHome = findViewById(R.id.btnHome);
+        btnHome.setText("Please wait...");
         btnHome.setEnabled(false);
 
         u = (HashMap<String, String>) getIntent().getSerializableExtra("user");
@@ -136,6 +135,7 @@ public class FinalResultActivity extends BaseActivity {
                             Snackbar.make(findViewById(android.R.id.content).getRootView(), "Results have been sent to the guardians!", Snackbar.LENGTH_LONG).setBackgroundTint(getResources().getColor(R.color.success)).show();
                         }
                     });
+                    btnHome.setText(R.string.home);
                     btnHome.setEnabled(true);
                 }
                 else
@@ -201,6 +201,7 @@ public class FinalResultActivity extends BaseActivity {
                     sendMailRequest(); //sending request and handling response
             }
         });
+
     }
 
     public void navigateHome(View view) {

@@ -37,7 +37,7 @@
         android:textAlignment="center"
         style="@style/TextAppearance.MaterialComponents.Headline5"
         android:layout_centerHorizontal="true"
-        android:text="Walking and Talking"
+        android:text="walking_and_talking"
         android:textColor="@color/white"
         android:textSize="28sp" />
 
@@ -50,7 +50,7 @@
             android:layout_marginTop="30sp"
             style="@style/TextAppearance.MaterialComponents.Body1"
             android:layout_centerHorizontal="true"
-            android:text="Now, Stand up,Repeat the same substracting task while walking in a straight line"
+            android:text="@string/now_stand_up_repeat_the_same_substracting_task_while_walking_in_a_straight_line"
             android:textColor="@color/white"
             android:textSize="26sp"/>
 
@@ -62,7 +62,7 @@
             android:layout_marginTop="30sp"
             style="@style/TextAppearance.MaterialComponents.Body1"
             android:layout_centerHorizontal="true"
-            android:text="Stop once you hear the Beep"
+            android:text="@string/stop_once_you_hear_the_beep"
             android:textColor="@color/white"
             android:textSize="26sp"/>
 

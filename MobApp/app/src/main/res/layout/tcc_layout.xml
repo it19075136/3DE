@@ -33,7 +33,7 @@
         android:textAlignment="center"
         android:textColor="@color/white"
         style="@style/TextAppearance.MaterialComponents.Body1"
-        android:text="Try to remember the images shown in the image set."
+        android:text="@string/try_to_remember_the_images_shown_in_the_image_set"
         android:textSize="26sp" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:textAlignment="center"
             android:layout_marginTop="30dp"
-            android:text="Note: An image will only be displayed for 2 seconds"
+            android:text="@string/note_an_image_will_only_be_displayed_for_2_seconds"
             android:textColor="@color/white"
             android:textSize="26sp" />
 
