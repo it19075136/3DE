@@ -189,7 +189,7 @@ public class FinalResultActivity extends BaseActivity {
                 try {
                     mailObj.put("recipients",recipientsJSON);
                     mailObj.put("patient", userObj);
-                    mailObj.put("results", "Dimentia status: ,"+result);
+                    mailObj.put("results", "Dementia status: ,"+result);
                     mailObj.put("suggestions", "");
                     mailObj.put("type", "final");
                 } catch (JSONException e) {

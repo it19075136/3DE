@@ -207,6 +207,7 @@ public class AttentionResultsPage extends BaseActivity {
                     mailObj.put("patient", userObj);
                     mailObj.put("results", diff.getText()+" ,"+results.getText());
                     mailObj.put("suggestions", "");
+                    mailObj.put("type", "attention");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
