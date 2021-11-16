@@ -1,6 +1,8 @@
 package mobile.application3DE.models;
 
-public class Guardian {
+import java.io.Serializable;
+
+public class Guardian implements Serializable {
 
     private String guardianName,guardianMail,guardianMob;
 

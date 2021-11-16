@@ -89,7 +89,7 @@ public class AttentionDualTaskTestWalkBased extends BaseActivity implements Sens
 
         userRef = databaseReference.child("users/"+currentUser);
         dualTaskRef = databaseReference.child("ComponentBasedResults/"+currentUser+"/Orientation/Attention/1/walking");
-        attentionRef = databaseReference.child("AttentionResults/"+currentUser+"/Orientation/Attention/walking");
+        attentionRef = databaseReference.child("AttentionResults/"+currentUser+"/Orientation/Attention");
 //        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 //        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_SIGNIFICANT_MOTION);
 
@@ -112,7 +112,7 @@ public class AttentionDualTaskTestWalkBased extends BaseActivity implements Sens
 
     private void startTest() {
 
-        testInstruct.setText("Start Activity in");
+        testInstruct.setText(R.string.startIn);
         progressBar.setProgress(0);
         count = 3;
         counter.setText(String.valueOf(count));

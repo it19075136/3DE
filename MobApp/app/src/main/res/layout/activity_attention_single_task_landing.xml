@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/teal_200"
+    android:background="@color/theme"
     tools:context=".orientation.AttentionSingleTaskLanding">
 
     <com.google.android.material.textview.MaterialTextView
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         style="@style/TextAppearance.MaterialComponents.Headline5"
-        android:text="Talking Task"
+        android:text="@string/talking_task"
         android:textColor="@color/white"
         android:textSize="28sp" />
 
@@ -48,7 +48,7 @@
             android:textAlignment="center"
             android:gravity="center"
             style="@style/TextAppearance.MaterialComponents.Body1"
-            android:text="Press 'Start' and start substracting 2 values from 50-0"
+            android:text="@string/press_start_and_start_substracting_2_values_from_50_0"
             android:textColor="@color/white"
             android:textSize="26sp" />
 
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             style="@style/TextAppearance.MaterialComponents.Body1"
-            android:text="Remember to read out loud"
+            android:text="@string/remember_to_read_out_loud"
             android:textColor="@color/white"
             android:textSize="26sp" />
 

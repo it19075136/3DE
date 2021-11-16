@@ -24,22 +24,36 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Objects;
 import java.util.Random;
 
+import mobile.application3DE.FinalResultActivity;
+import mobile.application3DE.ProfileManagement;
 import mobile.application3DE.R;
+import mobile.application3DE.models.Guardian;
 import mobile.application3DE.utilities.BaseActivity;
 import mobile.application3DE.verbalMemory.LevelMusicPlayActivity;
 import mobile.application3DE.verbalMemory.SinhalaTestActivity;
 import mobile.application3DE.verbalMemory.SpeechTestActivity;
+import okhttp3.Call;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class TccImageLayout extends BaseActivity {
 
@@ -56,6 +70,7 @@ public class TccImageLayout extends BaseActivity {
     SimpleDateFormat formatDate;
     Intent intent;
     CountDownTimer countDownTimer;
+    HashMap<String,String> user;
 
     DatabaseReference tccRef,userRef,finalResultRef;
     FirebaseDatabase fb;
@@ -317,7 +332,7 @@ public class TccImageLayout extends BaseActivity {
                     btnNo.setVisibility(View.INVISIBLE);
                     quest.setVisibility(View.VISIBLE);
                     Toast.makeText(getApplicationContext(), "Run " + runIdentifier + " completed with tcc hits: " + hits + " ,false positives: " + fps, Toast.LENGTH_LONG).show();
-                    quest.setText("Run completed, please come back in 1 hour for the 2nd run.");
+                    quest.setText(R.string.tccRnCmpltd);
                     round_counter++;
                     mergedArr.clear();
                     showDialog();
@@ -333,11 +348,15 @@ public class TccImageLayout extends BaseActivity {
         quest.setVisibility(View.VISIBLE);
         RoundHeader.setVisibility(View.INVISIBLE);
         Toast.makeText(getApplicationContext(), "Run " + runIdentifier + " completed with tcc hits: " + hits + " ,false positives: " + fps + "Your tcc value is "+ tccValue, Toast.LENGTH_LONG).show();
-        quest.setText("You've completed the TCC test case, your tcc value is "+tccValue);
+        quest.setText(getString(R.string.tccResult)+tccValue);
         round_counter++;
         mergedArr.clear();
         // store final result fail - mild, pass to attention
-        if(Double.parseDouble(tccValue) < 0.9) {
+        Double value = 0.0;
+        if(!tccValue.equals("Infinite"))
+            value = Double.parseDouble(tccValue);
+
+        if(value > 0.9 || tccValue.equals("Infinite")) {
             Toast.makeText(getApplicationContext(), "Please wait.. You will be directed to the next activity in few seconds",Toast.LENGTH_SHORT).show();
             intent = new Intent(this, AttentionInstructions.class);
             countDownTimer = new CountDownTimer(5000,1000){
@@ -353,12 +372,7 @@ public class TccImageLayout extends BaseActivity {
             }.start();
         }
         else{
-            finalResultRef.child(formatDate.format(new Date())).setValue("Mild").addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    Toast.makeText(getApplicationContext(),"You've successfully completed the test!",Toast.LENGTH_SHORT).show();
-                }
-            });
+            navigateToFinalResults();
         }
     }
 
@@ -396,7 +410,7 @@ public class TccImageLayout extends BaseActivity {
                     round_counter++; // incrementing the round count
                     Snackbar.make(findViewById(android.R.id.content).getRootView(), "Starting round " + round_counter, Snackbar.LENGTH_SHORT).show();
                     RoundHeader.setVisibility(View.VISIBLE);
-                    RoundHeader.setText("Round " + round_counter);
+                    RoundHeader.setText(getString(R.string.round) + round_counter);
                     counter = 0; //setting counter to 0
                 }
 
@@ -498,4 +512,19 @@ public class TccImageLayout extends BaseActivity {
         else
             setResponse(selectedImg,"no");
     }
+
+    private void navigateToFinalResults() {
+        userRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                user = (HashMap<String, String>) task.getResult().getValue();
+                intent = new Intent(TccImageLayout.this, FinalResultActivity.class);
+                intent.putExtra("user", user);
+                intent.putExtra("result", "Mild");
+                startActivity(intent);
+            }
+        });
+    }
+
+
 }

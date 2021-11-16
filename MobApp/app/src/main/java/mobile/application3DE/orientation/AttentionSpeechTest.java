@@ -64,6 +64,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static mobile.application3DE.R.string.listening;
+
 public class AttentionSpeechTest extends BaseActivity{
 
     private static final String LOG_TAG = "SPEECHTEST";
@@ -205,7 +207,7 @@ public class AttentionSpeechTest extends BaseActivity{
                 speechTime = 0;
                 str = "";
                 instruct.setVisibility(View.VISIBLE);
-                instruct.setText("Listening...");
+                instruct.setText(listening);
                 counter.setVisibility(View.INVISIBLE);
                 count = 3;
                 counter.setText(String.valueOf(count));
@@ -245,7 +247,7 @@ public class AttentionSpeechTest extends BaseActivity{
                         speechTime = 25;
                         Toast.makeText(getApplicationContext(),String.valueOf(speechTime) + " seconds",Toast.LENGTH_SHORT).show();
                         recordingTimer = 0;
-                        instruct.setText("Please wait...");
+                        instruct.setText(R.string.pleaseWait);
                         progressBar.setVisibility(View.INVISIBLE);
                         loading.setVisibility(View.VISIBLE);
                     }

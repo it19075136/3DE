@@ -7,15 +7,15 @@
         <item
             android:id="@+id/nav_account"
             android:icon="@drawable/ic_baseline_account_circle_24"
-            android:title="Account" />
+            android:title="@string/account" />
         <item
             android:id="@+id/nav_reports"
             android:icon="@drawable/ic_baseline_email_24"
-            android:title="Reports" />
+            android:title="@string/reports" />
         <item
             android:id="@+id/nav_attemtion_test"
             android:icon="@drawable/ic_baseline_science_24"
-            android:title="Attention Test" />
+            android:title="@string/attention_test" />
         <item
             android:id="@+id/nav_testing"
             android:icon="@drawable/ic_baseline_science_24"
@@ -23,14 +23,14 @@
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_baseline_settings_24"
-            android:title="Settings" />
+            android:title="@string/settings" />
         <item
             android:id="@+id/nav_help"
             android:icon="@drawable/ic_baseline_help_24"
-            android:title="Help" />
+            android:title="@string/help" />
         <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/ic_baseline_exit_to_app_24"
-            android:title="Logout"/>
+            android:title="@string/logout"/>
     </group>
 </menu>

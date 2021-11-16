@@ -145,7 +145,7 @@ public class AttentionDualTaskTest extends BaseActivity {
 
         userRef = databaseReference.child("users/"+currentUser);
         dualTaskRef = databaseReference.child("ComponentBasedResults/"+currentUser+"/Orientation/Attention/1/Talking");
-        attentionRef = databaseReference.child("AttentionResults/"+currentUser+"/Orientation/Attention/Talking");
+        attentionRef = databaseReference.child("AttentionResults/"+currentUser+"/Orientation/Attention");
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Do you confirm your recording?")
@@ -266,7 +266,7 @@ public class AttentionDualTaskTest extends BaseActivity {
                         speechTime = 25;
                         Toast.makeText(getApplicationContext(),String.valueOf(speechTime) + " seconds",Toast.LENGTH_SHORT).show();
                         recordingTimer = 0;
-                        instruct.setText("Please wait...");
+                        instruct.setText(R.string.pleaseWait);
                         loading.setVisibility(View.VISIBLE);
                     }
                 }.start();
