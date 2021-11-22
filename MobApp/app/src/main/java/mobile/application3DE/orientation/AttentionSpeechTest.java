@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.gauravk.audiovisualizer.visualizer.WaveVisualizer;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -73,6 +74,7 @@ public class AttentionSpeechTest extends BaseActivity{
     private ProgressBar progressBar,loading;
     TextView counter,instruct;
     int count = 3,recordingTimer = 0,speechTime = 0;
+    WaveVisualizer waveVisualizer;
 
     // [START recording_parameters]
     private static final int AUDIO_SOURCE = MediaRecorder.AudioSource.UNPROCESSED;
@@ -124,6 +126,7 @@ public class AttentionSpeechTest extends BaseActivity{
         progressBar.setVisibility(View.INVISIBLE);
         loading = findViewById(R.id.loadingPanel);
         loading.setVisibility(View.INVISIBLE);
+        waveVisualizer = findViewById(R.id.wave);
 
         if (getString(R.string.language).equals(getString(R.string.sinhala)))
             lang = "si-LK";
@@ -371,7 +374,7 @@ public class AttentionSpeechTest extends BaseActivity{
             // This loop runs until the client calls stopRecording().
             while (isRecording) {
                 int status = audioRecord.read(data, 0, data.length);
-
+                waveVisualizer.setRawAudioBytes(data);
                 if (status == AudioRecord.ERROR_INVALID_OPERATION || status == AudioRecord.ERROR_BAD_VALUE) {
                     Log.e(TAG, "Couldn't read data");
                     recordingListener.onRecordingFailed(new IOException());
@@ -390,6 +393,8 @@ public class AttentionSpeechTest extends BaseActivity{
                 outputStream.close();
                 audioRecord.stop();
                 audioRecord.release();
+                if(waveVisualizer != null)
+                    waveVisualizer.release();
 
                 Log.v(TAG, "Recording stopped");
 

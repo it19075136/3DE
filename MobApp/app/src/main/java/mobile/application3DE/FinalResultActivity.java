@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 
+import mobile.application3DE.models.FinalResult;
 import mobile.application3DE.models.Guardian;
 import mobile.application3DE.utilities.BaseActivity;
 
@@ -61,6 +62,7 @@ public class FinalResultActivity extends BaseActivity {
     JSONObject mailObj,userObj;
     boolean isGuardianExist = true;
     Intent intent;
+    FinalResult finalResult;
 
     private static final String URL = "https://three-de.herokuapp.com/mail/api";
 
@@ -75,8 +77,6 @@ public class FinalResultActivity extends BaseActivity {
         result = findViewById(R.id.result);
         emails = findViewById(R.id.emails);
         btnHome = findViewById(R.id.btnHome);
-        btnHome.setText("Please wait...");
-        btnHome.setEnabled(false);
 
         u = (HashMap<String, String>) getIntent().getSerializableExtra("user");
 
@@ -96,7 +96,9 @@ public class FinalResultActivity extends BaseActivity {
         finalResultRef = databaseReference.child("FinalResults/"+currentUser);
         userRef = databaseReference.child("users/"+currentUser);
 
-        finalResultRef.child(formatDate.format(new Date())).setValue(getIntent().getStringExtra("result")).addOnCompleteListener(new OnCompleteListener<Void>() {
+        finalResult = new FinalResult(formatDate.format(new Date()),getIntent().getStringExtra("result"));
+
+        finalResultRef.child(formatDate.format(new Date())).setValue(finalResult).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     Toast.makeText(getApplicationContext(), "You've successfully completed the test!", Toast.LENGTH_LONG).show();
@@ -112,6 +114,8 @@ public class FinalResultActivity extends BaseActivity {
                 .url(URL)
                 .post(RequestBody.create(MediaType.parse("application/json"), String.valueOf(mailObj)))
                 .build();
+
+        client = new OkHttpClient();
 
         client.newCall(req).enqueue(new Callback() {
             @Override
@@ -135,8 +139,6 @@ public class FinalResultActivity extends BaseActivity {
                             Snackbar.make(findViewById(android.R.id.content).getRootView(), "Results have been sent to the guardians!", Snackbar.LENGTH_LONG).setBackgroundTint(getResources().getColor(R.color.success)).show();
                         }
                     });
-                    btnHome.setText(R.string.home);
-                    btnHome.setEnabled(true);
                 }
                 else
                     FinalResultActivity.this.runOnUiThread(new Runnable() {
@@ -175,6 +177,7 @@ public class FinalResultActivity extends BaseActivity {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
                 userObj = new JSONObject();
+                mailObj = new JSONObject();
 
                 try {
                     userObj.put("name",u.get("_fName")+" "+u.get("_lName"));
@@ -189,14 +192,13 @@ public class FinalResultActivity extends BaseActivity {
                 try {
                     mailObj.put("recipients",recipientsJSON);
                     mailObj.put("patient", userObj);
-                    mailObj.put("results", "Dementia status: ,"+result);
+                    mailObj.put("results", "Dementia status: ,"+result.getText().toString());
                     mailObj.put("suggestions", "");
                     mailObj.put("type", "final");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-                Toast.makeText(FinalResultActivity.this,String.valueOf(mailObj),Toast.LENGTH_LONG).show();
                 if(isGuardianExist)
                     sendMailRequest(); //sending request and handling response
             }
@@ -205,7 +207,7 @@ public class FinalResultActivity extends BaseActivity {
     }
 
     public void navigateHome(View view) {
-        Intent intent = new Intent(this, StartFullTest.class);
+        intent = new Intent(this, StartFullTest.class);
         startActivity(intent);
     }
 

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".ReportChoice">
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/final_results_stats"
+        android:layout_gravity="bottom"
+        android:textSize="16sp"
+        app:cornerRadius="10sp"
+        android:onClick="directToTable"
+        android:layout_marginHorizontal="110dp"
+        android:layout_marginBottom="100dp"
+        style="@style/TextAppearance.MaterialComponents.Button"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/attention_results_stats"
+        android:layout_gravity="bottom"
+        android:textSize="16sp"
+        app:cornerRadius="10sp"
+        android:onClick="directToChart"
+        android:layout_marginHorizontal="110dp"
+        android:layout_marginBottom="100dp"
+        style="@style/TextAppearance.MaterialComponents.Button"
+        />
+</LinearLayout>

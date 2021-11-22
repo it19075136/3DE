@@ -29,7 +29,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import mobile.application3DE.R;
+import mobile.application3DE.models.FinalResult;
 import mobile.application3DE.utilities.BaseActivity;
+import mobile.application3DE.utilities.FinalResultsAdapter;
 
 public class AttentionResultChartView extends BaseActivity {
 
@@ -63,7 +65,7 @@ public class AttentionResultChartView extends BaseActivity {
 
         cartesian.animation(true);
 
-        cartesian.padding(10d, 20d, 5d, 20d);
+        cartesian.padding(20d, 10d, 20d, 10d);
 
         cartesian.crosshair().enabled(true);
         cartesian.crosshair()

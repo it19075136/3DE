@@ -21,18 +21,23 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <ImageView
+                <com.gauravk.audiovisualizer.visualizer.WaveVisualizer
+                    xmlns:custom="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/wave"
                     android:layout_width="134dp"
                     android:layout_height="111dp"
-                    android:src="@drawable/recorder_icon" />
+                    custom:avDensity="0.8"
+                    custom:avType="outline"
+                    custom:avColor="@color/theme"
+                    custom:avGravity="top"
+                    custom:avSpeed="normal"/>
+
                 <TextView
                     android:id="@+id/listening"
                     android:layout_width="wrap_content"

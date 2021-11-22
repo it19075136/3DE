@@ -41,11 +41,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/let_s_start"
-        android:layout_gravity="center"
+        android:layout_gravity="bottom"
         android:onClick="directToChoice"
         android:textSize="26sp"
         app:cornerRadius="10sp"
-        android:textAlignment="center"
+        android:layout_marginHorizontal="110dp"
+        android:layout_marginBottom="100dp"
         style="@style/TextAppearance.MaterialComponents.Button"
         />
 

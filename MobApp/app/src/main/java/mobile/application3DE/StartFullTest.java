@@ -100,7 +100,7 @@ public class StartFullTest extends BaseActivity implements NavigationView.OnNavi
 
                 break;
             case R.id.nav_reports:
-                i = new Intent(this, AttentionResultChartView.class);
+                i = new Intent(this, ReportChoice.class);
                 startActivity(i);
                 break;
             case R.id.nav_logout:

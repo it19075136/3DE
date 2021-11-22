@@ -120,6 +120,11 @@
     <string name="round_1">Round 1</string>
     <string name="skip_round">SKIP ROUND</string>
     <string name="exit">EXIT</string>
+    <string name="final_results_stats">Final Results Stats</string>
+    <string name="attention_results_stats">Attention Results stats</string>
+    <string name="status">Status</string>
+    <string name="date">Date</string>
+    <string name="dementia_status">Dementia Status</string>
 
 
 </resources>

@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.gauravk.audiovisualizer.visualizer.WaveVisualizer;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -96,6 +97,7 @@ public class AttentionDualTaskTest extends BaseActivity {
     SimpleDateFormat formatDate;
     Float diff,Finalresult;
     OkHttpClient client;
+    WaveVisualizer waveVisualizer;
 
     // we will get the default FirebaseDatabase instance
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -122,6 +124,7 @@ public class AttentionDualTaskTest extends BaseActivity {
         listening = findViewById(R.id.listening);
         loading = findViewById(R.id.loadingPanel);
         loading.setVisibility(View.INVISIBLE);
+        waveVisualizer = findViewById(R.id.wave);
 
         walking.setVisibility(View.INVISIBLE);
         listening.setVisibility(View.INVISIBLE);
@@ -390,6 +393,7 @@ public class AttentionDualTaskTest extends BaseActivity {
             // This loop runs until the client calls stopRecording().
             while (isRecording) {
                 int status = audioRecord.read(data, 0, data.length);
+                waveVisualizer.setRawAudioBytes(data);
 
                 if (status == AudioRecord.ERROR_INVALID_OPERATION || status == AudioRecord.ERROR_BAD_VALUE) {
                     Log.e(TAG, "Couldn't read data");
@@ -409,6 +413,8 @@ public class AttentionDualTaskTest extends BaseActivity {
                 outputStream.close();
                 audioRecord.stop();
                 audioRecord.release();
+                if(waveVisualizer != null)
+                    waveVisualizer.release();
 
                 Log.v(TAG, "Recording stopped");
 
