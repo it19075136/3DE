@@ -31,6 +31,16 @@ import java.util.Map;
 public class Results extends AppCompatActivity {
 
 
+    TextView textView1;
+    TextView textView2;
+    TextView textView3;
+    TextView textView4;
+    TextView textView5;
+    TextView textView6;
+    TextView textView7;
+    TextView textView8;
+    TextView textView9;
+    TextView textView10;
     TextView textView12;
     TextView textView13;
     Button button;
@@ -47,6 +57,16 @@ public class Results extends AppCompatActivity {
         setContentView(R.layout.activity_results);
 
 
+        textView1=(TextView)findViewById(R.id.pic1);
+        textView2=(TextView)findViewById(R.id.pic2);
+        textView3=(TextView)findViewById(R.id.pic3);
+        textView4=(TextView)findViewById(R.id.pic4);
+        textView5=(TextView)findViewById(R.id.pic5);
+        textView6=(TextView)findViewById(R.id.pic6);
+        textView7=(TextView)findViewById(R.id.pic7);
+        textView8=(TextView)findViewById(R.id.pic8);
+        textView9=(TextView)findViewById(R.id.pic9);
+        textView10=(TextView)findViewById(R.id.pic10);
         textView12=(TextView)findViewById(R.id.similarirty);
         textView13=(TextView)findViewById(R.id.risklevel);
 
@@ -59,18 +79,29 @@ public class Results extends AppCompatActivity {
             public void run() {
                 SavedData = Sqlitedb.Search(Results.this,"SELECT * FROM Predict_Data",3);
                 System.out.println(SavedData);
-                
 
-                Integer pic1 = Integer.valueOf(SavedData.get(0).get("1"));
-                Integer pic2 = Integer.valueOf(SavedData.get(1).get("1"));
-                Integer pic3 = Integer.valueOf(SavedData.get(2).get("1"));
-                Integer pic4 = Integer.valueOf(SavedData.get(3).get("1"));
-                Integer pic5 = Integer.valueOf(SavedData.get(4).get("1"));
-                Integer pic6 = Integer.valueOf(SavedData.get(5).get("1"));
-                Integer pic7 = Integer.valueOf(SavedData.get(6).get("1"));
-                Integer pic8 = Integer.valueOf(SavedData.get(7).get("1"));
-                Integer pic9 = Integer.valueOf(SavedData.get(8).get("1"));
-                Integer pic10 = Integer.valueOf(SavedData.get(9).get("1"));
+
+                textView1.setText(SavedData.get(0).get("1"));
+                textView2.setText(SavedData.get(1).get("1"));
+                textView3.setText(SavedData.get(2).get("1"));
+                textView4.setText(SavedData.get(3).get("1"));
+                textView5.setText(SavedData.get(4).get("1"));
+                textView6.setText(SavedData.get(5).get("1"));
+                textView7.setText(SavedData.get(6).get("1"));
+                textView8.setText(SavedData.get(7).get("1"));
+                textView9.setText(SavedData.get(8).get("1"));
+                textView10.setText(SavedData.get(9).get("1"));
+
+                Integer pic1 = Integer.valueOf(textView1.getText().toString());
+                Integer pic2 = Integer.valueOf(textView2.getText().toString());
+                Integer pic3 = Integer.valueOf(textView3.getText().toString());
+                Integer pic4 = Integer.valueOf(textView4.getText().toString());
+                Integer pic5 = Integer.valueOf(textView5.getText().toString());
+                Integer pic6 = Integer.valueOf(textView6.getText().toString());
+                Integer pic7 = Integer.valueOf(textView7.getText().toString());
+                Integer pic8 = Integer.valueOf(textView8.getText().toString());
+                Integer pic9 = Integer.valueOf(textView9.getText().toString());
+                Integer pic10 = Integer.valueOf(textView10.getText().toString());
 
                 Integer cal = pic1+pic2+pic3+pic4+pic5+pic6+pic7+pic8+pic9+pic10;
                 Integer total = cal / 10;
